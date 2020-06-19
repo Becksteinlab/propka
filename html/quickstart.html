@@ -1,0 +1,378 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>2. Quickstart Guide &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="3. API Reference" href="api.html" />
+    <link rel="prev" title="1. Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">1. Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">2. Quickstart Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#predicting-protein-residue-pka-values">2.1. Predicting protein residue <span class="math notranslate nohighlight">\(\text{p}K_\text{a}\)</span> values</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#getting-help">2.2. Getting help</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">3. API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li><span class="section-number">2. </span>Quickstart Guide</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/quickstart.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="quickstart-guide">
+<h1><span class="section-number">2. </span>Quickstart Guide<a class="headerlink" href="#quickstart-guide" title="Permalink to this headline">¶</a></h1>
+<p>PROPKA can be used either as a module or via the installed script <strong class="program">propka3</strong>; i.e., either</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>propka3
+</pre></div>
+</div>
+<p>or <a class="reference internal" href="api.html#module-propka" title="propka"><code class="xref py py-mod docutils literal notranslate"><span class="pre">propka</span></code></a></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m propka
+</pre></div>
+</div>
+<p>works for invoking PROPKA.</p>
+<div class="section" id="predicting-protein-residue-pka-values">
+<h2><span class="section-number">2.1. </span>Predicting protein residue <span class="math notranslate nohighlight">\(\text{p}K_\text{a}\)</span> values<a class="headerlink" href="#predicting-protein-residue-pka-values" title="Permalink to this headline">¶</a></h2>
+<p>Most users run PROPKA by invoking the <strong class="program">propka3</strong> program with
+a PDB file as its argument; e.g., for PDB <a class="reference external" href="https://www.rcsb.org/structure/1HPX">1HPX</a> (HIV-1 protease
+complexed with the inhibitor KNI-272)</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>propka3 1hpx.pdb
+</pre></div>
+</div>
+<p>In this example, <span class="math notranslate nohighlight">\(\text{p}K_\text{a}\)</span> values of titratable protein residues and
+titratable groups of the inhibitor KNI are calculated.</p>
+<p>The output looks similar to the following (many lines omitted as
+“…”). It is also contained in the output file <code class="file docutils literal notranslate"><span class="pre">1hpx.pka</span></code> that
+is automatically written:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">propka3</span><span class="o">.</span><span class="mi">2</span>                                                                                    <span class="mi">2020</span><span class="o">-</span><span class="mi">06</span><span class="o">-</span><span class="mi">19</span>
+<span class="o">...</span>
+<span class="o">...</span>
+<span class="n">Found</span> <span class="n">NAR</span> <span class="n">group</span><span class="p">:</span>  <span class="mi">1530</span><span class="o">-</span>  <span class="n">N1</span>   <span class="mi">900</span><span class="o">-</span><span class="n">KNI</span> <span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="p">[</span>   <span class="mf">7.907</span>    <span class="mf">1.459</span>    <span class="mf">5.427</span><span class="p">]</span> <span class="n">N</span>
+<span class="n">Found</span> <span class="n">O3</span>  <span class="n">group</span><span class="p">:</span>  <span class="mi">1531</span><span class="o">-</span>  <span class="n">O1</span>   <span class="mi">900</span><span class="o">-</span><span class="n">KNI</span> <span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="p">[</span>   <span class="mf">5.235</span>    <span class="mf">3.791</span>    <span class="mf">9.082</span><span class="p">]</span> <span class="n">O</span>
+<span class="n">Found</span> <span class="n">O2</span>  <span class="n">group</span><span class="p">:</span>  <span class="mi">1532</span><span class="o">-</span>  <span class="n">O3</span>   <span class="mi">900</span><span class="o">-</span><span class="n">KNI</span> <span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="p">[</span>   <span class="mf">3.327</span>    <span class="mf">4.297</span>   <span class="mf">11.852</span><span class="p">]</span> <span class="n">O</span>
+<span class="n">Found</span> <span class="n">NAM</span> <span class="n">group</span><span class="p">:</span>  <span class="mi">1533</span><span class="o">-</span>  <span class="n">N2</span>   <span class="mi">900</span><span class="o">-</span><span class="n">KNI</span> <span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="p">[</span>   <span class="mf">3.955</span>    <span class="mf">2.384</span>   <span class="mf">10.893</span><span class="p">]</span> <span class="n">N</span>
+<span class="n">Found</span> <span class="n">O2</span>  <span class="n">group</span><span class="p">:</span>  <span class="mi">1539</span><span class="o">-</span>  <span class="n">O6</span>   <span class="mi">900</span><span class="o">-</span><span class="n">KNI</span> <span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="p">[</span>   <span class="mf">3.758</span>   <span class="o">-</span><span class="mf">0.629</span>   <span class="mf">12.111</span><span class="p">]</span> <span class="n">O</span>
+<span class="n">Found</span> <span class="n">NAM</span> <span class="n">group</span><span class="p">:</span>  <span class="mi">1541</span><span class="o">-</span>  <span class="n">N3</span>   <span class="mi">900</span><span class="o">-</span><span class="n">KNI</span> <span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="p">[</span>   <span class="mf">4.496</span>    <span class="mf">0.982</span>   <span class="mf">13.492</span><span class="p">]</span> <span class="n">N</span>
+<span class="n">Found</span> <span class="n">O2</span>  <span class="n">group</span><span class="p">:</span>  <span class="mi">1542</span><span class="o">-</span>  <span class="n">O4</span>   <span class="mi">900</span><span class="o">-</span><span class="n">KNI</span> <span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="p">[</span>   <span class="mf">6.324</span>   <span class="o">-</span><span class="mf">1.234</span>   <span class="mf">17.045</span><span class="p">]</span> <span class="n">O</span>
+<span class="n">Found</span> <span class="n">OH</span>  <span class="n">group</span><span class="p">:</span>  <span class="mi">1548</span><span class="o">-</span>  <span class="n">O2</span>   <span class="mi">900</span><span class="o">-</span><span class="n">KNI</span> <span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="p">[</span>   <span class="mf">4.949</span>    <span class="mf">0.934</span>   <span class="mf">16.427</span><span class="p">]</span> <span class="n">O</span>
+<span class="n">Found</span> <span class="n">O2</span>  <span class="n">group</span><span class="p">:</span>  <span class="mi">1559</span><span class="o">-</span>  <span class="n">O5</span>   <span class="mi">900</span><span class="o">-</span><span class="n">KNI</span> <span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="p">[</span>   <span class="mf">6.746</span>   <span class="o">-</span><span class="mf">3.574</span>   <span class="mf">14.588</span><span class="p">]</span> <span class="n">O</span>
+<span class="n">Found</span> <span class="n">NAM</span> <span class="n">group</span><span class="p">:</span>  <span class="mi">1560</span><span class="o">-</span>  <span class="n">N5</span>   <span class="mi">900</span><span class="o">-</span><span class="n">KNI</span> <span class="p">(</span><span class="n">B</span><span class="p">)</span> <span class="p">[</span>   <span class="mf">7.637</span>   <span class="o">-</span><span class="mf">4.575</span>   <span class="mf">16.403</span><span class="p">]</span> <span class="n">N</span>
+<span class="o">-------------------------------------------------------------------------------------------------------</span>
+
+
+<span class="n">Calculating</span> <span class="n">pKas</span> <span class="k">for</span> <span class="n">Conformation</span> <span class="n">container</span> <span class="mi">1</span><span class="n">A</span> <span class="k">with</span> <span class="mi">1878</span> <span class="n">atoms</span> <span class="ow">and</span> <span class="mi">480</span> <span class="n">groups</span>
+<span class="o">-------------------------------------------------------------------------------------------------------</span>
+
+<span class="o">---------</span>  <span class="o">-----</span>   <span class="o">------</span>   <span class="o">---------------------</span>    <span class="o">--------------</span>    <span class="o">--------------</span>    <span class="o">--------------</span>
+                            <span class="n">DESOLVATION</span>  <span class="n">EFFECTS</span>       <span class="n">SIDECHAIN</span>          <span class="n">BACKBONE</span>        <span class="n">COULOMBIC</span>
+ <span class="n">RESIDUE</span>    <span class="n">pKa</span>    <span class="n">BURIED</span>     <span class="n">REGULAR</span>      <span class="n">RE</span>        <span class="n">HYDROGEN</span> <span class="n">BOND</span>     <span class="n">HYDROGEN</span> <span class="n">BOND</span>      <span class="n">INTERACTION</span>
+<span class="o">---------</span>  <span class="o">-----</span>   <span class="o">------</span>   <span class="o">---------</span>   <span class="o">---------</span>    <span class="o">--------------</span>    <span class="o">--------------</span>    <span class="o">--------------</span>
+
+<span class="n">ASP</span>  <span class="mi">25</span> <span class="n">A</span>   <span class="mf">5.07</span><span class="o">*</span>  <span class="mi">100</span> <span class="o">%</span>    <span class="mf">4.30</span>  <span class="mi">617</span>   <span class="mf">0.19</span>    <span class="mi">0</span>   <span class="o">-</span><span class="mf">0.85</span> <span class="n">KNI</span>  <span class="n">O4</span> <span class="n">B</span>   <span class="o">-</span><span class="mf">0.63</span> <span class="n">GLY</span>  <span class="mi">27</span> <span class="n">A</span>    <span class="mf">0.07</span> <span class="n">ASP</span>  <span class="mi">29</span> <span class="n">A</span>
+<span class="n">ASP</span>  <span class="mi">25</span> <span class="n">A</span>                                           <span class="o">-</span><span class="mf">0.85</span> <span class="n">KNI</span>  <span class="n">O2</span> <span class="n">B</span>   <span class="o">-</span><span class="mf">0.09</span> <span class="n">ALA</span>  <span class="mi">28</span> <span class="n">A</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>
+<span class="n">ASP</span>  <span class="mi">25</span> <span class="n">A</span>                                           <span class="o">-</span><span class="mf">0.84</span> <span class="n">ASP</span>  <span class="mi">25</span> <span class="n">B</span>   <span class="o">-</span><span class="mf">0.04</span> <span class="n">GLY</span>  <span class="mi">27</span> <span class="n">B</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>
+
+<span class="n">ASP</span>  <span class="mi">29</span> <span class="n">A</span>   <span class="mf">3.11</span>    <span class="mi">50</span> <span class="o">%</span>    <span class="mf">1.20</span>  <span class="mi">420</span>   <span class="mf">0.13</span>    <span class="mi">0</span>   <span class="o">-</span><span class="mf">0.68</span> <span class="n">ARG</span>  <span class="mi">87</span> <span class="n">A</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>   <span class="o">-</span><span class="mf">0.04</span> <span class="n">LYS</span>  <span class="mi">45</span> <span class="n">A</span>
+<span class="n">ASP</span>  <span class="mi">29</span> <span class="n">A</span>                                           <span class="o">-</span><span class="mf">0.28</span> <span class="n">ARG</span>   <span class="mi">8</span> <span class="n">B</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>   <span class="o">-</span><span class="mf">0.47</span> <span class="n">ARG</span>  <span class="mi">87</span> <span class="n">A</span>
+<span class="n">ASP</span>  <span class="mi">29</span> <span class="n">A</span>                                            <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>   <span class="o">-</span><span class="mf">0.54</span> <span class="n">ARG</span>   <span class="mi">8</span> <span class="n">B</span>
+
+<span class="n">ASP</span>  <span class="mi">30</span> <span class="n">A</span>   <span class="mf">4.62</span>    <span class="mi">59</span> <span class="o">%</span>    <span class="mf">1.30</span>  <span class="mi">446</span>   <span class="mf">0.00</span>    <span class="mi">0</span>   <span class="o">-</span><span class="mf">0.11</span> <span class="n">LYS</span>  <span class="mi">45</span> <span class="n">A</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>   <span class="o">-</span><span class="mf">0.07</span> <span class="n">ARG</span>  <span class="mi">87</span> <span class="n">A</span>
+<span class="n">ASP</span>  <span class="mi">30</span> <span class="n">A</span>                                            <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>   <span class="o">-</span><span class="mf">0.01</span> <span class="n">ARG</span>   <span class="mi">8</span> <span class="n">B</span>
+<span class="n">ASP</span>  <span class="mi">30</span> <span class="n">A</span>                                            <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.29</span> <span class="n">ASP</span>  <span class="mi">29</span> <span class="n">A</span>
+<span class="n">ASP</span>  <span class="mi">30</span> <span class="n">A</span>                                            <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>   <span class="o">-</span><span class="mf">0.57</span> <span class="n">LYS</span>  <span class="mi">45</span> <span class="n">A</span>
+
+<span class="n">ASP</span>  <span class="mi">60</span> <span class="n">A</span>   <span class="mf">2.55</span>     <span class="mi">0</span> <span class="o">%</span>    <span class="mf">0.41</span>  <span class="mi">249</span>   <span class="mf">0.00</span>    <span class="mi">0</span>   <span class="o">-</span><span class="mf">0.40</span> <span class="n">THR</span>  <span class="mi">74</span> <span class="n">A</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>   <span class="o">-</span><span class="mf">0.02</span> <span class="n">LYS</span>  <span class="mi">45</span> <span class="n">A</span>
+<span class="n">ASP</span>  <span class="mi">60</span> <span class="n">A</span>                                           <span class="o">-</span><span class="mf">0.85</span> <span class="n">LYS</span>  <span class="mi">43</span> <span class="n">A</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>   <span class="o">-</span><span class="mf">0.38</span> <span class="n">LYS</span>  <span class="mi">43</span> <span class="n">A</span>
+<span class="o">...</span>
+<span class="o">...</span>
+<span class="o">...</span>
+<span class="n">ARG</span>  <span class="mi">87</span> <span class="n">B</span>  <span class="mf">12.28</span>    <span class="mi">45</span> <span class="o">%</span>   <span class="o">-</span><span class="mf">1.40</span>  <span class="mi">407</span>   <span class="mf">0.00</span>    <span class="mi">0</span>    <span class="mf">0.77</span> <span class="n">ASP</span>  <span class="mi">29</span> <span class="n">B</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.10</span> <span class="n">ASP</span>  <span class="mi">30</span> <span class="n">B</span>
+<span class="n">ARG</span>  <span class="mi">87</span> <span class="n">B</span>                                            <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>   <span class="o">-</span><span class="mf">0.19</span> <span class="n">ARG</span>   <span class="mi">8</span> <span class="n">A</span>
+<span class="n">ARG</span>  <span class="mi">87</span> <span class="n">B</span>                                            <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.50</span> <span class="n">ASP</span>  <span class="mi">29</span> <span class="n">B</span>
+
+<span class="n">N</span><span class="o">+</span>    <span class="mi">1</span> <span class="n">B</span>   <span class="mf">8.96</span>     <span class="mi">0</span> <span class="o">%</span>   <span class="o">-</span><span class="mf">0.39</span>  <span class="mi">235</span>   <span class="mf">0.00</span>    <span class="mi">0</span>    <span class="mf">0.85</span> <span class="n">C</span><span class="o">-</span>   <span class="mi">99</span> <span class="n">A</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.07</span> <span class="n">CYS</span>  <span class="mi">67</span> <span class="n">B</span>
+<span class="n">N</span><span class="o">+</span>    <span class="mi">1</span> <span class="n">B</span>                                            <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.04</span> <span class="n">CYS</span>  <span class="mi">95</span> <span class="n">B</span>
+<span class="n">N</span><span class="o">+</span>    <span class="mi">1</span> <span class="n">B</span>                                            <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.38</span> <span class="n">C</span><span class="o">-</span>   <span class="mi">99</span> <span class="n">A</span>
+
+<span class="n">KNI</span>  <span class="n">N1</span> <span class="n">B</span>   <span class="mf">4.60</span>     <span class="mi">0</span> <span class="o">%</span>   <span class="o">-</span><span class="mf">0.36</span>  <span class="mi">273</span>   <span class="mf">0.00</span>    <span class="mi">0</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>    <span class="mf">0.00</span> <span class="n">XXX</span>   <span class="mi">0</span> <span class="n">X</span>   <span class="o">-</span><span class="mf">0.03</span> <span class="n">ARG</span>   <span class="mi">8</span> <span class="n">A</span>
+
+<span class="n">Coupled</span> <span class="n">residues</span> <span class="p">(</span><span class="n">marked</span> <span class="o">*</span><span class="p">)</span> <span class="n">were</span> <span class="n">detected</span><span class="o">.</span><span class="n">Please</span> <span class="n">rerun</span> <span class="n">PropKa</span> <span class="k">with</span> <span class="n">the</span> <span class="o">--</span><span class="n">display</span><span class="o">-</span><span class="n">coupled</span><span class="o">-</span><span class="n">residues</span>
+<span class="ow">or</span> <span class="o">-</span><span class="n">d</span> <span class="n">option</span> <span class="k">for</span> <span class="n">detailed</span> <span class="n">information</span><span class="o">.</span>
+
+<span class="o">--------------------------------------------------------------------------------------------------------</span>
+<span class="n">SUMMARY</span> <span class="n">OF</span> <span class="n">THIS</span> <span class="n">PREDICTION</span>
+       <span class="n">Group</span>      <span class="n">pKa</span>  <span class="n">model</span><span class="o">-</span><span class="n">pKa</span>   <span class="n">ligand</span> <span class="n">atom</span><span class="o">-</span><span class="nb">type</span>
+   <span class="n">ASP</span>  <span class="mi">25</span> <span class="n">A</span>     <span class="mf">5.07</span>       <span class="mf">3.80</span>
+   <span class="n">ASP</span>  <span class="mi">29</span> <span class="n">A</span>     <span class="mf">3.11</span>       <span class="mf">3.80</span>
+   <span class="n">ASP</span>  <span class="mi">30</span> <span class="n">A</span>     <span class="mf">4.62</span>       <span class="mf">3.80</span>
+   <span class="n">ASP</span>  <span class="mi">60</span> <span class="n">A</span>     <span class="mf">2.55</span>       <span class="mf">3.80</span>
+   <span class="n">ASP</span>  <span class="mi">25</span> <span class="n">B</span>     <span class="mf">9.28</span>       <span class="mf">3.80</span>
+   <span class="n">ASP</span>  <span class="mi">29</span> <span class="n">B</span>     <span class="mf">1.78</span>       <span class="mf">3.80</span>
+   <span class="n">ASP</span>  <span class="mi">30</span> <span class="n">B</span>     <span class="mf">4.91</span>       <span class="mf">3.80</span>
+   <span class="n">ASP</span>  <span class="mi">60</span> <span class="n">B</span>     <span class="mf">2.13</span>       <span class="mf">3.80</span>
+   <span class="n">GLU</span>  <span class="mi">21</span> <span class="n">A</span>     <span class="mf">4.78</span>       <span class="mf">4.50</span>
+   <span class="n">GLU</span>  <span class="mi">34</span> <span class="n">A</span>     <span class="mf">3.93</span>       <span class="mf">4.50</span>
+   <span class="n">GLU</span>  <span class="mi">35</span> <span class="n">A</span>     <span class="mf">3.65</span>       <span class="mf">4.50</span>
+   <span class="n">GLU</span>  <span class="mi">65</span> <span class="n">A</span>     <span class="mf">3.89</span>       <span class="mf">4.50</span>
+   <span class="n">GLU</span>  <span class="mi">21</span> <span class="n">B</span>     <span class="mf">4.73</span>       <span class="mf">4.50</span>
+   <span class="n">GLU</span>  <span class="mi">34</span> <span class="n">B</span>     <span class="mf">3.36</span>       <span class="mf">4.50</span>
+   <span class="n">GLU</span>  <span class="mi">35</span> <span class="n">B</span>     <span class="mf">4.07</span>       <span class="mf">4.50</span>
+   <span class="n">GLU</span>  <span class="mi">65</span> <span class="n">B</span>     <span class="mf">3.70</span>       <span class="mf">4.50</span>
+   <span class="n">C</span><span class="o">-</span>   <span class="mi">99</span> <span class="n">A</span>     <span class="mf">2.08</span>       <span class="mf">3.20</span>
+   <span class="n">C</span><span class="o">-</span>   <span class="mi">99</span> <span class="n">B</span>     <span class="mf">2.11</span>       <span class="mf">3.20</span>
+   <span class="n">HIS</span>  <span class="mi">69</span> <span class="n">A</span>     <span class="mf">6.98</span>       <span class="mf">6.50</span>
+   <span class="n">HIS</span>  <span class="mi">69</span> <span class="n">B</span>     <span class="mf">7.11</span>       <span class="mf">6.50</span>
+   <span class="n">CYS</span>  <span class="mi">67</span> <span class="n">A</span>     <span class="mf">9.41</span>       <span class="mf">9.00</span>
+   <span class="n">CYS</span>  <span class="mi">95</span> <span class="n">A</span>    <span class="mf">11.68</span>       <span class="mf">9.00</span>
+   <span class="n">CYS</span>  <span class="mi">67</span> <span class="n">B</span>     <span class="mf">9.82</span>       <span class="mf">9.00</span>
+   <span class="n">CYS</span>  <span class="mi">95</span> <span class="n">B</span>    <span class="mf">11.61</span>       <span class="mf">9.00</span>
+   <span class="n">TYR</span>  <span class="mi">59</span> <span class="n">A</span>     <span class="mf">9.67</span>      <span class="mf">10.00</span>
+   <span class="n">TYR</span>  <span class="mi">59</span> <span class="n">B</span>     <span class="mf">9.54</span>      <span class="mf">10.00</span>
+   <span class="n">LYS</span>  <span class="mi">14</span> <span class="n">A</span>    <span class="mf">10.43</span>      <span class="mf">10.50</span>
+   <span class="n">LYS</span>  <span class="mi">20</span> <span class="n">A</span>    <span class="mf">10.32</span>      <span class="mf">10.50</span>
+   <span class="n">LYS</span>  <span class="mi">43</span> <span class="n">A</span>    <span class="mf">11.41</span>      <span class="mf">10.50</span>
+   <span class="n">LYS</span>  <span class="mi">45</span> <span class="n">A</span>    <span class="mf">10.54</span>      <span class="mf">10.50</span>
+   <span class="n">LYS</span>  <span class="mi">55</span> <span class="n">A</span>    <span class="mf">10.42</span>      <span class="mf">10.50</span>
+   <span class="n">LYS</span>  <span class="mi">70</span> <span class="n">A</span>    <span class="mf">10.92</span>      <span class="mf">10.50</span>
+   <span class="n">LYS</span>  <span class="mi">14</span> <span class="n">B</span>    <span class="mf">10.55</span>      <span class="mf">10.50</span>
+   <span class="n">LYS</span>  <span class="mi">20</span> <span class="n">B</span>    <span class="mf">11.01</span>      <span class="mf">10.50</span>
+   <span class="n">LYS</span>  <span class="mi">43</span> <span class="n">B</span>    <span class="mf">11.43</span>      <span class="mf">10.50</span>
+   <span class="n">LYS</span>  <span class="mi">45</span> <span class="n">B</span>    <span class="mf">10.47</span>      <span class="mf">10.50</span>
+   <span class="n">LYS</span>  <span class="mi">55</span> <span class="n">B</span>    <span class="mf">10.41</span>      <span class="mf">10.50</span>
+   <span class="n">LYS</span>  <span class="mi">70</span> <span class="n">B</span>    <span class="mf">11.07</span>      <span class="mf">10.50</span>
+   <span class="n">ARG</span>   <span class="mi">8</span> <span class="n">A</span>    <span class="mf">13.96</span>      <span class="mf">12.50</span>
+   <span class="n">ARG</span>  <span class="mi">41</span> <span class="n">A</span>    <span class="mf">12.41</span>      <span class="mf">12.50</span>
+   <span class="n">ARG</span>  <span class="mi">57</span> <span class="n">A</span>    <span class="mf">14.40</span>      <span class="mf">12.50</span>
+   <span class="n">ARG</span>  <span class="mi">87</span> <span class="n">A</span>    <span class="mf">12.35</span>      <span class="mf">12.50</span>
+   <span class="n">ARG</span>   <span class="mi">8</span> <span class="n">B</span>    <span class="mf">12.76</span>      <span class="mf">12.50</span>
+   <span class="n">ARG</span>  <span class="mi">41</span> <span class="n">B</span>    <span class="mf">12.42</span>      <span class="mf">12.50</span>
+   <span class="n">ARG</span>  <span class="mi">57</span> <span class="n">B</span>    <span class="mf">13.73</span>      <span class="mf">12.50</span>
+   <span class="n">ARG</span>  <span class="mi">87</span> <span class="n">B</span>    <span class="mf">12.28</span>      <span class="mf">12.50</span>
+   <span class="n">N</span><span class="o">+</span>    <span class="mi">1</span> <span class="n">A</span>     <span class="mf">8.96</span>       <span class="mf">8.00</span>
+   <span class="n">N</span><span class="o">+</span>    <span class="mi">1</span> <span class="n">B</span>     <span class="mf">8.96</span>       <span class="mf">8.00</span>
+   <span class="n">KNI</span>  <span class="n">N1</span> <span class="n">B</span>     <span class="mf">4.60</span>       <span class="mf">5.00</span>                <span class="n">NAR</span>
+
+<span class="n">Writing</span> <span class="mi">1</span><span class="n">hpx</span><span class="o">.</span><span class="n">pka</span>
+</pre></div>
+</div>
+<p>Some of the important contents:</p>
+<ul class="simple">
+<li><p>The section <em>Calculating pKas for Conformation container 1A with 1878 atoms and
+480 groups</em> lists details on the calculations for all ionizable
+residues. It indicates the considerations that went into a <span class="math notranslate nohighlight">\(\text{p}K_\text{a}\)</span>
+estimate such as hydrogen bonds and Coulomb interactions. It also
+indicates if there is potentially coupling between residues.</p></li>
+<li><p>Values with “XXX” placeholders are not calculated (but appear to
+maintain the formatting).</p></li>
+<li><p>The section <em>SUMMARY OF THIS PREDICTION</em> lists the predicted <span class="math notranslate nohighlight">\(\text{p}K_\text{a}\)</span>
+for each residue together with the model <span class="math notranslate nohighlight">\(\text{p}K_\text{a}\)</span> (the “default”
+value).</p></li>
+<li><p>Ligand values are labeled with the residue name of the ligand, in
+this case “KNI”.</p></li>
+</ul>
+</div>
+<div class="section" id="getting-help">
+<h2><span class="section-number">2.2. </span>Getting help<a class="headerlink" href="#getting-help" title="Permalink to this headline">¶</a></h2>
+<p>A brief list of available options can be obtained by running PROPKA
+with no options. A longer list of options and descriptions is
+available using the <code class="xref std std-option docutils literal notranslate"><span class="pre">--help</span></code> option:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>propka3 --help
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api.html" class="btn btn-neutral float-right" title="3. API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral float-left" title="1. Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

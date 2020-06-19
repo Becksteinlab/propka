@@ -1,0 +1,30 @@
+propka.determinant
+==================
+
+.. automodule:: propka.determinant
+   :members:
+   
+   
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Determinant
+   
+   
+
+   
+   
+   
+
+
+

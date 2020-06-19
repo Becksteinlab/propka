@@ -1,0 +1,498 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3.2.8. propka.version &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3.3.1. propka.protonate" href="propka.protonate.html" />
+    <link rel="prev" title="3.2.7. propka.run" href="propka.run.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">2. Quickstart Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">3. API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#data-structures">3.1. Data structures</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#i-o">3.2. I/O</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="propka.input.html">3.2.1. propka.input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.lib.html">3.2.2. propka.lib</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.output.html">3.2.3. propka.output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.parameters.html">3.2.4. propka.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.hybrid36.html">3.2.5. propka.hybrid36</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.ligand_pka_values.html">3.2.6. propka.ligand_pka_values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.run.html">3.2.7. propka.run</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">3.2.8. propka.version</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#version-based-configuration">3.2.8.1. Version-based configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#structure-processing">3.3. Structure processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#calculations">3.4. Calculations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../api.html"><span class="section-number">3. </span>API Reference</a> &raquo;</li>
+        
+      <li><span class="section-number">3.2.8. </span>propka.version</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/propka.version.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-propka.version">
+<span id="propka-version"></span><h1><span class="section-number">3.2.8. </span>propka.version<a class="headerlink" href="#module-propka.version" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="version-based-configuration">
+<h2><span class="section-number">3.2.8.1. </span>Version-based configuration<a class="headerlink" href="#version-based-configuration" title="Permalink to this headline">¶</a></h2>
+<p>Contains version-specific methods and parameters.</p>
+<p>TODO - this module unnecessarily confuses the code.  Can we eliminate it?</p>
+<p class="rubric">Classes</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.version.ElementBasedLigandInteractions" title="propka.version.ElementBasedLigandInteractions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ElementBasedLigandInteractions</span></code></a>(parameters)</p></td>
+<td><p>TODO - figure out what this is.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.version.Propka30" title="propka.version.Propka30"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Propka30</span></code></a>(parameters)</p></td>
+<td><p>Version class for PROPKA 3.0.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.version.SimpleHB" title="propka.version.SimpleHB"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SimpleHB</span></code></a>(parameters)</p></td>
+<td><p>A simple hydrogen bond version.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.version.Version" title="propka.version.Version"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Version</span></code></a>(parameters)</p></td>
+<td><p>Store version-specific methods and parameters.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.version.VersionA" title="propka.version.VersionA"><code class="xref py py-obj docutils literal notranslate"><span class="pre">VersionA</span></code></a>(parameters)</p></td>
+<td><p>TODO - figure out what this is.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="propka.version.ElementBasedLigandInteractions">
+<em class="property">class </em><code class="sig-prename descclassname">propka.version.</code><code class="sig-name descname">ElementBasedLigandInteractions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#ElementBasedLigandInteractions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.ElementBasedLigandInteractions" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO - figure out what this is.</p>
+<dl class="py method">
+<dt id="propka.version.ElementBasedLigandInteractions.get_backbone_hydrogen_bond_parameters">
+<code class="sig-name descname">get_backbone_hydrogen_bond_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">backbone_atom</span></em>, <em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#ElementBasedLigandInteractions.get_backbone_hydrogen_bond_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.ElementBasedLigandInteractions.get_backbone_hydrogen_bond_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get hydrogen bond parameters between backbone atom and other atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>backbone_atom</strong> – backbone atom</p></li>
+<li><p><strong>atom</strong> – other atom</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Returns</dt><dd><p>[v, [c1, c3]]  TODO - figure out what this is</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.version.ElementBasedLigandInteractions.get_hydrogen_bond_parameters">
+<code class="sig-name descname">get_hydrogen_bond_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom1</span></em>, <em class="sig-param"><span class="n">atom2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#ElementBasedLigandInteractions.get_hydrogen_bond_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.ElementBasedLigandInteractions.get_hydrogen_bond_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get hydrogen bond parameters for two atoms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom1</strong> – first atom</p></li>
+<li><p><strong>atom2</strong> – second atom</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>[dpka_max, cutoff]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="propka.version.Propka30">
+<em class="property">class </em><code class="sig-prename descclassname">propka.version.</code><code class="sig-name descname">Propka30</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Propka30"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Propka30" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version class for PROPKA 3.0.</p>
+<dl class="py method">
+<dt id="propka.version.Propka30.get_hydrogen_bond_parameters">
+<code class="sig-name descname">get_hydrogen_bond_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom1</span></em>, <em class="sig-param"><span class="n">atom2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Propka30.get_hydrogen_bond_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Propka30.get_hydrogen_bond_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get hydrogen bond parameters for two atoms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom1</strong> – first atom</p></li>
+<li><p><strong>atom2</strong> – second atom</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>[dpka_max, cutoff]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="propka.version.SimpleHB">
+<em class="property">class </em><code class="sig-prename descclassname">propka.version.</code><code class="sig-name descname">SimpleHB</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#SimpleHB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.SimpleHB" title="Permalink to this definition">¶</a></dt>
+<dd><p>A simple hydrogen bond version.</p>
+<dl class="py method">
+<dt id="propka.version.SimpleHB.get_backbone_hydrogen_bond_parameters">
+<code class="sig-name descname">get_backbone_hydrogen_bond_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">backbone_atom</span></em>, <em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#SimpleHB.get_backbone_hydrogen_bond_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.SimpleHB.get_backbone_hydrogen_bond_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get hydrogen bond parameters between backbone atom and other atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>backbone_atom</strong> – backbone atom</p></li>
+<li><p><strong>atom</strong> – other atom</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Returns</dt><dd><p>[v, [c1, c3]]  TODO - figure out what this is</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.version.SimpleHB.get_hydrogen_bond_parameters">
+<code class="sig-name descname">get_hydrogen_bond_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom1</span></em>, <em class="sig-param"><span class="n">atom2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#SimpleHB.get_hydrogen_bond_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.SimpleHB.get_hydrogen_bond_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get hydrogen bond parameters for two atoms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom1</strong> – first atom</p></li>
+<li><p><strong>atom2</strong> – second atom</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>[dpka_max, cutoff]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="propka.version.Version">
+<em class="property">class </em><code class="sig-prename descclassname">propka.version.</code><code class="sig-name descname">Version</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Version"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store version-specific methods and parameters.</p>
+<dl class="py method">
+<dt id="propka.version.Version.calculate_backbone_reorganization">
+<code class="sig-name descname">calculate_backbone_reorganization</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">conformation</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Version.calculate_backbone_reorganization"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Version.calculate_backbone_reorganization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate backbone reorganization using assigned model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.version.Version.calculate_coulomb_energy">
+<code class="sig-name descname">calculate_coulomb_energy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">distance</span></em>, <em class="sig-param"><span class="n">weight</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Version.calculate_coulomb_energy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Version.calculate_coulomb_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate Coulomb energy using assigned model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.version.Version.calculate_desolvation">
+<code class="sig-name descname">calculate_desolvation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Version.calculate_desolvation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Version.calculate_desolvation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate desolvation energy using assigned model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.version.Version.calculate_pair_weight">
+<code class="sig-name descname">calculate_pair_weight</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_volume1</span></em>, <em class="sig-param"><span class="n">num_volume2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Version.calculate_pair_weight"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Version.calculate_pair_weight" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate pair weight using assigned model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.version.Version.calculate_side_chain_energy">
+<code class="sig-name descname">calculate_side_chain_energy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">distance</span></em>, <em class="sig-param"><span class="n">dpka_max</span></em>, <em class="sig-param"><span class="n">cutoff</span></em>, <em class="sig-param"><span class="n">_</span></em>, <em class="sig-param"><span class="n">f_angle</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Version.calculate_side_chain_energy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Version.calculate_side_chain_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate sidechain energy using assigned model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.version.Version.check_coulomb_pair">
+<code class="sig-name descname">check_coulomb_pair</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group1</span></em>, <em class="sig-param"><span class="n">group2</span></em>, <em class="sig-param"><span class="n">distance</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Version.check_coulomb_pair"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Version.check_coulomb_pair" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check Coulomb pair using assigned model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.version.Version.check_exceptions">
+<code class="sig-name descname">check_exceptions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group1</span></em>, <em class="sig-param"><span class="n">group2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Version.check_exceptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Version.check_exceptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate exceptions using assigned model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.version.Version.electrostatic_interaction">
+<code class="sig-name descname">electrostatic_interaction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group1</span></em>, <em class="sig-param"><span class="n">group2</span></em>, <em class="sig-param"><span class="n">distance</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Version.electrostatic_interaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Version.electrostatic_interaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate electrostatic energy using assigned model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.version.Version.empty_function">
+<em class="property">static </em><code class="sig-name descname">empty_function</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Version.empty_function"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Version.empty_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Placeholder function so we don’t use uninitialized variables.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – whatever arguments would have been passed to the function</p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>NotImplementedError</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.version.Version.hydrogen_bond_interaction">
+<code class="sig-name descname">hydrogen_bond_interaction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group1</span></em>, <em class="sig-param"><span class="n">group2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Version.hydrogen_bond_interaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Version.hydrogen_bond_interaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate H-bond energy using assigned model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.version.Version.setup_bonding">
+<code class="sig-name descname">setup_bonding</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">molecular_container</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Version.setup_bonding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Version.setup_bonding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup bonding using assigned model.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.version.Version.setup_bonding_and_protonation">
+<code class="sig-name descname">setup_bonding_and_protonation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">molecular_container</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#Version.setup_bonding_and_protonation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.Version.setup_bonding_and_protonation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup bonding and protonation using assigned model.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="propka.version.VersionA">
+<em class="property">class </em><code class="sig-prename descclassname">propka.version.</code><code class="sig-name descname">VersionA</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#VersionA"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.VersionA" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO - figure out what this is.</p>
+<dl class="py method">
+<dt id="propka.version.VersionA.get_backbone_hydrogen_bond_parameters">
+<code class="sig-name descname">get_backbone_hydrogen_bond_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">backbone_atom</span></em>, <em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#VersionA.get_backbone_hydrogen_bond_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.VersionA.get_backbone_hydrogen_bond_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get hydrogen bond parameters between backbone atom and other atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>backbone_atom</strong> – backbone atom</p></li>
+<li><p><strong>atom</strong> – other atom</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Returns</dt><dd><p>[v, [c1, c3]]  TODO - figure out what this is</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.version.VersionA.get_hydrogen_bond_parameters">
+<code class="sig-name descname">get_hydrogen_bond_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom1</span></em>, <em class="sig-param"><span class="n">atom2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/version.html#VersionA.get_hydrogen_bond_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.version.VersionA.get_hydrogen_bond_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get hydrogen bond parameters for two atoms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom1</strong> – first atom</p></li>
+<li><p><strong>atom2</strong> – second atom</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>[dpka_max, cutoff]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="propka.protonate.html" class="btn btn-neutral float-right" title="3.3.1. propka.protonate" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="propka.run.html" class="btn btn-neutral float-left" title="3.2.7. propka.run" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

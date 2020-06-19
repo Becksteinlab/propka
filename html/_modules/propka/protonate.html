@@ -1,0 +1,574 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>propka.protonate &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">2. Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">3. API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>propka.protonate</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for propka.protonate</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Protonate a structure</span>
+<span class="sd">=====================</span>
+
+<span class="sd">The :class:`Protonate` processes a</span>
+<span class="sd">:class:`propka.molecular_container.MolecularContainer` and adds</span>
+<span class="sd">protons.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">propka.bonds</span>
+<span class="kn">import</span> <span class="nn">propka.atom</span>
+<span class="kn">from</span> <span class="nn">propka.vector_algebra</span> <span class="kn">import</span> <span class="n">rotate_vector_around_an_axis</span><span class="p">,</span> <span class="n">Vector</span>
+<span class="kn">from</span> <span class="nn">propka.lib</span> <span class="kn">import</span> <span class="n">warning</span><span class="p">,</span> <span class="n">debug</span>
+
+
+<div class="viewcode-block" id="Protonate"><a class="viewcode-back" href="../../api/propka.protonate.html#propka.protonate.Protonate">[docs]</a><span class="k">class</span> <span class="nc">Protonate</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Protonates atoms using VSEPR theory &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize with flag for verbosity</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            verbose:  True for verbose output</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">verbose</span> <span class="o">=</span> <span class="n">verbose</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valence_electrons</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;H&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;He&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Li&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Be&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+            <span class="s1">&#39;O&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;Ne&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;Na&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Mg&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Al&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;Si&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+            <span class="s1">&#39;P&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;Cl&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;Ar&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Ca&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Sc&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s1">&#39;Ti&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Va&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Cr&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Mn&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Fe&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Co&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Ni&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s1">&#39;Cu&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Zn&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Ga&#39;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;Ge&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;As&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;Se&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;Br&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+            <span class="s1">&#39;Kr&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">}</span>
+        <span class="c1"># TODO - consider putting charges in a configuration file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">standard_charges</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;ARG-NH1&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;ASP-OD2&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;GLU-OE2&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;HIS-ND1&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+            <span class="s1">&#39;LYS-NZ&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;N+&#39;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="s1">&#39;C-&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sybyl_charges</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;N.pl3&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;N.3&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;N.4&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;N.ar&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;O.co2-&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+        <span class="c1"># TODO - consider putting bond lengths in a configuration file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bond_lengths</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mf">1.09</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">:</span> <span class="mf">1.01</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">:</span> <span class="mf">0.96</span><span class="p">,</span> <span class="s1">&#39;F&#39;</span><span class="p">:</span> <span class="mf">0.92</span><span class="p">,</span> <span class="s1">&#39;Cl&#39;</span><span class="p">:</span> <span class="mf">1.27</span><span class="p">,</span>
+            <span class="s1">&#39;Br&#39;</span><span class="p">:</span> <span class="mf">1.41</span><span class="p">,</span> <span class="s1">&#39;I&#39;</span><span class="p">:</span> <span class="mf">1.61</span><span class="p">,</span> <span class="s1">&#39;S&#39;</span><span class="p">:</span> <span class="mf">1.35</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">protonation_methods</span> <span class="o">=</span> <span class="p">{</span><span class="mi">4</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">tetrahedral</span><span class="p">,</span> <span class="mi">3</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">trigonal</span><span class="p">}</span>
+
+<div class="viewcode-block" id="Protonate.protonate"><a class="viewcode-back" href="../../api/propka.protonate.html#propka.protonate.Protonate.protonate">[docs]</a>    <span class="k">def</span> <span class="nf">protonate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecules</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Protonate all atoms in the molecular container.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            molecules:  molecular containers</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;----- Protonation started -----&#39;</span><span class="p">)</span>
+        <span class="c1"># Remove all currently present hydrogen atoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">remove_all_hydrogen_atoms</span><span class="p">(</span><span class="n">molecules</span><span class="p">)</span>
+        <span class="c1"># protonate all atoms</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">molecules</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">:</span>
+            <span class="n">non_h_atoms</span> <span class="o">=</span> <span class="p">(</span><span class="n">molecules</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                           <span class="o">.</span><span class="n">get_non_hydrogen_atoms</span><span class="p">())</span>
+            <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">non_h_atoms</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">protonate_atom</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Protonate.remove_all_hydrogen_atoms"><a class="viewcode-back" href="../../api/propka.protonate.html#propka.protonate.Protonate.remove_all_hydrogen_atoms">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">remove_all_hydrogen_atoms</span><span class="p">(</span><span class="n">molecular_container</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Remove all hydrogen atoms from molecule.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            molecular_container:  molecule to remove hydrogens from</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">molecular_container</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">:</span>
+            <span class="n">molecular_container</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">molecular_container</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                <span class="o">.</span><span class="n">get_non_hydrogen_atoms</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Protonate.set_charge"><a class="viewcode-back" href="../../api/propka.protonate.html#propka.protonate.Protonate.set_charge">[docs]</a>    <span class="k">def</span> <span class="nf">set_charge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set charge for atom.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom:  atom to be charged</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># atom is a protein atom</span>
+        <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;atom&#39;</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:3s}</span><span class="s1">-</span><span class="si">{1:s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">res_name</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">terminal</span><span class="p">:</span>
+                <span class="n">debug</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">terminal</span><span class="p">)</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">terminal</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">standard_charges</span><span class="p">:</span>
+                <span class="n">atom</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">standard_charges</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+                <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Charge&#39;</span><span class="p">,</span> <span class="n">atom</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">charge</span><span class="p">)</span>
+                <span class="n">atom</span><span class="o">.</span><span class="n">charge_set</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># atom is a ligand atom</span>
+        <span class="k">elif</span> <span class="n">atom</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;hetatm&#39;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">sybyl_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sybyl_charges</span><span class="p">:</span>
+                <span class="n">atom</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sybyl_charges</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">sybyl_type</span><span class="p">]</span>
+                <span class="n">atom</span><span class="o">.</span><span class="n">sybyl_type</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">sybyl_type</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                <span class="n">atom</span><span class="o">.</span><span class="n">charge_set</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Protonate.protonate_atom"><a class="viewcode-back" href="../../api/propka.protonate.html#propka.protonate.Protonate.protonate_atom">[docs]</a>    <span class="k">def</span> <span class="nf">protonate_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Protonate an atom.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom:  atom to be protonated</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">is_protonated</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">element</span> <span class="o">==</span> <span class="s1">&#39;H&#39;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_charge</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_number_of_protons_to_add</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_steric_number_and_lone_pairs</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_protons</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">is_protonated</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Protonate.set_proton_names"><a class="viewcode-back" href="../../api/propka.protonate.html#propka.protonate.Protonate.set_proton_names">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">set_proton_names</span><span class="p">(</span><span class="n">heavy_atoms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set names for protons.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            heavy_atoms:  list of heavy atoms with protons to be named</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">heavy_atom</span> <span class="ow">in</span> <span class="n">heavy_atoms</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">bonded</span> <span class="ow">in</span> <span class="n">heavy_atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">bonded</span><span class="o">.</span><span class="n">element</span> <span class="o">==</span> <span class="s1">&#39;H&#39;</span><span class="p">:</span>
+                    <span class="n">bonded</span><span class="o">.</span><span class="n">name</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="Protonate.set_number_of_protons_to_add"><a class="viewcode-back" href="../../api/propka.protonate.html#propka.protonate.Protonate.set_number_of_protons_to_add">[docs]</a>    <span class="k">def</span> <span class="nf">set_number_of_protons_to_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the number of protons to add to this atom.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom:  atom for calculation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Setting number of protons to add for&#39;</span><span class="p">,</span> <span class="n">atom</span><span class="p">)</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s2">&quot;                     8&quot;</span><span class="p">)</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valence_electrons</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="p">]</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Valence electrons: </span><span class="si">{0:&gt;4d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">valence_electrons</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="p">]))</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Number of bonds:  </span><span class="si">{0:&gt;4d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)))</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span> <span class="o">-=</span> <span class="n">atom</span><span class="o">.</span><span class="n">num_pi_elec_2_3_bonds</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Pi electrons:     </span><span class="si">{0:&gt;4d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">-</span><span class="n">atom</span><span class="o">.</span><span class="n">num_pi_elec_2_3_bonds</span><span class="p">))</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span> <span class="o">+=</span> <span class="nb">int</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">charge</span><span class="p">)</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Charge:           </span><span class="si">{0:&gt;4.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">charge</span><span class="p">))</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">debug</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Protonate.set_steric_number_and_lone_pairs"><a class="viewcode-back" href="../../api/propka.protonate.html#propka.protonate.Protonate.set_steric_number_and_lone_pairs">[docs]</a>    <span class="k">def</span> <span class="nf">set_steric_number_and_lone_pairs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set steric number and lone pairs for atom.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom:  atom for calculation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If we already did this, there is no reason to do it again</span>
+        <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">steric_num_lone_pairs_set</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;Setting steric number and lone pairs for&#39;</span><span class="p">,</span> <span class="n">atom</span><span class="p">)</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:&gt;65s}</span><span class="s1">: </span><span class="si">{1:&gt;4d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s1">&#39;Valence electrons&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">valence_electrons</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="p">]))</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">valence_electrons</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="p">]</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:&gt;65s}</span><span class="s1">: </span><span class="si">{1:&gt;4d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s1">&#39;Number of bonds&#39;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)))</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:&gt;65s}</span><span class="s1">: </span><span class="si">{1:&gt;4d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s1">&#39;Number of hydrogen atoms to add&#39;</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span><span class="p">))</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span> <span class="o">+=</span> <span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:&gt;65s}</span><span class="s1">: </span><span class="si">{1:&gt;4d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s1">&#39;Number of pi-electrons in double and triple bonds(-)&#39;</span><span class="p">,</span>
+            <span class="n">atom</span><span class="o">.</span><span class="n">num_pi_elec_2_3_bonds</span><span class="p">))</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span> <span class="o">-=</span> <span class="n">atom</span><span class="o">.</span><span class="n">num_pi_elec_2_3_bonds</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:&gt;65s}</span><span class="s1">: </span><span class="si">{1:&gt;4d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s1">&#39;Number of pi-electrons in conjugated double and triple bonds(-)&#39;</span><span class="p">,</span>
+            <span class="n">atom</span><span class="o">.</span><span class="n">num_pi_elec_conj_2_3_bonds</span><span class="p">))</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span> <span class="o">-=</span> <span class="n">atom</span><span class="o">.</span><span class="n">num_pi_elec_conj_2_3_bonds</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:&gt;65s}</span><span class="s1">: </span><span class="si">{1:&gt;4d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s1">&#39;Number of donated co-ordinated bonds&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span> <span class="o">+=</span> <span class="mi">0</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:&gt;65s}</span><span class="s1">: </span><span class="si">{1:&gt;4.1f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s1">&#39;Charge(-)&#39;</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">charge</span><span class="p">))</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span> <span class="o">-=</span> <span class="n">atom</span><span class="o">.</span><span class="n">charge</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span><span class="o">/</span><span class="mf">2.0</span><span class="p">)</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">number_of_lone_pairs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span><span class="o">-</span><span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span><span class="p">)</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="mi">70</span><span class="p">)</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:&gt;65s}</span><span class="s1">: </span><span class="si">{1:&gt;4d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s1">&#39;Steric number&#39;</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span><span class="p">))</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:&gt;65s}</span><span class="s1">: </span><span class="si">{1:&gt;4d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s1">&#39;Number of lone pairs&#39;</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">number_of_lone_pairs</span><span class="p">))</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">steric_num_lone_pairs_set</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="Protonate.add_protons"><a class="viewcode-back" href="../../api/propka.protonate.html#propka.protonate.Protonate.add_protons">[docs]</a>    <span class="k">def</span> <span class="nf">add_protons</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add protons to atom.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom:  atom for calculation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># decide which method to use</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;PROTONATING&#39;</span><span class="p">,</span> <span class="n">atom</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protonation_methods</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">protonation_methods</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span><span class="p">](</span><span class="n">atom</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warning</span><span class="p">(</span><span class="s1">&#39;Do not have a method for protonating&#39;</span><span class="p">,</span> <span class="n">atom</span><span class="p">,</span>
+                    <span class="s1">&#39;(steric number: </span><span class="si">{0:d}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">steric_number</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Protonate.trigonal"><a class="viewcode-back" href="../../api/propka.protonate.html#propka.protonate.Protonate.trigonal">[docs]</a>    <span class="k">def</span> <span class="nf">trigonal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add hydrogens in trigonal geometry.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom:  atom to protonate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;TRIGONAL - </span><span class="si">{0:d}</span><span class="s1"> bonded atoms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)))</span>
+        <span class="n">rot_angle</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">120.0</span><span class="p">)</span>
+        <span class="n">cvec</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">atom1</span><span class="o">=</span><span class="n">atom</span><span class="p">)</span>
+        <span class="c1"># 0 bonds</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="c1"># 1 bond</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Add another atom with the right angle to the first one</span>
+            <span class="n">avec</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">atom1</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">atom2</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="c1"># use plane of bonded trigonal atom - e.g. arg</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_steric_number_and_lone_pairs</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">steric_number</span> <span class="o">==</span> <span class="mi">3</span>
+                    <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="c1"># use other atoms bonded to the neighbour to establish the</span>
+                <span class="c1"># plane, if possible</span>
+                <span class="n">other_atom_indices</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">bonded_atom</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
+                        <span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="n">bonded_atom</span> <span class="o">!=</span> <span class="n">atom</span><span class="p">:</span>
+                        <span class="n">other_atom_indices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+                <span class="n">vec1</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">atom1</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">atom2</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">vec2</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">atom1</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                              <span class="n">atom2</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                              <span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="n">other_atom_indices</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="n">vec1</span><span class="o">**</span><span class="n">vec2</span>
+                <span class="c1"># this is a trick to make sure that the order of atoms doesn&#39;t</span>
+                <span class="c1"># influence the final postions of added protons</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">other_atom_indices</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">vec3</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">atom1</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                                  <span class="n">atom2</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                                  <span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="n">other_atom_indices</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+                    <span class="n">axis2</span> <span class="o">=</span> <span class="n">vec1</span><span class="o">**</span><span class="n">vec3</span>
+                    <span class="k">if</span> <span class="n">axis</span><span class="o">*</span><span class="n">axis2</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span><span class="o">+</span><span class="n">axis2</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">axis</span> <span class="o">=</span> <span class="n">axis</span><span class="o">-</span><span class="n">axis2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">axis</span> <span class="o">=</span> <span class="n">avec</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">()</span>
+            <span class="n">avec</span> <span class="o">=</span> <span class="n">rotate_vector_around_an_axis</span><span class="p">(</span><span class="n">rot_angle</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">avec</span><span class="p">)</span>
+            <span class="n">avec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_bond_distance</span><span class="p">(</span><span class="n">avec</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_proton</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">cvec</span><span class="o">+</span><span class="n">avec</span><span class="p">)</span>
+        <span class="c1"># 2 bonds</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Add another atom with the right angle to the first two</span>
+            <span class="n">avec1</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">atom1</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">atom2</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">avec2</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">atom1</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">atom2</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+            <span class="n">new_a</span> <span class="o">=</span> <span class="o">-</span><span class="n">avec1</span> <span class="o">-</span> <span class="n">avec2</span>
+            <span class="n">new_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_bond_distance</span><span class="p">(</span><span class="n">new_a</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_proton</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">cvec</span><span class="o">+</span><span class="n">new_a</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Protonate.tetrahedral"><a class="viewcode-back" href="../../api/propka.protonate.html#propka.protonate.Protonate.tetrahedral">[docs]</a>    <span class="k">def</span> <span class="nf">tetrahedral</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Protonate atom in tetrahedral geometry.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom:  atom to protonate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">debug</span><span class="p">(</span>
+            <span class="s1">&#39;TETRAHEDRAL - </span><span class="si">{0:d}</span><span class="s1"> bonded atoms&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)))</span>
+        <span class="c1"># TODO - might be good to move tetrahedral angle to constant</span>
+        <span class="n">rot_angle</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mf">109.5</span><span class="p">)</span>
+        <span class="n">cvec</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">atom1</span><span class="o">=</span><span class="n">atom</span><span class="p">)</span>
+        <span class="c1"># 0 bonds</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="c1"># 1 bond</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Add another atom with the right angle to the first one</span>
+            <span class="n">avec</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">atom1</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">atom2</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="n">avec</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">()</span>
+            <span class="n">avec</span> <span class="o">=</span> <span class="n">rotate_vector_around_an_axis</span><span class="p">(</span><span class="n">rot_angle</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">avec</span><span class="p">)</span>
+            <span class="n">avec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_bond_distance</span><span class="p">(</span><span class="n">avec</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_proton</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">cvec</span><span class="o">+</span><span class="n">avec</span><span class="p">)</span>
+        <span class="c1"># 2 bonds</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Add another atom with the right angle to the first two</span>
+            <span class="n">avec1</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">atom1</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">atom2</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">avec2</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">atom1</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">atom2</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="n">avec1</span> <span class="o">+</span> <span class="n">avec2</span>
+            <span class="n">new_a</span> <span class="o">=</span> <span class="n">rotate_vector_around_an_axis</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">radians</span><span class="p">(</span><span class="mi">90</span><span class="p">),</span> <span class="n">axis</span><span class="p">,</span>
+                                                 <span class="o">-</span><span class="n">avec1</span><span class="p">)</span>
+            <span class="n">new_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_bond_distance</span><span class="p">(</span><span class="n">new_a</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_proton</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">cvec</span><span class="o">+</span><span class="n">new_a</span><span class="p">)</span>
+        <span class="c1"># 3 bonds</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">avec1</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">atom1</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">atom2</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">avec2</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">atom1</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">atom2</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">avec3</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">(</span><span class="n">atom1</span><span class="o">=</span><span class="n">atom</span><span class="p">,</span> <span class="n">atom2</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+            <span class="n">new_a</span> <span class="o">=</span> <span class="o">-</span><span class="n">avec1</span><span class="o">-</span><span class="n">avec2</span><span class="o">-</span><span class="n">avec3</span>
+            <span class="n">new_a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_bond_distance</span><span class="p">(</span><span class="n">new_a</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_proton</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">cvec</span><span class="o">+</span><span class="n">new_a</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Protonate.add_proton"><a class="viewcode-back" href="../../api/propka.protonate.html#propka.protonate.Protonate.add_proton">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">add_proton</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">position</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a proton to an atom at a specific position.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom:  atom to protonate</span>
+<span class="sd">            position:  position for proton</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create the new proton</span>
+        <span class="n">new_h</span> <span class="o">=</span> <span class="n">propka</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">Atom</span><span class="p">()</span>
+        <span class="n">new_h</span><span class="o">.</span><span class="n">set_property</span><span class="p">(</span>
+            <span class="n">numb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;H</span><span class="si">{0:s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:]),</span>
+            <span class="n">res_name</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">res_name</span><span class="p">,</span>
+            <span class="n">chain_id</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">chain_id</span><span class="p">,</span>
+            <span class="n">res_num</span><span class="o">=</span><span class="n">atom</span><span class="o">.</span><span class="n">res_num</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">position</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="c1"># round of to three decimal points to</span>
+                                    <span class="c1"># avoid round-off differences in input file</span>
+            <span class="n">y</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">position</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="n">z</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">position</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span>
+            <span class="n">occ</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">beta</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">new_h</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="s1">&#39;H&#39;</span>
+        <span class="n">new_h</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">type</span>
+        <span class="n">new_h</span><span class="o">.</span><span class="n">bonded_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span><span class="p">]</span>
+        <span class="n">new_h</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">new_h</span><span class="o">.</span><span class="n">steric_number</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">new_h</span><span class="o">.</span><span class="n">number_of_lone_pairs</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">new_h</span><span class="o">.</span><span class="n">number_of_protons_to_add</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">new_h</span><span class="o">.</span><span class="n">num_pi_elec_2_3_bonds</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">new_h</span><span class="o">.</span><span class="n">is_protonates</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_h</span><span class="p">)</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">number_of_protons_to_add</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">conformation_container</span><span class="o">.</span><span class="n">add_atom</span><span class="p">(</span><span class="n">new_h</span><span class="p">)</span>
+        <span class="c1"># update names of all protons on this atom</span>
+        <span class="n">new_h</span><span class="o">.</span><span class="n">residue_label</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0:&lt;3s}{1:&gt;4d}{2:&gt;2s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">new_h</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">new_h</span><span class="o">.</span><span class="n">res_num</span><span class="p">,</span> <span class="n">new_h</span><span class="o">.</span><span class="n">chain_id</span><span class="p">)</span>
+        <span class="n">no_protons</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">count_bonded_elements</span><span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">no_protons</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">for</span> <span class="n">proton</span> <span class="ow">in</span> <span class="n">atom</span><span class="o">.</span><span class="n">get_bonded_elements</span><span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">):</span>
+                <span class="n">proton</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;H</span><span class="si">{0:s}{1:d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">i</span><span class="p">)</span>
+                <span class="n">proton</span><span class="o">.</span><span class="n">residue_label</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0:&lt;3s}{1:&gt;4d}{2:&gt;2s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">proton</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">proton</span><span class="o">.</span><span class="n">res_num</span><span class="p">,</span> <span class="n">proton</span><span class="o">.</span><span class="n">chain_id</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">debug</span><span class="p">(</span><span class="s1">&#39;added&#39;</span><span class="p">,</span> <span class="n">new_h</span><span class="p">,</span> <span class="s1">&#39;to&#39;</span><span class="p">,</span> <span class="n">atom</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Protonate.set_bond_distance"><a class="viewcode-back" href="../../api/propka.protonate.html#propka.protonate.Protonate.set_bond_distance">[docs]</a>    <span class="k">def</span> <span class="nf">set_bond_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bvec</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set bond distance between atom and element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            bvec:  bond vector</span>
+<span class="sd">            element:  bonded element</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            scaled bond vector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="k">if</span> <span class="n">element</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">bond_lengths</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bond_lengths</span><span class="p">[</span><span class="n">element</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">str_</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s1">&#39;Bond length for </span><span class="si">{0:s}</span><span class="s1"> not found, using the standard value &#39;</span>
+                <span class="s1">&#39;of </span><span class="si">{1:f}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="n">dist</span><span class="p">))</span>
+            <span class="n">warning</span><span class="p">(</span><span class="n">str_</span><span class="p">)</span>
+        <span class="n">bvec</span> <span class="o">=</span> <span class="n">bvec</span><span class="o">.</span><span class="n">rescale</span><span class="p">(</span><span class="n">dist</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">bvec</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

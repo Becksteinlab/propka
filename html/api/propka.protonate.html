@@ -1,0 +1,397 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3.3.1. propka.protonate &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3.3.2. propka.hydrogens" href="propka.hydrogens.html" />
+    <link rel="prev" title="3.2.8. propka.version" href="propka.version.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">2. Quickstart Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">3. API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#data-structures">3.1. Data structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#i-o">3.2. I/O</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#structure-processing">3.3. Structure processing</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">3.3.1. propka.protonate</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#protonate-a-structure">3.3.1.1. Protonate a structure</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="propka.hydrogens.html">3.3.2. propka.hydrogens</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.ligand.html">3.3.3. propka.ligand</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#calculations">3.4. Calculations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../api.html"><span class="section-number">3. </span>API Reference</a> &raquo;</li>
+        
+      <li><span class="section-number">3.3.1. </span>propka.protonate</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/propka.protonate.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-propka.protonate">
+<span id="propka-protonate"></span><h1><span class="section-number">3.3.1. </span>propka.protonate<a class="headerlink" href="#module-propka.protonate" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="protonate-a-structure">
+<h2><span class="section-number">3.3.1.1. </span>Protonate a structure<a class="headerlink" href="#protonate-a-structure" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="#propka.protonate.Protonate" title="propka.protonate.Protonate"><code class="xref py py-class docutils literal notranslate"><span class="pre">Protonate</span></code></a> processes a
+<a class="reference internal" href="propka.molecular_container.html#propka.molecular_container.MolecularContainer" title="propka.molecular_container.MolecularContainer"><code class="xref py py-class docutils literal notranslate"><span class="pre">propka.molecular_container.MolecularContainer</span></code></a> and adds
+protons.</p>
+<p class="rubric">Classes</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.protonate.Protonate" title="propka.protonate.Protonate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Protonate</span></code></a>([verbose])</p></td>
+<td><p>Protonates atoms using VSEPR theory</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="propka.protonate.Protonate">
+<em class="property">class </em><code class="sig-prename descclassname">propka.protonate.</code><code class="sig-name descname">Protonate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/protonate.html#Protonate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.protonate.Protonate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Protonates atoms using VSEPR theory</p>
+<dl class="py method">
+<dt id="propka.protonate.Protonate.add_proton">
+<em class="property">static </em><code class="sig-name descname">add_proton</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em>, <em class="sig-param"><span class="n">position</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/protonate.html#Protonate.add_proton"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.protonate.Protonate.add_proton" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a proton to an atom at a specific position.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom</strong> – atom to protonate</p></li>
+<li><p><strong>position</strong> – position for proton</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.protonate.Protonate.add_protons">
+<code class="sig-name descname">add_protons</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/protonate.html#Protonate.add_protons"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.protonate.Protonate.add_protons" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add protons to atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atom</strong> – atom for calculation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.protonate.Protonate.protonate">
+<code class="sig-name descname">protonate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">molecules</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/protonate.html#Protonate.protonate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.protonate.Protonate.protonate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Protonate all atoms in the molecular container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>molecules</strong> – molecular containers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.protonate.Protonate.protonate_atom">
+<code class="sig-name descname">protonate_atom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/protonate.html#Protonate.protonate_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.protonate.Protonate.protonate_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Protonate an atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atom</strong> – atom to be protonated</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.protonate.Protonate.remove_all_hydrogen_atoms">
+<em class="property">static </em><code class="sig-name descname">remove_all_hydrogen_atoms</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">molecular_container</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/protonate.html#Protonate.remove_all_hydrogen_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.protonate.Protonate.remove_all_hydrogen_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove all hydrogen atoms from molecule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>molecular_container</strong> – molecule to remove hydrogens from</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.protonate.Protonate.set_bond_distance">
+<code class="sig-name descname">set_bond_distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">bvec</span></em>, <em class="sig-param"><span class="n">element</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/protonate.html#Protonate.set_bond_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.protonate.Protonate.set_bond_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set bond distance between atom and element.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>bvec</strong> – bond vector</p></li>
+<li><p><strong>element</strong> – bonded element</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>scaled bond vector</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.protonate.Protonate.set_charge">
+<code class="sig-name descname">set_charge</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/protonate.html#Protonate.set_charge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.protonate.Protonate.set_charge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set charge for atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atom</strong> – atom to be charged</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.protonate.Protonate.set_number_of_protons_to_add">
+<code class="sig-name descname">set_number_of_protons_to_add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/protonate.html#Protonate.set_number_of_protons_to_add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.protonate.Protonate.set_number_of_protons_to_add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the number of protons to add to this atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atom</strong> – atom for calculation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.protonate.Protonate.set_proton_names">
+<em class="property">static </em><code class="sig-name descname">set_proton_names</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">heavy_atoms</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/protonate.html#Protonate.set_proton_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.protonate.Protonate.set_proton_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set names for protons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>heavy_atoms</strong> – list of heavy atoms with protons to be named</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.protonate.Protonate.set_steric_number_and_lone_pairs">
+<code class="sig-name descname">set_steric_number_and_lone_pairs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/protonate.html#Protonate.set_steric_number_and_lone_pairs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.protonate.Protonate.set_steric_number_and_lone_pairs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set steric number and lone pairs for atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atom</strong> – atom for calculation</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.protonate.Protonate.tetrahedral">
+<code class="sig-name descname">tetrahedral</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/protonate.html#Protonate.tetrahedral"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.protonate.Protonate.tetrahedral" title="Permalink to this definition">¶</a></dt>
+<dd><p>Protonate atom in tetrahedral geometry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atom</strong> – atom to protonate.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.protonate.Protonate.trigonal">
+<code class="sig-name descname">trigonal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/protonate.html#Protonate.trigonal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.protonate.Protonate.trigonal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add hydrogens in trigonal geometry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atom</strong> – atom to protonate</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="propka.hydrogens.html" class="btn btn-neutral float-right" title="3.3.2. propka.hydrogens" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="propka.version.html" class="btn btn-neutral float-left" title="3.2.8. propka.version" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+propka.calculations
+===================
+
+.. automodule:: propka.calculations
+   :members:
+   
+   
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      MAX_DISTANCE
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      distance
+      get_smallest_distance
+      squared_distance
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

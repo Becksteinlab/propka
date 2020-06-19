@@ -1,0 +1,41 @@
+propka.iterative
+================
+
+.. automodule:: propka.iterative
+   :members:
+   
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      add_determinants
+      add_iterative_acid_pair
+      add_iterative_base_pair
+      add_iterative_ion_pair
+      add_to_determinant_list
+      find_iterative
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      Iterative
+   
+   
+
+   
+   
+   
+
+
+
