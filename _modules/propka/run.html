@@ -1,0 +1,270 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>propka.run &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">2. Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">3. API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>propka.run</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for propka.run</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Script functionality</span>
+<span class="sd">====================</span>
+
+<span class="sd">The :mod:`run` module provides a high-level interface to PROPKA 3.</span>
+
+<span class="sd">The :program:`propka3` script consists of the :func:`main`</span>
+<span class="sd">function. If similar functionality is desired from a Python script</span>
+<span class="sd">(without having to call the :program:`propka` script itself) then the</span>
+<span class="sd">:func:`single` function can be used instead.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">from</span> <span class="nn">propka.lib</span> <span class="kn">import</span> <span class="n">loadOptions</span>
+<span class="kn">from</span> <span class="nn">propka.input</span> <span class="kn">import</span> <span class="n">read_parameter_file</span><span class="p">,</span> <span class="n">read_molecule_file</span>
+<span class="kn">from</span> <span class="nn">propka.parameters</span> <span class="kn">import</span> <span class="n">Parameters</span>
+<span class="kn">from</span> <span class="nn">propka.molecular_container</span> <span class="kn">import</span> <span class="n">MolecularContainer</span>
+
+
+<span class="n">_LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;PROPKA&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../api/propka.run.html#propka.run.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">optargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Read in structure files, calculate pKa values, and print pKa files.&quot;&quot;&quot;</span>
+    <span class="c1"># loading options, flags and arguments</span>
+    <span class="n">optargs</span> <span class="o">=</span> <span class="n">optargs</span> <span class="k">if</span> <span class="n">optargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">loadOptions</span><span class="p">(</span><span class="o">*</span><span class="n">optargs</span><span class="p">)</span>
+    <span class="n">pdbfiles</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">filenames</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">read_parameter_file</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">())</span>
+    <span class="k">for</span> <span class="n">pdbfile</span> <span class="ow">in</span> <span class="n">pdbfiles</span><span class="p">:</span>
+        <span class="n">my_molecule</span> <span class="o">=</span> <span class="n">MolecularContainer</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+        <span class="n">my_molecule</span> <span class="o">=</span> <span class="n">read_molecule_file</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span> <span class="n">my_molecule</span><span class="p">)</span>
+        <span class="n">my_molecule</span><span class="o">.</span><span class="n">calculate_pka</span><span class="p">()</span>
+        <span class="n">my_molecule</span><span class="o">.</span><span class="n">write_pka</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">generate_propka_input</span><span class="p">:</span>
+            <span class="n">my_molecule</span><span class="o">.</span><span class="n">write_propka</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="single"><a class="viewcode-back" href="../../api/propka.run.html#propka.run.single">[docs]</a><span class="k">def</span> <span class="nf">single</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span> <span class="n">optargs</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Run a single PROPKA calculation using *pdbfile* as input.</span>
+
+<span class="sd">    Commandline options can be passed as a **list** in *optargs*.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    Given an input file &quot;protein.pdb&quot;, run the equivalent of ``propka3</span>
+<span class="sd">    --mutation=N25R/N181D -v --pH=7.2 protein.pdb`` as::</span>
+
+<span class="sd">       propka.run.single(&quot;protein.pdb&quot;,</span>
+<span class="sd">                         optargs=[&quot;--mutation=N25R/N181D&quot;, &quot;-v&quot;, &quot;--pH=7.2&quot;])</span>
+
+
+<span class="sd">    .. todo::</span>
+<span class="sd">       Test :func:`single`, not sure if it is correctly processing ``pdbfile``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">optargs</span> <span class="o">=</span> <span class="n">optargs</span> <span class="k">if</span> <span class="n">optargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">[]</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">loadOptions</span><span class="p">(</span><span class="o">*</span><span class="n">optargs</span><span class="p">)</span>
+    <span class="n">pdbfile</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">filenames</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">read_parameter_file</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">Parameters</span><span class="p">())</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">filenames</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">_LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Ignoring filenames: </span><span class="si">{0:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">filenames</span><span class="p">))</span>
+    <span class="n">my_molecule</span> <span class="o">=</span> <span class="n">MolecularContainer</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">options</span><span class="p">)</span>
+    <span class="n">my_molecule</span> <span class="o">=</span> <span class="n">read_molecule_file</span><span class="p">(</span><span class="n">pdbfile</span><span class="p">,</span> <span class="n">my_molecule</span><span class="p">)</span>
+    <span class="n">my_molecule</span><span class="o">.</span><span class="n">calculate_pka</span><span class="p">()</span>
+    <span class="n">my_molecule</span><span class="o">.</span><span class="n">write_pka</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">generate_propka_input</span><span class="p">:</span>
+        <span class="n">my_molecule</span><span class="o">.</span><span class="n">write_propka</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">my_molecule</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

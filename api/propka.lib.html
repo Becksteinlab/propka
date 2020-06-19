@@ -1,0 +1,524 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3.2.2. propka.lib &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3.2.3. propka.output" href="propka.output.html" />
+    <link rel="prev" title="3.2.1. propka.input" href="propka.input.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">2. Quickstart Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">3. API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#data-structures">3.1. Data structures</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#i-o">3.2. I/O</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="propka.input.html">3.2.1. propka.input</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">3.2.2. propka.lib</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#set-up-of-a-propka-calculation">3.2.2.1. Set-up of a PROPKA calculation</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="propka.output.html">3.2.3. propka.output</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.parameters.html">3.2.4. propka.parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.hybrid36.html">3.2.5. propka.hybrid36</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.ligand_pka_values.html">3.2.6. propka.ligand_pka_values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.run.html">3.2.7. propka.run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.version.html">3.2.8. propka.version</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#structure-processing">3.3. Structure processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#calculations">3.4. Calculations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../api.html"><span class="section-number">3. </span>API Reference</a> &raquo;</li>
+        
+      <li><span class="section-number">3.2.2. </span>propka.lib</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/propka.lib.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-propka.lib">
+<span id="propka-lib"></span><h1><span class="section-number">3.2.2. </span>propka.lib<a class="headerlink" href="#module-propka.lib" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="set-up-of-a-propka-calculation">
+<h2><span class="section-number">3.2.2.1. </span>Set-up of a PROPKA calculation<a class="headerlink" href="#set-up-of-a-propka-calculation" title="Permalink to this headline">¶</a></h2>
+<p>Implements many of the main functions used to call PROPKA.</p>
+<p class="rubric">Functions</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.lib.build_parser" title="propka.lib.build_parser"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_parser</span></code></a>([parser])</p></td>
+<td><p>Build an argument parser for PROPKA.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.lib.configuration_compare" title="propka.lib.configuration_compare"><code class="xref py py-obj docutils literal notranslate"><span class="pre">configuration_compare</span></code></a>(conf)</p></td>
+<td><p>TODO - figure out what this function does.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.lib.debug" title="propka.lib.debug"><code class="xref py py-obj docutils literal notranslate"><span class="pre">debug</span></code></a>(*args)</p></td>
+<td><p>Log a message to debug.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.lib.generate_combinations" title="propka.lib.generate_combinations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_combinations</span></code></a>(interactions)</p></td>
+<td><p>Generate combinations of interactions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.lib.get_sorted_configurations" title="propka.lib.get_sorted_configurations"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sorted_configurations</span></code></a>(configuration_keys)</p></td>
+<td><p>Extract and sort configurations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.lib.info" title="propka.lib.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a>(*args)</p></td>
+<td><p>Log a message to info.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.lib.loadOptions" title="propka.lib.loadOptions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">loadOptions</span></code></a>([args])</p></td>
+<td><p>Load the arguments parser with options.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.lib.make_combination" title="propka.lib.make_combination"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_combination</span></code></a>(combis, interaction)</p></td>
+<td><p>Make a specific set of combinations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.lib.make_grid" title="propka.lib.make_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_grid</span></code></a>(min_, max_, step)</p></td>
+<td><p>Make a grid across the specified tange.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.lib.make_molecule" title="propka.lib.make_molecule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_molecule</span></code></a>(atom, atoms)</p></td>
+<td><p>Make a molecule from atoms.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.lib.make_tidy_atom_label" title="propka.lib.make_tidy_atom_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_tidy_atom_label</span></code></a>(name, element)</p></td>
+<td><p>Returns a ‘tidier’ atom label for printing to the new PDB file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.lib.parse_res_string" title="propka.lib.parse_res_string"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parse_res_string</span></code></a>(res_str)</p></td>
+<td><p>Parse a residue string.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.lib.protein_precheck" title="propka.lib.protein_precheck"><code class="xref py py-obj docutils literal notranslate"><span class="pre">protein_precheck</span></code></a>(conformations, names)</p></td>
+<td><p>Check protein for correct number of atoms, etc.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.lib.resid_from_atom" title="propka.lib.resid_from_atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resid_from_atom</span></code></a>(atom)</p></td>
+<td><p>Return string with atom residue information.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.lib.split_atoms_into_molecules" title="propka.lib.split_atoms_into_molecules"><code class="xref py py-obj docutils literal notranslate"><span class="pre">split_atoms_into_molecules</span></code></a>(atoms)</p></td>
+<td><p>Maps atoms into molecules.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.lib.warning" title="propka.lib.warning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">warning</span></code></a>(*args)</p></td>
+<td><p>Log a message to warning.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="propka.lib.build_parser">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">build_parser</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parser</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#build_parser"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.build_parser" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build an argument parser for PROPKA.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parser</strong> – existing parser. If this is not None, then the PROPKA parser will
+be created as a subparser to this existing parser.  Otherwise, a
+new parser will be created.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>ArgumentParser object.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.configuration_compare">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">configuration_compare</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">conf</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#configuration_compare"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.configuration_compare" title="Permalink to this definition">¶</a></dt>
+<dd><p>TODO - figure out what this function does.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.debug">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">debug</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#debug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log a message to debug.</p>
+<p>Level defaults to DEBUG unless overridden.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – argument list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.generate_combinations">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">generate_combinations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">interactions</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#generate_combinations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.generate_combinations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate combinations of interactions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>interactions</strong> – list of interactions</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of combinations</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.get_sorted_configurations">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">get_sorted_configurations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">configuration_keys</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#get_sorted_configurations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.get_sorted_configurations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract and sort configurations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>configuration_keys</strong> – list of configuration keys</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of configurations</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.info">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">info</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log a message to info.</p>
+<p>Level defaults to INFO unless overridden.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – argument list</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.loadOptions">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">loadOptions</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#loadOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.loadOptions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load the arguments parser with options. Note that verbosity is set as soon
+as this function is invoked.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – list of arguments</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>argparse namespace</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.make_combination">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">make_combination</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">combis</span></em>, <em class="sig-param"><span class="n">interaction</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#make_combination"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.make_combination" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a specific set of combinations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>combis</strong> – list of combinations</p></li>
+<li><p><strong>interaction</strong> – interaction to add to combinations</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of combinations</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.make_grid">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">make_grid</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">min_</span></em>, <em class="sig-param"><span class="n">max_</span></em>, <em class="sig-param"><span class="n">step</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#make_grid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.make_grid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a grid across the specified tange.</p>
+<p>TODO - figure out if this duplicates existing generators like <cite>range</cite> or
+numpy function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min</strong> – minimum value of grid</p></li>
+<li><p><strong>max</strong> – maximum value of grid</p></li>
+<li><p><strong>step</strong> – grid step size</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.make_molecule">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">make_molecule</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em>, <em class="sig-param"><span class="n">atoms</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#make_molecule"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.make_molecule" title="Permalink to this definition">¶</a></dt>
+<dd><p>Make a molecule from atoms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom</strong> – one of the atoms</p></li>
+<li><p><strong>atoms</strong> – a list of the remaining atoms</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of atoms</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.make_tidy_atom_label">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">make_tidy_atom_label</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">element</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#make_tidy_atom_label"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.make_tidy_atom_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a ‘tidier’ atom label for printing to the new PDB file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> – atom name</p></li>
+<li><p><strong>element</strong> – atom element</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.parse_res_string">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">parse_res_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">res_str</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#parse_res_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.parse_res_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse a residue string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>res_string</strong> – residue string in format “chain:resnum[inscode]”</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a tuple of (chain, resnum, inscode).</p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError if the input string is invalid.</strong> – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.protein_precheck">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">protein_precheck</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">conformations</span></em>, <em class="sig-param"><span class="n">names</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#protein_precheck"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.protein_precheck" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check protein for correct number of atoms, etc.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>names</strong> – conformation names to check</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.resid_from_atom">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">resid_from_atom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#resid_from_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.resid_from_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return string with atom residue information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atom</strong> – atom to generate string for</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>Returns</dt><dd><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.split_atoms_into_molecules">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">split_atoms_into_molecules</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atoms</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#split_atoms_into_molecules"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.split_atoms_into_molecules" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maps atoms into molecules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atoms</strong> – list of atoms</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of molecules</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.lib.warning">
+<code class="sig-prename descclassname">propka.lib.</code><code class="sig-name descname">warning</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/lib.html#warning"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.lib.warning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Log a message to warning.</p>
+<p>Level defaults to WARNING unless overridden.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – argument list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="propka.output.html" class="btn btn-neutral float-right" title="3.2.3. propka.output" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="propka.input.html" class="btn btn-neutral float-left" title="3.2.1. propka.input" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

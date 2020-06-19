@@ -1,0 +1,574 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3.2.4. propka.parameters &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3.2.5. propka.hybrid36" href="propka.hybrid36.html" />
+    <link rel="prev" title="3.2.3. propka.output" href="propka.output.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">2. Quickstart Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">3. API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#data-structures">3.1. Data structures</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#i-o">3.2. I/O</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="propka.input.html">3.2.1. propka.input</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.lib.html">3.2.2. propka.lib</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.output.html">3.2.3. propka.output</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">3.2.4. propka.parameters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#configuration-file-parameters">3.2.4.1. Configuration file parameters</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="propka.hybrid36.html">3.2.5. propka.hybrid36</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.ligand_pka_values.html">3.2.6. propka.ligand_pka_values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.run.html">3.2.7. propka.run</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.version.html">3.2.8. propka.version</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#structure-processing">3.3. Structure processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#calculations">3.4. Calculations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../api.html"><span class="section-number">3. </span>API Reference</a> &raquo;</li>
+        
+      <li><span class="section-number">3.2.4. </span>propka.parameters</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/propka.parameters.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-propka.parameters">
+<span id="propka-parameters"></span><h1><span class="section-number">3.2.4. </span>propka.parameters<a class="headerlink" href="#module-propka.parameters" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="configuration-file-parameters">
+<h2><span class="section-number">3.2.4.1. </span>Configuration file parameters<a class="headerlink" href="#configuration-file-parameters" title="Permalink to this headline">¶</a></h2>
+<p>Holds parameters and settings that can be set in <code class="file docutils literal notranslate"><span class="pre">propka.cfg</span></code>. The file format consists of lines of  <code class="docutils literal notranslate"><span class="pre">keyword</span> <span class="pre">value</span> <span class="pre">[value</span> <span class="pre">...]</span></code>, blank lines, and comment lines (introduced with <code class="docutils literal notranslate"><span class="pre">#</span></code>).</p>
+<p>The module attributes below list the names and types of all key words
+in configuration file.</p>
+<p class="rubric">Module Attributes</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.parameters.MATRICES" title="propka.parameters.MATRICES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">MATRICES</span></code></a></p></td>
+<td><p>matrices</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.parameters.PAIR_WISE_MATRICES" title="propka.parameters.PAIR_WISE_MATRICES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PAIR_WISE_MATRICES</span></code></a></p></td>
+<td><p>pari-wise matrices</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.parameters.NUMBER_DICTIONARIES" title="propka.parameters.NUMBER_DICTIONARIES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NUMBER_DICTIONARIES</span></code></a></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing numbers</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.parameters.LIST_DICTIONARIES" title="propka.parameters.LIST_DICTIONARIES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LIST_DICTIONARIES</span></code></a></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing lists</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.parameters.STRING_DICTIONARIES" title="propka.parameters.STRING_DICTIONARIES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">STRING_DICTIONARIES</span></code></a></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing strings</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.parameters.STRING_LISTS" title="propka.parameters.STRING_LISTS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">STRING_LISTS</span></code></a></p></td>
+<td><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> containing strings</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.parameters.DISTANCES" title="propka.parameters.DISTANCES"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DISTANCES</span></code></a></p></td>
+<td><p>distances (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.parameters.PARAMETERS" title="propka.parameters.PARAMETERS"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PARAMETERS</span></code></a></p></td>
+<td><p>other parameters</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.parameters.InteractionMatrix" title="propka.parameters.InteractionMatrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">InteractionMatrix</span></code></a>(name)</p></td>
+<td><p>Interaction matrix class.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.parameters.PairwiseMatrix" title="propka.parameters.PairwiseMatrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PairwiseMatrix</span></code></a>(name)</p></td>
+<td><p>Pairwise interaction matrix class.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.parameters.Parameters" title="propka.parameters.Parameters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Parameters</span></code></a>()</p></td>
+<td><p>PROPKA parameter class.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt id="propka.parameters.DISTANCES">
+<code class="sig-prename descclassname">propka.parameters.</code><code class="sig-name descname">DISTANCES</code><em class="property"> = ['desolv_cutoff', 'buried_cutoff', 'coulomb_cutoff1', 'coulomb_cutoff2']</em><a class="headerlink" href="#propka.parameters.DISTANCES" title="Permalink to this definition">¶</a></dt>
+<dd><p>distances (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="propka.parameters.InteractionMatrix">
+<em class="property">class </em><code class="sig-prename descclassname">propka.parameters.</code><code class="sig-name descname">InteractionMatrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#InteractionMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.InteractionMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interaction matrix class.</p>
+<dl class="py method">
+<dt id="propka.parameters.InteractionMatrix.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">words</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#InteractionMatrix.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.InteractionMatrix.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add values to matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>words</strong> – values to add</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.InteractionMatrix.get_value">
+<code class="sig-name descname">get_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item1</span></em>, <em class="sig-param"><span class="n">item2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#InteractionMatrix.get_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.InteractionMatrix.get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get specific matrix value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item1</strong> – matrix row index</p></li>
+<li><p><strong>item2</strong> – matrix column index</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>matrix value or None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.InteractionMatrix.keys">
+<code class="sig-name descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#InteractionMatrix.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.InteractionMatrix.keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get keys from matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dictionary key list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt id="propka.parameters.LIST_DICTIONARIES">
+<code class="sig-prename descclassname">propka.parameters.</code><code class="sig-name descname">LIST_DICTIONARIES</code><em class="property"> = ['backbone_NH_hydrogen_bond', 'backbone_CO_hydrogen_bond']</em><a class="headerlink" href="#propka.parameters.LIST_DICTIONARIES" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing lists</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="propka.parameters.MATRICES">
+<code class="sig-prename descclassname">propka.parameters.</code><code class="sig-name descname">MATRICES</code><em class="property"> = ['interaction_matrix']</em><a class="headerlink" href="#propka.parameters.MATRICES" title="Permalink to this definition">¶</a></dt>
+<dd><p>matrices</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="propka.parameters.NUMBER_DICTIONARIES">
+<code class="sig-prename descclassname">propka.parameters.</code><code class="sig-name descname">NUMBER_DICTIONARIES</code><em class="property"> = ['VanDerWaalsVolume', 'charge', 'model_pkas', 'ions', 'valence_electrons', 'custom_model_pkas']</em><a class="headerlink" href="#propka.parameters.NUMBER_DICTIONARIES" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing numbers</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="propka.parameters.PAIR_WISE_MATRICES">
+<code class="sig-prename descclassname">propka.parameters.</code><code class="sig-name descname">PAIR_WISE_MATRICES</code><em class="property"> = ['sidechain_cutoffs']</em><a class="headerlink" href="#propka.parameters.PAIR_WISE_MATRICES" title="Permalink to this definition">¶</a></dt>
+<dd><p>pari-wise matrices</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="propka.parameters.PARAMETERS">
+<code class="sig-prename descclassname">propka.parameters.</code><code class="sig-name descname">PARAMETERS</code><em class="property"> = ['Nmin', 'Nmax', 'desolvationSurfaceScalingFactor', 'desolvationPrefactor', 'desolvationAllowance', 'coulomb_diel', 'COO_HIS_exception', 'OCO_HIS_exception', 'CYS_HIS_exception', 'CYS_CYS_exception', 'min_ligand_model_pka', 'max_ligand_model_pka', 'include_H_in_interactions', 'coupling_max_number_of_bonds', 'min_bond_distance_for_hydrogen_bonds', 'coupling_penalty', 'shared_determinants', 'common_charge_centre', 'hide_penalised_group', 'remove_penalised_group', 'max_intrinsic_pka_diff', 'min_interaction_energy', 'max_free_energy_diff', 'min_swap_pka_shift', 'min_pka', 'max_pka', 'sidechain_interaction']</em><a class="headerlink" href="#propka.parameters.PARAMETERS" title="Permalink to this definition">¶</a></dt>
+<dd><p>other parameters</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="propka.parameters.PairwiseMatrix">
+<em class="property">class </em><code class="sig-prename descclassname">propka.parameters.</code><code class="sig-name descname">PairwiseMatrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#PairwiseMatrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.PairwiseMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pairwise interaction matrix class.</p>
+<dl class="py method">
+<dt id="propka.parameters.PairwiseMatrix.add">
+<code class="sig-name descname">add</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">words</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#PairwiseMatrix.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.PairwiseMatrix.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add information to the matrix.</p>
+<p>TODO - this function unnecessarily bundles arguments into a tuple</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>words</strong> – tuple with assignment information and value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.PairwiseMatrix.get_value">
+<code class="sig-name descname">get_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">item1</span></em>, <em class="sig-param"><span class="n">item2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#PairwiseMatrix.get_value"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.PairwiseMatrix.get_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get specified value from matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>item1</strong> – row index</p></li>
+<li><p><strong>item2</strong> – column index</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>matrix value (or default)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.PairwiseMatrix.insert">
+<code class="sig-name descname">insert</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">key1</span></em>, <em class="sig-param"><span class="n">key2</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#PairwiseMatrix.insert"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.PairwiseMatrix.insert" title="Permalink to this definition">¶</a></dt>
+<dd><p>Insert value into matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key1</strong> – first matrix key (row)</p></li>
+<li><p><strong>key2</strong> – second matrix key (column)</p></li>
+<li><p><strong>value</strong> – value to insert</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.PairwiseMatrix.keys">
+<code class="sig-name descname">keys</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#PairwiseMatrix.keys"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.PairwiseMatrix.keys" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get keys from matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>dictionary key list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="propka.parameters.Parameters">
+<em class="property">class </em><code class="sig-prename descclassname">propka.parameters.</code><code class="sig-name descname">Parameters</code><a class="reference internal" href="../_modules/propka/parameters.html#Parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.Parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>PROPKA parameter class.</p>
+<dl class="py method">
+<dt id="propka.parameters.Parameters.parse_distance">
+<code class="sig-name descname">parse_distance</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">words</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#Parameters.parse_distance"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.Parameters.parse_distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse field to distance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>words</strong> – strings to parse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.Parameters.parse_line">
+<code class="sig-name descname">parse_line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">line</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#Parameters.parse_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.Parameters.parse_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse parameter file line.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.Parameters.parse_parameter">
+<code class="sig-name descname">parse_parameter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">words</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#Parameters.parse_parameter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.Parameters.parse_parameter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse field to parameters.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>words</strong> – strings to parse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.Parameters.parse_string">
+<code class="sig-name descname">parse_string</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">words</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#Parameters.parse_string"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.Parameters.parse_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse field to strings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>words</strong> – strings to parse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.Parameters.parse_to_list_dictionary">
+<code class="sig-name descname">parse_to_list_dictionary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">words</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#Parameters.parse_to_list_dictionary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.Parameters.parse_to_list_dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse field to list dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>words</strong> – strings to parse.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.Parameters.parse_to_matrix">
+<code class="sig-name descname">parse_to_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">words</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#Parameters.parse_to_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.Parameters.parse_to_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse field to matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>words</strong> – strings to parse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.Parameters.parse_to_number_dictionary">
+<code class="sig-name descname">parse_to_number_dictionary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">words</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#Parameters.parse_to_number_dictionary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.Parameters.parse_to_number_dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse field to number dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>words</strong> – strings to parse.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.Parameters.parse_to_string_dictionary">
+<code class="sig-name descname">parse_to_string_dictionary</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">words</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#Parameters.parse_to_string_dictionary"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.Parameters.parse_to_string_dictionary" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse field to string dictionary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>words</strong> – strings to parse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.Parameters.parse_to_string_list">
+<code class="sig-name descname">parse_to_string_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">words</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#Parameters.parse_to_string_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.Parameters.parse_to_string_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse field to string list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>words</strong> – strings to parse</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.Parameters.print_interaction_parameters">
+<code class="sig-name descname">print_interaction_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#Parameters.print_interaction_parameters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.Parameters.print_interaction_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print interaction parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.Parameters.print_interaction_parameters_latex">
+<code class="sig-name descname">print_interaction_parameters_latex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#Parameters.print_interaction_parameters_latex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.Parameters.print_interaction_parameters_latex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print interaction parameters in LaTeX format.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.Parameters.print_interactions_latex">
+<code class="sig-name descname">print_interactions_latex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#Parameters.print_interactions_latex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.Parameters.print_interactions_latex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print interactions in LaTeX.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.parameters.Parameters.set_up_data_structures">
+<code class="sig-name descname">set_up_data_structures</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/parameters.html#Parameters.set_up_data_structures"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.parameters.Parameters.set_up_data_structures" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up internal data structures.</p>
+<p>TODO - it would be better to make these assignments explicit in
+__init__.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt id="propka.parameters.STRING_DICTIONARIES">
+<code class="sig-prename descclassname">propka.parameters.</code><code class="sig-name descname">STRING_DICTIONARIES</code><em class="property"> = ['protein_group_mapping']</em><a class="headerlink" href="#propka.parameters.STRING_DICTIONARIES" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code> containing strings</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="propka.parameters.STRING_LISTS">
+<code class="sig-prename descclassname">propka.parameters.</code><code class="sig-name descname">STRING_LISTS</code><em class="property"> = ['ignore_residues', 'angular_dependent_sidechain_interactions', 'acid_list', 'base_list', 'exclude_sidechain_interactions', 'backbone_reorganisation_list', 'write_out_order']</em><a class="headerlink" href="#propka.parameters.STRING_LISTS" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code> containing strings</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="propka.hybrid36.html" class="btn btn-neutral float-right" title="3.2.5. propka.hybrid36" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="propka.output.html" class="btn btn-neutral float-left" title="3.2.3. propka.output" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

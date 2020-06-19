@@ -1,0 +1,593 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>propka.coupled_groups &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">2. Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">3. API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>propka.coupled_groups</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for propka.coupled_groups</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Coupling between groups</span>
+<span class="sd">=======================</span>
+
+<span class="sd">Describe and analyze energetic coupling between groups.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">itertools</span>
+<span class="kn">import</span> <span class="nn">propka.lib</span>
+<span class="kn">from</span> <span class="nn">propka.group</span> <span class="kn">import</span> <span class="n">Group</span>
+<span class="kn">from</span> <span class="nn">propka.output</span> <span class="kn">import</span> <span class="n">make_interaction_map</span>
+<span class="kn">from</span> <span class="nn">propka.lib</span> <span class="kn">import</span> <span class="n">info</span>
+
+
+<div class="viewcode-block" id="NonCovalentlyCoupledGroups"><a class="viewcode-back" href="../../api/propka.coupled_groups.html#propka.coupled_groups.NonCovalentlyCoupledGroups">[docs]</a><span class="k">class</span> <span class="nc">NonCovalentlyCoupledGroups</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Groups that are coupled without covalent bonding.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">do_prot_stat</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="NonCovalentlyCoupledGroups.is_coupled_protonation_state_probability"><a class="viewcode-back" href="../../api/propka.coupled_groups.html#propka.coupled_groups.NonCovalentlyCoupledGroups.is_coupled_protonation_state_probability">[docs]</a>    <span class="k">def</span> <span class="nf">is_coupled_protonation_state_probability</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group1</span><span class="p">,</span> <span class="n">group2</span><span class="p">,</span>
+                                                 <span class="n">energy_method</span><span class="p">,</span>
+                                                 <span class="n">return_on_fail</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check whether two groups are energetically coupled.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group1:  first group for interaction</span>
+<span class="sd">            group2:  second group for interaction</span>
+<span class="sd">            energy_method:  function for calculating energy</span>
+<span class="sd">            return_on_fail:  return if part of the calculation fails</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            dictionary describing coupling</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check if the interaction energy is high enough</span>
+        <span class="n">interaction_energy</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_interaction</span><span class="p">(</span><span class="n">group1</span><span class="p">,</span> <span class="n">group2</span><span class="p">),</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">get_interaction</span><span class="p">(</span><span class="n">group2</span><span class="p">,</span> <span class="n">group1</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">interaction_energy</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">min_interaction_energy</span>
+                <span class="ow">and</span> <span class="n">return_on_fail</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;coupling_factor&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">}</span>
+         <span class="c1"># calculate intrinsic pKa&#39;s, if not already done</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="p">[</span><span class="n">group1</span><span class="p">,</span> <span class="n">group2</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">intrinsic_pka</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">group</span><span class="o">.</span><span class="n">calculate_intrinsic_pka</span><span class="p">()</span>
+        <span class="n">use_ph</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">pH</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">pH</span> <span class="o">==</span> <span class="s1">&#39;variable&#39;</span><span class="p">:</span>
+            <span class="n">use_ph</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">group1</span><span class="o">.</span><span class="n">pka_value</span><span class="p">,</span> <span class="n">group2</span><span class="o">.</span><span class="n">pka_value</span><span class="p">)</span>
+        <span class="n">default_energy</span> <span class="o">=</span> <span class="n">energy_method</span><span class="p">(</span><span class="n">ph</span><span class="o">=</span><span class="n">use_ph</span><span class="p">,</span>
+                                       <span class="n">reference</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">reference</span><span class="p">)</span>
+        <span class="n">default_pka1</span> <span class="o">=</span> <span class="n">group1</span><span class="o">.</span><span class="n">pka_value</span>
+        <span class="n">default_pka2</span> <span class="o">=</span> <span class="n">group2</span><span class="o">.</span><span class="n">pka_value</span>
+        <span class="c1"># check that pka values are within relevant limits</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">default_pka1</span><span class="p">,</span> <span class="n">default_pka2</span><span class="p">)</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">min_pka</span>
+                <span class="ow">or</span> <span class="nb">min</span><span class="p">(</span><span class="n">default_pka1</span><span class="p">,</span> <span class="n">default_pka2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">max_pka</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">return_on_fail</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;coupling_factor&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">}</span>
+        <span class="c1"># Swap interactions and re-calculate pKa values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swap_interactions</span><span class="p">([</span><span class="n">group1</span><span class="p">],</span> <span class="p">[</span><span class="n">group2</span><span class="p">])</span>
+        <span class="n">group1</span><span class="o">.</span><span class="n">calculate_total_pka</span><span class="p">()</span>
+        <span class="n">group2</span><span class="o">.</span><span class="n">calculate_total_pka</span><span class="p">()</span>
+        <span class="c1"># store swapped energy and pka&#39;s</span>
+        <span class="n">swapped_energy</span> <span class="o">=</span> <span class="n">energy_method</span><span class="p">(</span>
+            <span class="n">ph</span><span class="o">=</span><span class="n">use_ph</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">reference</span><span class="p">)</span>
+        <span class="n">swapped_pka1</span> <span class="o">=</span> <span class="n">group1</span><span class="o">.</span><span class="n">pka_value</span>
+        <span class="n">swapped_pka2</span> <span class="o">=</span> <span class="n">group2</span><span class="o">.</span><span class="n">pka_value</span>
+        <span class="n">pka_shift1</span> <span class="o">=</span> <span class="n">swapped_pka1</span> <span class="o">-</span> <span class="n">default_pka1</span>
+        <span class="n">pka_shift2</span> <span class="o">=</span> <span class="n">swapped_pka2</span> <span class="o">-</span> <span class="n">default_pka2</span>
+        <span class="c1"># Swap back to original protonation state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">swap_interactions</span><span class="p">([</span><span class="n">group1</span><span class="p">],</span> <span class="p">[</span><span class="n">group2</span><span class="p">])</span>
+        <span class="n">group1</span><span class="o">.</span><span class="n">calculate_total_pka</span><span class="p">()</span>
+        <span class="n">group2</span><span class="o">.</span><span class="n">calculate_total_pka</span><span class="p">()</span>
+        <span class="c1"># check difference in free energy</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">default_energy</span> <span class="o">-</span> <span class="n">swapped_energy</span><span class="p">)</span>
+                <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">max_free_energy_diff</span> <span class="ow">and</span> <span class="n">return_on_fail</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;coupling_factor&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">}</span>
+        <span class="c1"># check pka shift</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">pka_shift1</span><span class="p">),</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pka_shift2</span><span class="p">))</span>
+                <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">min_swap_pka_shift</span> <span class="ow">and</span> <span class="n">return_on_fail</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;coupling_factor&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">}</span>
+        <span class="c1"># check intrinsic pka diff</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">abs</span><span class="p">(</span><span class="n">group1</span><span class="o">.</span><span class="n">intrinsic_pka</span> <span class="o">-</span> <span class="n">group2</span><span class="o">.</span><span class="n">intrinsic_pka</span><span class="p">)</span>
+                <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">max_intrinsic_pka_diff</span> <span class="ow">and</span> <span class="n">return_on_fail</span><span class="p">):</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;coupling_factor&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">}</span>
+        <span class="c1"># if everything is OK, calculate the coupling factor and return all info</span>
+        <span class="n">factor</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_free_energy_diff_factor</span><span class="p">(</span><span class="n">default_energy</span><span class="p">,</span> <span class="n">swapped_energy</span><span class="p">)</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pka_diff_factor</span><span class="p">(</span><span class="n">group1</span><span class="o">.</span><span class="n">intrinsic_pka</span><span class="p">,</span>
+                                       <span class="n">group2</span><span class="o">.</span><span class="n">intrinsic_pka</span><span class="p">)</span>
+            <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_interaction_factor</span><span class="p">(</span><span class="n">interaction_energy</span><span class="p">))</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;coupling_factor&#39;</span><span class="p">:</span> <span class="n">factor</span><span class="p">,</span> <span class="s1">&#39;default_energy&#39;</span><span class="p">:</span> <span class="n">default_energy</span><span class="p">,</span>
+                <span class="s1">&#39;swapped_energy&#39;</span><span class="p">:</span> <span class="n">swapped_energy</span><span class="p">,</span>
+                <span class="s1">&#39;interaction_energy&#39;</span><span class="p">:</span> <span class="n">interaction_energy</span><span class="p">,</span>
+                <span class="s1">&#39;swapped_pka1&#39;</span><span class="p">:</span> <span class="n">swapped_pka1</span><span class="p">,</span> <span class="s1">&#39;swapped_pka2&#39;</span><span class="p">:</span> <span class="n">swapped_pka2</span><span class="p">,</span>
+                <span class="s1">&#39;pka_shift1&#39;</span><span class="p">:</span> <span class="n">pka_shift1</span><span class="p">,</span> <span class="s1">&#39;pka_shift2&#39;</span><span class="p">:</span> <span class="n">pka_shift2</span><span class="p">,</span>
+                <span class="s1">&#39;pH&#39;</span><span class="p">:</span> <span class="n">use_ph</span><span class="p">}</span></div>
+
+<div class="viewcode-block" id="NonCovalentlyCoupledGroups.get_pka_diff_factor"><a class="viewcode-back" href="../../api/propka.coupled_groups.html#propka.coupled_groups.NonCovalentlyCoupledGroups.get_pka_diff_factor">[docs]</a>    <span class="k">def</span> <span class="nf">get_pka_diff_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">pka1</span><span class="p">,</span> <span class="n">pka2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get scaling factor for difference between intrinsic pKa values.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            pka1:  first pKa to compare</span>
+<span class="sd">            pka2:  second pKa to compare</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            float value of scaling factor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">intrinsic_pka_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">pka1</span><span class="o">-</span><span class="n">pka2</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">if</span> <span class="n">intrinsic_pka_diff</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">max_intrinsic_pka_diff</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">intrinsic_pka_diff</span>
+                   <span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">max_intrinsic_pka_diff</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="NonCovalentlyCoupledGroups.get_free_energy_diff_factor"><a class="viewcode-back" href="../../api/propka.coupled_groups.html#propka.coupled_groups.NonCovalentlyCoupledGroups.get_free_energy_diff_factor">[docs]</a>    <span class="k">def</span> <span class="nf">get_free_energy_diff_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">energy1</span><span class="p">,</span> <span class="n">energy2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get scaling factor for difference between free energies.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            energy1:  first energy to compare</span>
+<span class="sd">            energy2:  second energy to compare</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            float value of scaling factor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">free_energy_diff</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">energy1</span><span class="o">-</span><span class="n">energy2</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">if</span> <span class="n">free_energy_diff</span> <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">max_free_energy_diff</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="mi">1</span><span class="o">-</span><span class="p">(</span><span class="n">free_energy_diff</span><span class="o">/</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">max_free_energy_diff</span><span class="p">)</span><span class="o">**</span><span class="mi">2</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="NonCovalentlyCoupledGroups.get_interaction_factor"><a class="viewcode-back" href="../../api/propka.coupled_groups.html#propka.coupled_groups.NonCovalentlyCoupledGroups.get_interaction_factor">[docs]</a>    <span class="k">def</span> <span class="nf">get_interaction_factor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interaction_energy</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get scaling factor related to interaction energy.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            interaction_energy:  interaction energy</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            float value of scaling factor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">interaction_energy</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">interaction_energy</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">interaction_energy</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">min_interaction_energy</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">interaction_energy</span><span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">min_interaction_energy</span><span class="p">)</span>
+                <span class="o">/</span> <span class="p">(</span><span class="mf">1.0</span><span class="o">+</span><span class="n">interaction_energy</span>
+                   <span class="o">-</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">min_interaction_energy</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="NonCovalentlyCoupledGroups.identify_non_covalently_coupled_groups"><a class="viewcode-back" href="../../api/propka.coupled_groups.html#propka.coupled_groups.NonCovalentlyCoupledGroups.identify_non_covalently_coupled_groups">[docs]</a>    <span class="k">def</span> <span class="nf">identify_non_covalently_coupled_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conformation</span><span class="p">,</span>
+                                               <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find coupled residues in protein.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            conformation:  protein conformation to test</span>
+<span class="sd">            verbose:  verbose output (boolean)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">conformation</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="n">info_fmt</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39; Warning: When using the -d option, pKa values based on </span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;</span><span class="se">\&#39;</span><span class="s1">swapped</span><span class="se">\&#39;</span><span class="s1"> interactions</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;          will be writting to the output .pka file</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;</span><span class="si">{sep}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39; Detecting non-covalently coupled residues</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;</span><span class="si">{sep}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;   Maximum pKa difference:     </span><span class="si">{c.max_intrinsic_pka_diff:&gt;4.2f}</span><span class="s1"> pKa units</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;   Minimum interaction energy: </span><span class="si">{c.min_interaction_energy:&gt;4.2f}</span><span class="s1"> pKa units</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;   Maximum free energy diff.:  </span><span class="si">{c.max_free_energy_diff:&gt;4.2f}</span><span class="s1"> pKa units</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;   Minimum swap pKa shift:     </span><span class="si">{c.min_swap_pka_shift:&gt;4.2f}</span><span class="s1"> pKa units</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;   pH:                         </span><span class="si">{c.pH:&gt;6}</span><span class="s1"> </span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;   Reference:                  </span><span class="si">{c.reference}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;   Min pKa:                    </span><span class="si">{c.min_pka:&gt;4.2f}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;   Max pKa:                    </span><span class="si">{c.max_pka:&gt;4.2f}</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+            <span class="n">sep</span> <span class="o">=</span> <span class="s2">&quot;-&quot;</span> <span class="o">*</span> <span class="mi">103</span>
+            <span class="n">info</span><span class="p">(</span><span class="n">info_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="bp">self</span><span class="p">))</span>
+        <span class="c1"># find coupled residues</span>
+        <span class="n">titratable_groups</span> <span class="o">=</span> <span class="n">conformation</span><span class="o">.</span><span class="n">get_titratable_groups</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">conformation</span><span class="o">.</span><span class="n">non_covalently_coupled_groups</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">group1</span> <span class="ow">in</span> <span class="n">titratable_groups</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">group2</span> <span class="ow">in</span> <span class="n">titratable_groups</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">group1</span> <span class="o">==</span> <span class="n">group2</span><span class="p">:</span>
+                        <span class="k">break</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">group1</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">group2</span><span class="o">.</span><span class="n">non_covalently_coupled_groups</span>
+                            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_prot_stat</span><span class="p">):</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">(</span>
+                            <span class="bp">self</span>
+                            <span class="o">.</span><span class="n">is_coupled_protonation_state_probability</span><span class="p">(</span>
+                                <span class="n">group1</span><span class="p">,</span> <span class="n">group2</span><span class="p">,</span>
+                                <span class="n">conformation</span><span class="o">.</span><span class="n">calculate_folding_energy</span><span class="p">))</span>
+                        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;coupling_factor&#39;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.0</span><span class="p">:</span>
+                            <span class="n">group1</span><span class="o">.</span><span class="n">couple_non_covalently</span><span class="p">(</span><span class="n">group2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">print_out_swaps</span><span class="p">(</span><span class="n">conformation</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NonCovalentlyCoupledGroups.print_out_swaps"><a class="viewcode-back" href="../../api/propka.coupled_groups.html#propka.coupled_groups.NonCovalentlyCoupledGroups.print_out_swaps">[docs]</a>    <span class="k">def</span> <span class="nf">print_out_swaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conformation</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print out something having to do with coupling interactions.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            conformation:  conformation to print</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">map_</span> <span class="o">=</span> <span class="n">make_interaction_map</span><span class="p">(</span>
+            <span class="s1">&#39;Non-covalent coupling map for </span><span class="si">{0:s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">conformation</span><span class="p">)),</span>
+            <span class="n">conformation</span><span class="o">.</span><span class="n">get_non_covalently_coupled_groups</span><span class="p">(),</span>
+            <span class="k">lambda</span> <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">:</span> <span class="n">g1</span> <span class="ow">in</span> <span class="n">g2</span><span class="o">.</span><span class="n">non_covalently_coupled_groups</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="n">map_</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">system</span> <span class="ow">in</span> <span class="n">conformation</span><span class="o">.</span><span class="n">get_coupled_systems</span><span class="p">(</span>
+                <span class="n">conformation</span><span class="o">.</span><span class="n">get_non_covalently_coupled_groups</span><span class="p">(),</span>
+                <span class="n">Group</span><span class="o">.</span><span class="n">get_non_covalently_coupled_groups</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">print_system</span><span class="p">(</span><span class="n">conformation</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">system</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="NonCovalentlyCoupledGroups.print_system"><a class="viewcode-back" href="../../api/propka.coupled_groups.html#propka.coupled_groups.NonCovalentlyCoupledGroups.print_system">[docs]</a>    <span class="k">def</span> <span class="nf">print_system</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conformation</span><span class="p">,</span> <span class="n">system</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print out something about the system.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            conformation:  conformation to print</span>
+<span class="sd">            system:  system to print</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">info</span><span class="p">(</span>
+            <span class="s1">&#39;System containing </span><span class="si">{0:d}</span><span class="s1"> groups:&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">system</span><span class="p">)))</span>
+        <span class="c1"># make list of interactions within this system</span>
+        <span class="n">interactions</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">combinations</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="c1"># print out coupling info for each interaction</span>
+        <span class="n">coup_info</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">interaction</span> <span class="ow">in</span> <span class="n">interactions</span><span class="p">:</span>
+            <span class="n">data</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">is_coupled_protonation_state_probability</span><span class="p">(</span>
+                    <span class="n">interaction</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">interaction</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">conformation</span><span class="o">.</span><span class="n">calculate_folding_energy</span><span class="p">,</span>
+                    <span class="n">return_on_fail</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+            <span class="n">coup_info</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">make_data_to_string</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">interaction</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">interaction</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="n">coup_info</span><span class="p">)</span>
+        <span class="c1"># make list of possible combinations of swap to try out</span>
+        <span class="n">combinations</span> <span class="o">=</span> <span class="n">propka</span><span class="o">.</span><span class="n">lib</span><span class="o">.</span><span class="n">generate_combinations</span><span class="p">(</span><span class="n">interactions</span><span class="p">)</span>
+        <span class="c1"># Make possible swap combinations</span>
+        <span class="n">swap_info</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="n">swap_info</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_determinants_section</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="s1">&#39;Original&#39;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">combination</span> <span class="ow">in</span> <span class="n">combinations</span><span class="p">:</span>
+            <span class="c1"># Tell the user what is swap in this combination</span>
+            <span class="n">swap_info</span> <span class="o">+=</span> <span class="s1">&#39;Swapping the following interactions:</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="k">for</span> <span class="n">interaction</span> <span class="ow">in</span> <span class="n">combination</span><span class="p">:</span>
+                <span class="n">swap_info</span> <span class="o">+=</span> <span class="s1">&#39; </span><span class="si">{0:s}</span><span class="s1"> </span><span class="si">{1:s}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">interaction</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">interaction</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+            <span class="c1"># swap...</span>
+            <span class="k">for</span> <span class="n">interaction</span> <span class="ow">in</span> <span class="n">combination</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">swap_interactions</span><span class="p">([</span><span class="n">interaction</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="p">[</span><span class="n">interaction</span><span class="p">[</span><span class="mi">1</span><span class="p">]])</span>
+            <span class="n">swap_info</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">print_determinants_section</span><span class="p">(</span><span class="n">system</span><span class="p">,</span> <span class="s1">&#39;Swapped&#39;</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="n">swap_info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NonCovalentlyCoupledGroups.get_interaction"><a class="viewcode-back" href="../../api/propka.coupled_groups.html#propka.coupled_groups.NonCovalentlyCoupledGroups.get_interaction">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">get_interaction</span><span class="p">(</span><span class="n">group1</span><span class="p">,</span> <span class="n">group2</span><span class="p">,</span> <span class="n">include_side_chain_hbs</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get interaction energy between two groups.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group1:  first group for interaction</span>
+<span class="sd">            group2:  second group for interaction</span>
+<span class="sd">            include_side_chain_hbs:  include sidechain hydrogen bonds in energy</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            interaction energy (float)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">determinants</span> <span class="o">=</span> <span class="n">group1</span><span class="o">.</span><span class="n">determinants</span><span class="p">[</span><span class="s1">&#39;coulomb&#39;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">include_side_chain_hbs</span><span class="p">:</span>
+            <span class="n">determinants</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">group1</span><span class="o">.</span><span class="n">determinants</span><span class="p">[</span><span class="s1">&#39;sidechain&#39;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="n">group1</span><span class="o">.</span><span class="n">determinants</span><span class="p">[</span><span class="s1">&#39;coulomb&#39;</span><span class="p">])</span>
+        <span class="n">interaction_energy</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">determinants</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">group2</span> <span class="o">==</span> <span class="n">det</span><span class="o">.</span><span class="n">group</span><span class="p">:</span>
+                <span class="n">interaction_energy</span> <span class="o">+=</span> <span class="n">det</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">return</span> <span class="n">interaction_energy</span></div>
+
+<div class="viewcode-block" id="NonCovalentlyCoupledGroups.print_determinants_section"><a class="viewcode-back" href="../../api/propka.coupled_groups.html#propka.coupled_groups.NonCovalentlyCoupledGroups.print_determinants_section">[docs]</a>    <span class="k">def</span> <span class="nf">print_determinants_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">system</span><span class="p">,</span> <span class="n">tag</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Print determinants of system.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            system:  set of groups</span>
+<span class="sd">            tag:  something to add to output</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            string with summary</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">all_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">label</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">system</span><span class="p">]</span>
+        <span class="n">str_</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">113</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">system</span><span class="p">:</span>
+            <span class="n">str_</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tagged_format</span><span class="p">(</span>
+                <span class="s1">&#39; </span><span class="si">{0:&lt;8s}</span><span class="s1">|&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">),</span> <span class="n">group</span><span class="o">.</span><span class="n">get_determinant_string</span><span class="p">(),</span>
+                <span class="n">all_labels</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">str_</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span></div>
+
+<div class="viewcode-block" id="NonCovalentlyCoupledGroups.swap_interactions"><a class="viewcode-back" href="../../api/propka.coupled_groups.html#propka.coupled_groups.NonCovalentlyCoupledGroups.swap_interactions">[docs]</a>    <span class="k">def</span> <span class="nf">swap_interactions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groups1</span><span class="p">,</span> <span class="n">groups2</span><span class="p">,</span> <span class="n">include_side_chain_hbs</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Swap interactions between two groups.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group1:  first group to swap</span>
+<span class="sd">            group2:  second group to swap</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">group1</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">groups1</span><span class="p">):</span>
+            <span class="n">group2</span> <span class="o">=</span> <span class="n">groups2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="c1"># swap the interactions!</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">transfer_determinant</span><span class="p">(</span><span class="n">group1</span><span class="o">.</span><span class="n">determinants</span><span class="p">[</span><span class="s1">&#39;coulomb&#39;</span><span class="p">],</span>
+                                      <span class="n">group2</span><span class="o">.</span><span class="n">determinants</span><span class="p">[</span><span class="s1">&#39;coulomb&#39;</span><span class="p">],</span>
+                                      <span class="n">group1</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">group2</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">include_side_chain_hbs</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">transfer_determinant</span><span class="p">(</span><span class="n">group1</span><span class="o">.</span><span class="n">determinants</span><span class="p">[</span><span class="s1">&#39;sidechain&#39;</span><span class="p">],</span>
+                                          <span class="n">group2</span><span class="o">.</span><span class="n">determinants</span><span class="p">[</span><span class="s1">&#39;sidechain&#39;</span><span class="p">],</span>
+                                          <span class="n">group1</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">group2</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+                <span class="c1"># re-calculate pKa values</span>
+                <span class="n">group1</span><span class="o">.</span><span class="n">calculate_total_pka</span><span class="p">()</span>
+                <span class="n">group2</span><span class="o">.</span><span class="n">calculate_total_pka</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="NonCovalentlyCoupledGroups.transfer_determinant"><a class="viewcode-back" href="../../api/propka.coupled_groups.html#propka.coupled_groups.NonCovalentlyCoupledGroups.transfer_determinant">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">transfer_determinant</span><span class="p">(</span><span class="n">determinants1</span><span class="p">,</span> <span class="n">determinants2</span><span class="p">,</span>
+                             <span class="n">label1</span><span class="p">,</span> <span class="n">label2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Transfer information between two sets of determinants.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            determinants1:  determinant list</span>
+<span class="sd">            determinants2:  determinant list</span>
+<span class="sd">            label1:  label for list 1</span>
+<span class="sd">            label2:  label for list 2</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># find out what to transfer...</span>
+        <span class="n">from1to2</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">from2to1</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">determinants1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">det</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="n">label2</span><span class="p">:</span>
+                <span class="n">from1to2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">det</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">determinants2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">det</span><span class="o">.</span><span class="n">label</span> <span class="o">==</span> <span class="n">label1</span><span class="p">:</span>
+                <span class="n">from2to1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">det</span><span class="p">)</span>
+        <span class="c1"># ...and transfer it!</span>
+        <span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">from1to2</span><span class="p">:</span>
+            <span class="n">det</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label1</span>
+            <span class="n">determinants2</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">det</span><span class="p">)</span>
+            <span class="n">determinants1</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">det</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">from2to1</span><span class="p">:</span>
+            <span class="n">det</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">label2</span>
+            <span class="n">determinants1</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">det</span><span class="p">)</span>
+            <span class="n">determinants2</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">det</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="NonCovalentlyCoupledGroups.tagged_format"><a class="viewcode-back" href="../../api/propka.coupled_groups.html#propka.coupled_groups.NonCovalentlyCoupledGroups.tagged_format">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">tagged_format</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">str_</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tag a string.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            tag:  tag to add</span>
+<span class="sd">            str_:  string to tag</span>
+<span class="sd">            labels:  labels to replace</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            tagged string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">str_</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0:s}</span><span class="s2"> </span><span class="si">{1:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">str_</span><span class="p">)</span>
+        <span class="n">str_</span> <span class="o">=</span> <span class="n">str_</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="si">{0:s}</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">:</span>
+            <span class="n">str_</span> <span class="o">=</span> <span class="n">str_</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\033</span><span class="s1">[31m</span><span class="si">{0:s}</span><span class="se">\033</span><span class="s1">[30m&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">str_</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span></div>
+
+<div class="viewcode-block" id="NonCovalentlyCoupledGroups.make_data_to_string"><a class="viewcode-back" href="../../api/propka.coupled_groups.html#propka.coupled_groups.NonCovalentlyCoupledGroups.make_data_to_string">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">make_data_to_string</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">group1</span><span class="p">,</span> <span class="n">group2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Describe interaction between groups.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            data:  data about interactions</span>
+<span class="sd">            group1:  first group</span>
+<span class="sd">            group2:  second group</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            formatted string with information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">str_</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot; </span><span class="si">{label1}</span><span class="s2"> and </span><span class="si">{label2}</span><span class="s2"> coupled (prot.state): </span><span class="si">{coupl_fact:&gt;5.2f}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot; Energy levels:       </span><span class="si">{def_energy:&gt;6.2f}</span><span class="s2">, </span><span class="si">{swap_energy:&gt;6.2f}</span><span class="s2">  &quot;</span>
+            <span class="s2">&quot;(difference: </span><span class="si">{diff_energy:&gt;6.2f}</span><span class="s2">) at pH </span><span class="si">{ph:&gt;6.2f}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot; Interaction energy:  </span><span class="si">{int_energy:&gt;6.2f}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot; Intrinsic pka&#39;s:     </span><span class="si">{pka1:&gt;6.2f}</span><span class="s2">, </span><span class="si">{pka2:&gt;6.2f}</span><span class="s2">  &quot;</span>
+            <span class="s2">&quot;(difference: </span><span class="si">{diff_pka:&gt;6.2f}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot; Swapped pKa&#39;s:       </span><span class="si">{swap1:&gt;6.2f}</span><span class="s2">, </span><span class="si">{swap2:&gt;6.2f}</span><span class="s2">  &quot;</span>
+            <span class="s2">&quot;(difference: </span><span class="si">{shift1:&gt;6.2f}</span><span class="s2">, </span><span class="si">{shift2:&gt;6.2f}</span><span class="s2">)&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">label1</span><span class="o">=</span><span class="n">group1</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">label2</span><span class="o">=</span><span class="n">group2</span><span class="o">.</span><span class="n">label</span><span class="p">,</span>
+            <span class="n">coupl_fact</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;coupling_factor&#39;</span><span class="p">],</span>
+            <span class="n">def_energy</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;default_energy&#39;</span><span class="p">],</span>
+            <span class="n">swap_energy</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;swapped_energy&#39;</span><span class="p">],</span>
+            <span class="n">diff_energy</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;default_energy&#39;</span><span class="p">]</span><span class="o">-</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;swapped_energy&#39;</span><span class="p">],</span>
+            <span class="n">ph</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;pH&#39;</span><span class="p">],</span> <span class="n">int_energy</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;interaction_energy&#39;</span><span class="p">],</span>
+            <span class="n">pka1</span><span class="o">=</span><span class="n">group1</span><span class="o">.</span><span class="n">intrinsic_pka</span><span class="p">,</span> <span class="n">pka2</span><span class="o">=</span><span class="n">group2</span><span class="o">.</span><span class="n">intrinsic_pka</span><span class="p">,</span>
+            <span class="n">diff_pka</span><span class="o">=</span><span class="n">group1</span><span class="o">.</span><span class="n">intrinsic_pka</span><span class="o">-</span><span class="n">group2</span><span class="o">.</span><span class="n">intrinsic_pka</span><span class="p">,</span>
+            <span class="n">swap1</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;swapped_pka1&#39;</span><span class="p">],</span> <span class="n">swap2</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;swapped_pka2&#39;</span><span class="p">],</span>
+            <span class="n">shift1</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;pka_shift1&#39;</span><span class="p">],</span> <span class="n">shift2</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;pka_shift2&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">str_</span></div></div>
+
+
+<span class="n">NCCG</span> <span class="o">=</span> <span class="n">NonCovalentlyCoupledGroups</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

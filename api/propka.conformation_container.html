@@ -1,0 +1,743 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3.1.4. propka.conformation_container &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3.1.5. propka.molecular_container" href="propka.molecular_container.html" />
+    <link rel="prev" title="3.1.3. propka.group" href="propka.group.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">2. Quickstart Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">3. API Reference</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#data-structures">3.1. Data structures</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="propka.atom.html">3.1.1. propka.atom</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.bonds.html">3.1.2. propka.bonds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.group.html">3.1.3. propka.group</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">3.1.4. propka.conformation_container</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#molecular-data-structures">3.1.4.1. Molecular data structures</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="propka.molecular_container.html">3.1.5. propka.molecular_container</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#i-o">3.2. I/O</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#structure-processing">3.3. Structure processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#calculations">3.4. Calculations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../api.html"><span class="section-number">3. </span>API Reference</a> &raquo;</li>
+        
+      <li><span class="section-number">3.1.4. </span>propka.conformation_container</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/propka.conformation_container.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-propka.conformation_container">
+<span id="propka-conformation-container"></span><h1><span class="section-number">3.1.4. </span>propka.conformation_container<a class="headerlink" href="#module-propka.conformation_container" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="molecular-data-structures">
+<h2><span class="section-number">3.1.4.1. </span>Molecular data structures<a class="headerlink" href="#molecular-data-structures" title="Permalink to this headline">¶</a></h2>
+<p>Container data structure for molecular conformations.</p>
+<p class="rubric">Module Attributes</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.conformation_container.UNICODE_MULTIPLIER" title="propka.conformation_container.UNICODE_MULTIPLIER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UNICODE_MULTIPLIER</span></code></a></p></td>
+<td><p>A large number that gets multipled with the integer obtained from applying <code class="xref py py-func docutils literal notranslate"><span class="pre">ord()</span></code> to the atom chain ID.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.conformation_container.RESIDUE_MULTIPLIER" title="propka.conformation_container.RESIDUE_MULTIPLIER"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RESIDUE_MULTIPLIER</span></code></a></p></td>
+<td><p>A number that gets mutiplied with an atom’s residue number.</p></td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Classes</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.conformation_container.ConformationContainer" title="propka.conformation_container.ConformationContainer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ConformationContainer</span></code></a>([name, parameters, …])</p></td>
+<td><p>Container for molecular conformations</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="propka.conformation_container.ConformationContainer">
+<em class="property">class </em><code class="sig-prename descclassname">propka.conformation_container.</code><code class="sig-name descname">ConformationContainer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">parameters</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">molecular_container</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Container for molecular conformations</p>
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.add_atom">
+<code class="sig-name descname">add_atom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.add_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.add_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add atom to container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atom</strong> – atom to add</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.additional_setup_when_reading_input_file">
+<code class="sig-name descname">additional_setup_when_reading_input_file</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.additional_setup_when_reading_input_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.additional_setup_when_reading_input_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate interaction map and charge centers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.calculate_charge">
+<code class="sig-name descname">calculate_charge</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parameters</span></em>, <em class="sig-param"><span class="n">ph</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.calculate_charge"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.calculate_charge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate charge for folded and unfolded states.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameters</strong> – parameters for calculation</p></li>
+<li><p><strong>ph</strong> – pH for calculation</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ol class="arabic simple">
+<li><p>charge for unfolded state</p></li>
+<li><p>charge for folded state</p></li>
+</ol>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.calculate_folding_energy">
+<code class="sig-name descname">calculate_folding_energy</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ph</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">reference</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.calculate_folding_energy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.calculate_folding_energy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate folding energy over all groups in conformation container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ph</strong> – pH for calculation</p></li>
+<li><p><strong>reference</strong> – reference state</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>folding energy
+TODO - need units</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.calculate_pka">
+<code class="sig-name descname">calculate_pka</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">version</span></em>, <em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.calculate_pka"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.calculate_pka" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate pKas for conformation container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>version</strong> – version object</p></li>
+<li><p><strong>options</strong> – option object</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.copy_atom">
+<code class="sig-name descname">copy_atom</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.copy_atom"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.copy_atom" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a copy of the atom to container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atom</strong> – atom to copy and add</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.coupling_effects">
+<code class="sig-name descname">coupling_effects</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.coupling_effects"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.coupling_effects" title="Permalink to this definition">¶</a></dt>
+<dd><p>Penalize groups based on coupling effects.</p>
+<p>Bases: The group with the highest pKa (the most stable one in the
+charged form) will be the first one to adopt a proton as pH is lowered
+and this group is allowed to titrate. The remaining groups are
+penalised.</p>
+<p>Acids: The group with the highest pKa (the least stable one in the
+charged form) will be the last group to loose the proton as pH is
+raised and will be penalised. The remaining groups are allowed to
+titrate.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.extract_groups">
+<code class="sig-name descname">extract_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.extract_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.extract_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate molecular groups needed for calculating pKa values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.find_bonded_titratable_groups">
+<code class="sig-name descname">find_bonded_titratable_groups</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em>, <em class="sig-param"><span class="n">num_bonds</span></em>, <em class="sig-param"><span class="n">original_atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.find_bonded_titratable_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.find_bonded_titratable_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find bonded titrable groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom</strong> – atom to check for bonds</p></li>
+<li><p><strong>num_bonds</strong> – number of bonds for coupling</p></li>
+<li><p><strong>original_atom</strong> – another atom to check for bonds</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a set of bonded atom groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.find_covalently_coupled_groups">
+<code class="sig-name descname">find_covalently_coupled_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.find_covalently_coupled_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.find_covalently_coupled_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find covalently coupled groups and set common charge centres.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.find_group">
+<code class="sig-name descname">find_group</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.find_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.find_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find a group in the container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>group</strong> – group to find</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>False (if group not found) or group</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.find_non_covalently_coupled_groups">
+<code class="sig-name descname">find_non_covalently_coupled_groups</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.find_non_covalently_coupled_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.find_non_covalently_coupled_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find non-covalently coupled groups and set common charge centres.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>verbose</strong> – verbose output</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_a_coupled_system_of_groups">
+<code class="sig-name descname">get_a_coupled_system_of_groups</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_group</span></em>, <em class="sig-param"><span class="n">coupled_groups</span></em>, <em class="sig-param"><span class="n">get_coupled_groups</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_a_coupled_system_of_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_a_coupled_system_of_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up coupled systems of groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>new_group</strong> – added to coupled_groups</p></li>
+<li><p><strong>coupled_groups</strong> – existing coupled groups</p></li>
+<li><p><strong>get_coupled_groups</strong> – TODO - I don’t know what this</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_acids">
+<code class="sig-name descname">get_acids</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_acids"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_acids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get acid groups needed for pKa calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_backbone_co_groups">
+<code class="sig-name descname">get_backbone_co_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_backbone_co_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_backbone_co_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get CO backbone groups needed for pKa calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_backbone_groups">
+<code class="sig-name descname">get_backbone_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_backbone_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_backbone_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get backbone groups needed for the pKa calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_backbone_nh_groups">
+<code class="sig-name descname">get_backbone_nh_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_backbone_nh_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_backbone_nh_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get NH backbone groups needed for pKa calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_backbone_reorganisation_groups">
+<code class="sig-name descname">get_backbone_reorganisation_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_backbone_reorganisation_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_backbone_reorganisation_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get groups involved with backbone reorganization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_chain">
+<code class="sig-name descname">get_chain</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chain</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_chain"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_chain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get atoms associated with a specific chain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>chain</strong> – chain to select</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of atoms</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_coupled_systems">
+<code class="sig-name descname">get_coupled_systems</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">groups</span></em>, <em class="sig-param"><span class="n">get_coupled_groups</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_coupled_systems"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_coupled_systems" title="Permalink to this definition">¶</a></dt>
+<dd><p>A generator that yields covalently coupled systems.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>groups</strong> – groups for generating coupled systems</p></li>
+<li><p><strong>get_coupled_groups</strong> – TODO - I don’t know what this is</p></li>
+</ul>
+</dd>
+<dt class="field-even">Yields</dt>
+<dd class="field-even"><p>covalently coupled systems</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_covalently_coupled_groups">
+<code class="sig-name descname">get_covalently_coupled_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_covalently_coupled_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_covalently_coupled_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get covalently coupled groups needed for pKa calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_group_names">
+<code class="sig-name descname">get_group_names</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group_list</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_group_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_group_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get names of groups in list.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>group_list</strong> – list to check</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_groups_for_calculations">
+<code class="sig-name descname">get_groups_for_calculations</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_groups_for_calculations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_groups_for_calculations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a list of groups that should be included in results report.</p>
+<p>If –titrate_only option is specified, only residues that are titratable
+and are in that list are included; otherwise all titratable residues
+and CYS residues are included.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_groups_in_residue">
+<code class="sig-name descname">get_groups_in_residue</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">residue</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_groups_in_residue"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_groups_in_residue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get residue groups needed for pKa calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>residue</strong> – specific residue with groups</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_heavy_ligand_atoms">
+<code class="sig-name descname">get_heavy_ligand_atoms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_heavy_ligand_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_heavy_ligand_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get heavy atoms associated with ligands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of atoms</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_ions">
+<code class="sig-name descname">get_ions</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_ions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_ions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get ion groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_ligand_atoms">
+<code class="sig-name descname">get_ligand_atoms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_ligand_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_ligand_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get atoms associated with ligands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of atoms</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_non_covalently_coupled_groups">
+<code class="sig-name descname">get_non_covalently_coupled_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_non_covalently_coupled_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_non_covalently_coupled_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get non-covalently coupled groups needed for pKa calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_non_hydrogen_atoms">
+<code class="sig-name descname">get_non_hydrogen_atoms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_non_hydrogen_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_non_hydrogen_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get atoms that are not hydrogens.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of atoms</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_sidechain_groups">
+<code class="sig-name descname">get_sidechain_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_sidechain_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_sidechain_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get sidechain groups needed for the pKa calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.get_titratable_groups">
+<code class="sig-name descname">get_titratable_groups</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.get_titratable_groups"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.get_titratable_groups" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get all titratable groups needed for pKa calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of groups</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.init_group">
+<code class="sig-name descname">init_group</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.init_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.init_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the given Group object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>group</strong> – group object to initialize</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.set_common_charge_centres">
+<code class="sig-name descname">set_common_charge_centres</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.set_common_charge_centres"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.set_common_charge_centres" title="Permalink to this definition">¶</a></dt>
+<dd><p>Assign charge centers to groups.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.set_ligand_atom_names">
+<code class="sig-name descname">set_ligand_atom_names</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.set_ligand_atom_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.set_ligand_atom_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set names for atoms in ligands.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.setup_and_add_group">
+<code class="sig-name descname">setup_and_add_group</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">group</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.setup_and_add_group"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.setup_and_add_group" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check if we want to include this group in the calculations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>group</strong> – group to check</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.share_determinants">
+<em class="property">static </em><code class="sig-name descname">share_determinants</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">groups</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.share_determinants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.share_determinants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Share sidechain, backbone, and Coloumb determinants between groups.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>groups</strong> – groups to share between</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.sort_atoms">
+<code class="sig-name descname">sort_atoms</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.sort_atoms"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.sort_atoms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sort atoms by <cite>self.sort_atoms_key()</cite> and renumber.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.sort_atoms_key">
+<em class="property">static </em><code class="sig-name descname">sort_atoms_key</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.sort_atoms_key"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.sort_atoms_key" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate key for atom sorting.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atom</strong> – atom for key generation.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>key for atom</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="propka.conformation_container.ConformationContainer.top_up">
+<code class="sig-name descname">top_up</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/conformation_container.html#ConformationContainer.top_up"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.conformation_container.ConformationContainer.top_up" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds any atoms found in <cite>other</cite> but not in this container.</p>
+<p>Tops up self with all atoms found in other but not in self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> – conformation container with atoms to add</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt id="propka.conformation_container.RESIDUE_MULTIPLIER">
+<code class="sig-prename descclassname">propka.conformation_container.</code><code class="sig-name descname">RESIDUE_MULTIPLIER</code><em class="property"> = 1000</em><a class="headerlink" href="#propka.conformation_container.RESIDUE_MULTIPLIER" title="Permalink to this definition">¶</a></dt>
+<dd><p>A number that gets mutiplied with an atom’s residue number.  Used in
+calculating keys for atom sorting.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt id="propka.conformation_container.UNICODE_MULTIPLIER">
+<code class="sig-prename descclassname">propka.conformation_container.</code><code class="sig-name descname">UNICODE_MULTIPLIER</code><em class="property"> = 10000000.0</em><a class="headerlink" href="#propka.conformation_container.UNICODE_MULTIPLIER" title="Permalink to this definition">¶</a></dt>
+<dd><p>A large number that gets multipled with the integer obtained from applying
+<code class="xref py py-func docutils literal notranslate"><span class="pre">ord()</span></code> to the atom chain ID.  Used in calculating atom keys for sorting.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="propka.molecular_container.html" class="btn btn-neutral float-right" title="3.1.5. propka.molecular_container" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="propka.group.html" class="btn btn-neutral float-left" title="3.1.3. propka.group" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

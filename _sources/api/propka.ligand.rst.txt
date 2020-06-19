@@ -1,0 +1,43 @@
+propka.ligand
+=============
+
+.. automodule:: propka.ligand
+   :members:
+   
+   
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      ALL_SYBYL_TYPES
+      PROPKA_INPUT_TYPES
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      are_atoms_planar
+      assign_sybyl_type
+      identify_ring
+      is_aromatic_ring
+      is_planar
+      is_ring_member
+      set_type
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+

@@ -1,0 +1,662 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>propka.bonds &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">2. Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">3. API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>propka.bonds</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for propka.bonds</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Bonds</span>
+<span class="sd">=====</span>
+
+<span class="sd">PROPKA representation of bonds.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+<span class="kn">import</span> <span class="nn">propka.calculations</span>
+<span class="c1"># TODO - replace the info/warning imports with logging functionality</span>
+<span class="kn">from</span> <span class="nn">propka.lib</span> <span class="kn">import</span> <span class="n">info</span>
+
+
+<span class="c1"># TODO - should these constants be defined higher up in the module?</span>
+<span class="c1"># TODO - I don&#39;t know what some of these constants mean</span>
+<span class="n">DISULFIDE_DISTANCE</span> <span class="o">=</span> <span class="mf">2.5</span>
+<span class="n">FLUORIDE_DISTANCE</span> <span class="o">=</span> <span class="mf">1.7</span>
+<span class="n">HYDROGEN_DISTANCE</span> <span class="o">=</span> <span class="mf">1.5</span>
+<span class="n">DEFAULT_DISTANCE</span> <span class="o">=</span> <span class="mf">2.0</span>
+<span class="n">BOX_SIZE</span> <span class="o">=</span> <span class="mf">2.5</span>
+<span class="n">POS_MAX</span> <span class="o">=</span> <span class="mf">1e6</span>
+
+
+<div class="viewcode-block" id="BondMaker"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker">[docs]</a><span class="k">class</span> <span class="nc">BondMaker</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Makes bonds?</span>
+
+<span class="sd">    TODO - the documentation for this class needs to be improved.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># predefined bonding distances</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distances</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;S-S&#39;</span> <span class="p">:</span> <span class="n">DISULFIDE_DISTANCE</span><span class="p">,</span>
+                          <span class="s1">&#39;F-F&#39;</span> <span class="p">:</span> <span class="n">FLUORIDE_DISTANCE</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">distances_squared</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">distances</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">distances_squared</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">distances</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">distances</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+        <span class="n">h_dist</span> <span class="o">=</span> <span class="n">HYDROGEN_DISTANCE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_dist</span> <span class="o">=</span> <span class="n">DEFAULT_DISTANCE</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">h_dist_squared</span> <span class="o">=</span> <span class="n">h_dist</span> <span class="o">*</span> <span class="n">h_dist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_dist_squared</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_dist</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_dist</span>
+        <span class="n">distances</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">distances_squared</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">default_dist_squared</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max_sq_distance</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">distances</span><span class="p">)</span>
+        <span class="c1"># protein bonding data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data_file_name</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;protein_bonds.json&#39;</span><span class="p">))</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_file_name</span><span class="p">,</span> <span class="s1">&#39;rt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">json_file</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">protein_bonds</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">json_file</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">intra_residue_backbone_bonds</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;N&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;CA&#39;</span><span class="p">],</span> <span class="s1">&#39;CA&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;N&#39;</span><span class="p">,</span> <span class="s1">&#39;C&#39;</span><span class="p">],</span>
+                                             <span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;CA&#39;</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">],</span> <span class="s1">&#39;O&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;C&#39;</span><span class="p">]}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_bonds_backbone</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;C&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;O&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_conj_bonds_backbone</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;N&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_bonds_sidechains</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ARG-CZ&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;ARG-NH1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;ASN-OD1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;ASN-CG&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;ASP-OD1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;ASP-CG&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;GLU-OE1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;GLU-CD&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;GLN-OE1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;GLN-CD&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;HIS-CG&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;HIS-CD2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;HIS-ND1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;HIS-CE1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;PHE-CG&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;PHE-CD1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;PHE-CE1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;PHE-CZ&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;PHE-CE2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;PHE-CD2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;TRP-CG&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;TRP-CD1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;TRP-CE2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;TRP-CD2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;TRP-CE3&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;TRP-CZ3&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;TRP-CH2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;TRP-CZ2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;TYR-CG&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;TYR-CD1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;TYR-CE1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;TYR-CZ&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                             <span class="s1">&#39;TYR-CE2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;TYR-CD2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_conj_bonds_sidechains</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ARG-NE&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;ARG-NH2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                                  <span class="s1">&#39;ASN-ND2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;GLN-NE2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                                  <span class="s1">&#39;HIS-NE2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;TRP-NE1&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_bonds_ligands</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;C.ar&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;N.pl3&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;C.2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                          <span class="s1">&#39;O.2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;O.co2&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;N.ar&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                                          <span class="s1">&#39;C.1&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;N.1&#39;</span><span class="p">:</span> <span class="mi">2</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_conj_bonds_ligands</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;N.am&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;N.pl3&#39;</span><span class="p">:</span> <span class="mi">1</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">backbone_atoms</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">intra_residue_backbone_bonds</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminal_oxygen_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;OXT&#39;</span><span class="p">,</span> <span class="s1">&#39;O</span><span class="se">\&#39;\&#39;</span><span class="s1">&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_box_x</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_box_y</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_box_z</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="BondMaker.find_bonds_for_protein"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.find_bonds_for_protein">[docs]</a>    <span class="k">def</span> <span class="nf">find_bonds_for_protein</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">protein</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Bonds proteins based on the way atoms normally bond.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            protein:  the protein to search for bonds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">info</span><span class="p">(</span><span class="s1">&#39;++++ Side chains ++++&#39;</span><span class="p">)</span>
+        <span class="c1"># side chains</span>
+        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">protein</span><span class="o">.</span><span class="n">chains</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">residue</span> <span class="ow">in</span> <span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">residue</span><span class="o">.</span><span class="n">res_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;N+&#39;</span><span class="p">,</span> <span class="s1">&#39;C-&#39;</span><span class="p">]:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">find_bonds_for_side_chain</span><span class="p">(</span><span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="s1">&#39;++++ Backbones ++++&#39;</span><span class="p">)</span>
+        <span class="c1"># backbone</span>
+        <span class="n">last_residues</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">protein</span><span class="o">.</span><span class="n">chains</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">res_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                        <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;N+&#39;</span><span class="p">,</span> <span class="s1">&#39;C-&#39;</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">res_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+                            <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;N+&#39;</span><span class="p">,</span> <span class="s1">&#39;C-&#39;</span><span class="p">]):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">connect_backbone</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
+                                              <span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                        <span class="n">last_residues</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">info</span><span class="p">(</span><span class="s1">&#39;++++ terminal oxygen ++++&#39;</span><span class="p">)</span>
+        <span class="c1"># terminal OXT</span>
+        <span class="k">for</span> <span class="n">last_residue</span> <span class="ow">in</span> <span class="n">last_residues</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">find_bonds_for_terminal_oxygen</span><span class="p">(</span><span class="n">last_residue</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="s1">&#39;++++ cysteines ++++&#39;</span><span class="p">)</span>
+        <span class="c1"># Cysteines</span>
+        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">protein</span><span class="o">.</span><span class="n">chains</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">res_name</span> <span class="o">==</span> <span class="s1">&#39;CYS&#39;</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">)):</span>
+                        <span class="k">if</span> <span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">res_name</span> <span class="o">==</span> <span class="s1">&#39;CYS&#39;</span> <span class="ow">and</span> <span class="n">j</span> <span class="o">!=</span> <span class="n">i</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">check_for_cysteine_bonds</span><span class="p">(</span><span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                                          <span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">[</span><span class="n">j</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="BondMaker.check_for_cysteine_bonds"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.check_for_cysteine_bonds">[docs]</a>    <span class="k">def</span> <span class="nf">check_for_cysteine_bonds</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cys1</span><span class="p">,</span> <span class="n">cys2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Looks for potential bonds between two cysteines.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            cys1:  one of the cysteines to check</span>
+<span class="sd">            cys1:  one of the cysteines to check</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">atom1</span> <span class="ow">in</span> <span class="n">cys1</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">atom1</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;SG&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">atom2</span> <span class="ow">in</span> <span class="n">cys2</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">atom2</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;SG&#39;</span><span class="p">:</span>
+                        <span class="n">dist</span> <span class="o">=</span> <span class="n">propka</span><span class="o">.</span><span class="n">calculations</span><span class="o">.</span><span class="n">squared_distance</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span>
+                                                                    <span class="n">atom2</span><span class="p">)</span>
+                        <span class="c1"># TODO - is SS_dist_squared an attribute of this class?</span>
+                        <span class="k">if</span> <span class="n">dist</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">SS_dist_squared</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">make_bond</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BondMaker.find_bonds_for_terminal_oxygen"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.find_bonds_for_terminal_oxygen">[docs]</a>    <span class="k">def</span> <span class="nf">find_bonds_for_terminal_oxygen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">residue</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Look for bonds for terminal oxygen.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            residue - test residue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">atom1</span> <span class="ow">in</span> <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">atom1</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminal_oxygen_names</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">atom2</span> <span class="ow">in</span> <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">atom2</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">make_bond</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BondMaker.connect_backbone"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.connect_backbone">[docs]</a>    <span class="k">def</span> <span class="nf">connect_backbone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">residue1</span><span class="p">,</span> <span class="n">residue2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sets up bonds in the backbone</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            residue1:  first residue to connect</span>
+<span class="sd">            residue2:  second residue to connect</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_bonds_for_residue_backbone</span><span class="p">(</span><span class="n">residue1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_bonds_for_residue_backbone</span><span class="p">(</span><span class="n">residue2</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">atom1</span> <span class="ow">in</span> <span class="n">residue1</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">atom1</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">atom2</span> <span class="ow">in</span> <span class="n">residue2</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">atom2</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;N&#39;</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="p">(</span><span class="n">propka</span><span class="o">.</span><span class="n">calculations</span><span class="o">.</span><span class="n">squared_distance</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">)</span>
+                                <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_dist_squared</span><span class="p">):</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">make_bond</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BondMaker.find_bonds_for_residue_backbone"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.find_bonds_for_residue_backbone">[docs]</a>    <span class="k">def</span> <span class="nf">find_bonds_for_residue_backbone</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">residue</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find bonds for this residue&#39;s backbone.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            residue:  reside to search for backbone bonds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">atom1</span> <span class="ow">in</span> <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">atom1</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_bonds_backbone</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="n">atom1</span><span class="o">.</span><span class="n">num_pi_elec_2_3_bonds</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_bonds_backbone</span><span class="p">[</span><span class="n">atom1</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">atom1</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_conj_bonds_backbone</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+                    <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom1</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span> <span class="c1"># avoid N-term</span>
+                <span class="n">atom1</span><span class="o">.</span><span class="n">num_pi_elec_conj_2_3_bonds</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_conj_bonds_backbone</span><span class="p">[</span><span class="n">atom1</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+
+            <span class="k">if</span> <span class="n">atom1</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone_atoms</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">atom2</span> <span class="ow">in</span> <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">atom2</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">intra_residue_backbone_bonds</span><span class="p">[</span><span class="n">atom1</span><span class="o">.</span><span class="n">name</span><span class="p">]):</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">make_bond</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BondMaker.find_bonds_for_side_chain"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.find_bonds_for_side_chain">[docs]</a>    <span class="k">def</span> <span class="nf">find_bonds_for_side_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Finds bonds for a side chain.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atoms:  list of atoms to check for bonds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">atom1</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:s}</span><span class="s1">-</span><span class="si">{1:s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom1</span><span class="o">.</span><span class="n">res_name</span><span class="p">,</span> <span class="n">atom1</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_bonds_sidechains</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="n">atom1</span><span class="o">.</span><span class="n">num_pi_elec_2_3_bonds</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_bonds_sidechains</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_conj_bonds_sidechains</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="n">atom1</span><span class="o">.</span><span class="n">num_pi_elec_conj_2_3_bonds</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_conj_bonds_sidechains</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">atom1</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone_atoms</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">atom1</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminal_oxygen_names</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">atom2</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">atom2</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">(</span>
+                                <span class="bp">self</span>
+                                <span class="o">.</span><span class="n">protein_bonds</span><span class="p">[</span><span class="n">atom1</span><span class="o">.</span><span class="n">res_name</span><span class="p">][</span><span class="n">atom1</span><span class="o">.</span><span class="n">name</span><span class="p">]):</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">make_bond</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BondMaker.find_bonds_for_ligand"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.find_bonds_for_ligand">[docs]</a>    <span class="k">def</span> <span class="nf">find_bonds_for_ligand</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ligand</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Finds bonds for all atoms in the ligand molecule</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ligand:  ligand molecule to search for bonds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># identify bonding atoms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_bonds_for_atoms</span><span class="p">(</span><span class="n">ligand</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_pi_electron_table_info</span><span class="p">(</span><span class="n">ligand</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BondMaker.add_pi_electron_table_info"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.add_pi_electron_table_info">[docs]</a>    <span class="k">def</span> <span class="nf">add_pi_electron_table_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add table information on pi electrons</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atoms:  list of atoms for pi electron table information checking</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># apply table information on pi-electrons</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="c1"># for ligands</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;hetatm&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">sybyl_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_bonds_ligands</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                    <span class="n">atom</span><span class="o">.</span><span class="n">num_pi_elec_2_3_bonds</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_bonds_ligands</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">sybyl_type</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">sybyl_type</span> <span class="ow">in</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_conj_bonds_ligands</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                    <span class="n">atom</span><span class="o">.</span><span class="n">num_pi_elec_conj_2_3_bonds</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_conj_bonds_ligands</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">sybyl_type</span><span class="p">])</span>
+            <span class="c1"># for protein</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;atom&#39;</span><span class="p">:</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:s}</span><span class="s1">-</span><span class="si">{1:s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">res_name</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_bonds_sidechains</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                    <span class="n">atom</span><span class="o">.</span><span class="n">num_pi_elec_2_3_bonds</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_bonds_sidechains</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_conj_bonds_sidechains</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                    <span class="n">atom</span><span class="o">.</span><span class="n">num_pi_elec_conj_2_3_bonds</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_conj_bonds_sidechains</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_bonds_backbone</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                    <span class="n">atom</span><span class="o">.</span><span class="n">num_pi_elec_2_3_bonds</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_bonds_backbone</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_conj_bonds_backbone</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="ow">and</span> <span class="p">(</span>
+                            <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">):</span>
+                    <span class="c1"># last part to avoid including N-term</span>
+                    <span class="n">atom</span><span class="o">.</span><span class="n">num_pi_elec_conj_2_3_bonds</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_conj_bonds_backbone</span><span class="p">[</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="BondMaker.find_bonds_for_protein_by_distance"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.find_bonds_for_protein_by_distance">[docs]</a>    <span class="k">def</span> <span class="nf">find_bonds_for_protein_by_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecule</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Finds bonds for all atoms in the molecule.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            molecule:  molecule in which to find bonds.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            list of atoms</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1">#self.find_bonds_for_protein(molecule)</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">chain</span> <span class="ow">in</span> <span class="n">molecule</span><span class="o">.</span><span class="n">chains</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">residue</span> <span class="ow">in</span> <span class="n">chain</span><span class="o">.</span><span class="n">residues</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">residue</span><span class="o">.</span><span class="n">res_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;N+&#39;</span><span class="p">,</span> <span class="s1">&#39;C-&#39;</span><span class="p">]:</span>
+                    <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">residue</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+                        <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_bonds_for_atoms_using_boxes</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">atoms</span></div>
+
+<div class="viewcode-block" id="BondMaker.find_bonds_for_atoms"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.find_bonds_for_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">find_bonds_for_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Finds all bonds for a list of atoms</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atoms:  list of atoms in which to find bonds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">no_atoms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">no_atoms</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">no_atoms</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_distance</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="n">j</span><span class="p">]):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">make_bond</span><span class="p">(</span><span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">atoms</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                    <span class="c1"># di-sulphide bonds</span>
+                    <span class="k">if</span> <span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">element</span> <span class="o">==</span> <span class="s1">&#39;S&#39;</span> <span class="ow">and</span> <span class="n">atoms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">element</span> <span class="o">==</span> <span class="s1">&#39;S&#39;</span><span class="p">:</span>
+                        <span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">cysteine_bridge</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">atoms</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">.</span><span class="n">cysteine_bridge</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="BondMaker.check_distance"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.check_distance">[docs]</a>    <span class="k">def</span> <span class="nf">check_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check distance between two atoms</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom1:  first atom for distance check</span>
+<span class="sd">            atom2:  second atom for distance check</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            True if within distance, False otherwise</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sq_dist</span> <span class="o">=</span> <span class="n">propka</span><span class="o">.</span><span class="n">calculations</span><span class="o">.</span><span class="n">squared_distance</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sq_dist</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_sq_distance</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:s}</span><span class="s1">-</span><span class="si">{1:s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">atom1</span><span class="o">.</span><span class="n">element</span><span class="p">,</span> <span class="n">atom2</span><span class="o">.</span><span class="n">element</span><span class="p">)</span>
+        <span class="n">h_count</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;H&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sq_dist</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">h_dist_squared</span> <span class="ow">and</span> <span class="n">h_count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">sq_dist</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_dist_squared</span> <span class="ow">and</span> <span class="n">h_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">distances_squared</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">sq_dist</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">distances_squared</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="BondMaker.find_bonds_for_molecules_using_boxes"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.find_bonds_for_molecules_using_boxes">[docs]</a>    <span class="k">def</span> <span class="nf">find_bonds_for_molecules_using_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecules</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Finds all bonds for a molecular container.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            molecules:  list of molecules for finding bonds.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">molecules</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">find_bonds_for_atoms_using_boxes</span><span class="p">(</span>
+                <span class="n">molecules</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BondMaker.add_pi_electron_information"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.add_pi_electron_information">[docs]</a>    <span class="k">def</span> <span class="nf">add_pi_electron_information</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">molecules</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add pi electron information to a molecule.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            molecules:  list of molecules for adding pi electron information.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">molecules</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_pi_electron_table_info</span><span class="p">(</span>
+                <span class="n">molecules</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BondMaker.find_bonds_for_atoms_using_boxes"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.find_bonds_for_atoms_using_boxes">[docs]</a>    <span class="k">def</span> <span class="nf">find_bonds_for_atoms_using_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Finds all bonds for a list of atoms.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atoms:  list of atoms for finding bonds</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">box_size</span> <span class="o">=</span> <span class="n">BOX_SIZE</span>
+        <span class="n">xmin</span> <span class="o">=</span> <span class="n">POS_MAX</span>
+        <span class="n">xmax</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">POS_MAX</span>
+        <span class="n">ymin</span> <span class="o">=</span> <span class="n">POS_MAX</span>
+        <span class="n">ymax</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">POS_MAX</span>
+        <span class="n">zmin</span> <span class="o">=</span> <span class="n">POS_MAX</span>
+        <span class="n">zmax</span> <span class="o">=</span> <span class="o">-</span><span class="mf">1.0</span> <span class="o">*</span> <span class="n">POS_MAX</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">x</span> <span class="o">&gt;</span> <span class="n">xmax</span><span class="p">:</span>
+                <span class="n">xmax</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">x</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">y</span> <span class="o">&gt;</span> <span class="n">ymax</span><span class="p">:</span>
+                <span class="n">ymax</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">y</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">z</span> <span class="o">&gt;</span> <span class="n">zmax</span><span class="p">:</span>
+                <span class="n">zmax</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">z</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">x</span> <span class="o">&lt;</span> <span class="n">xmin</span><span class="p">:</span>
+                <span class="n">xmin</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">x</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">y</span> <span class="o">&lt;</span> <span class="n">ymin</span><span class="p">:</span>
+                <span class="n">ymin</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">y</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">z</span> <span class="o">&lt;</span> <span class="n">zmin</span><span class="p">:</span>
+                <span class="n">zmin</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">z</span>
+        <span class="n">xlen</span> <span class="o">=</span> <span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span>
+        <span class="n">ylen</span> <span class="o">=</span> <span class="n">ymax</span> <span class="o">-</span> <span class="n">ymin</span>
+        <span class="n">zlen</span> <span class="o">=</span> <span class="n">zmax</span> <span class="o">-</span> <span class="n">zmin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_box_x</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">xlen</span><span class="o">/</span><span class="n">box_size</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_box_y</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">ylen</span><span class="o">/</span><span class="n">box_size</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_box_z</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">zlen</span><span class="o">/</span><span class="n">box_size</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_box_x</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_box_y</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">num_box_z</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="p">[(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">)]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">atom</span><span class="o">.</span><span class="n">x</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">)</span><span class="o">/</span><span class="n">box_size</span><span class="p">)</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">atom</span><span class="o">.</span><span class="n">y</span> <span class="o">-</span> <span class="n">ymin</span><span class="p">)</span><span class="o">/</span><span class="n">box_size</span><span class="p">)</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">atom</span><span class="o">.</span><span class="n">z</span> <span class="o">-</span> <span class="n">zmin</span><span class="p">)</span><span class="o">/</span><span class="n">box_size</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">put_atom_in_box</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">atom</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">find_bonds_for_atoms</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BondMaker.put_atom_in_box"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.put_atom_in_box">[docs]</a>    <span class="k">def</span> <span class="nf">put_atom_in_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Put an atom in a box.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            x:  box x-coordinates</span>
+<span class="sd">            y:  box y-coordinates</span>
+<span class="sd">            z:  box z-coordinates</span>
+<span class="sd">            atom:  the atom to place in a box</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">box_x</span> <span class="ow">in</span> <span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">box_y</span> <span class="ow">in</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">y</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+                <span class="k">for</span> <span class="n">box_z</span> <span class="ow">in</span> <span class="p">[</span><span class="n">z</span><span class="p">,</span> <span class="n">z</span><span class="o">+</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="p">(</span><span class="n">box_x</span><span class="p">,</span> <span class="n">box_y</span><span class="p">,</span> <span class="n">box_z</span><span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">boxes</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+                    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="BondMaker.has_bond"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.has_bond">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">has_bond</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Look for bond between two atoms.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom1:  first atom to check</span>
+<span class="sd">            atom2:  second atom to check</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            True if there is a bond between atoms</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">atom1</span> <span class="ow">in</span> <span class="n">atom2</span><span class="o">.</span><span class="n">bonded_atoms</span> <span class="ow">or</span> <span class="n">atom2</span> <span class="ow">in</span> <span class="n">atom1</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="BondMaker.make_bond"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.make_bond">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">make_bond</span><span class="p">(</span><span class="n">atom1</span><span class="p">,</span> <span class="n">atom2</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Makes a bond between atom1 and atom2</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom1:  first atom to bond</span>
+<span class="sd">            atom2:  second atom to bond</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">atom1</span> <span class="o">==</span> <span class="n">atom2</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">atom1</span> <span class="ow">in</span> <span class="n">atom2</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">:</span>
+            <span class="n">atom2</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">atom2</span> <span class="ow">in</span> <span class="n">atom1</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">:</span>
+            <span class="n">atom1</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom2</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BondMaker.generate_protein_bond_dictionary"><a class="viewcode-back" href="../../api/propka.bonds.html#propka.bonds.BondMaker.generate_protein_bond_dictionary">[docs]</a>    <span class="k">def</span> <span class="nf">generate_protein_bond_dictionary</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate dictionary of protein bonds.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atoms:  list of atoms for bonding</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">bonded_atom</span> <span class="ow">in</span> <span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">:</span>
+                <span class="n">resi_i</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">res_name</span>
+                <span class="n">name_i</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">name</span>
+                <span class="n">resi_j</span> <span class="o">=</span> <span class="n">bonded_atom</span><span class="o">.</span><span class="n">res_name</span>
+                <span class="n">name_j</span> <span class="o">=</span> <span class="n">bonded_atom</span><span class="o">.</span><span class="n">name</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">name_i</span> <span class="ow">in</span> <span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">backbone_atoms</span>
+                        <span class="ow">or</span> <span class="ow">not</span> <span class="n">name_j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">backbone_atoms</span><span class="p">):</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">name_i</span> <span class="ow">in</span> <span class="p">(</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">terminal_oxygen_names</span>
+                            <span class="ow">and</span> <span class="ow">not</span> <span class="n">name_j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminal_oxygen_names</span><span class="p">):</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">resi_i</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protein_bonds</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">protein_bonds</span><span class="p">[</span><span class="n">resi_i</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">name_i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">protein_bonds</span><span class="p">[</span><span class="n">resi_i</span><span class="p">]:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">protein_bonds</span><span class="p">[</span><span class="n">resi_i</span><span class="p">][</span><span class="n">name_i</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">name_j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">protein_bonds</span><span class="p">[</span><span class="n">resi_i</span><span class="p">][</span><span class="n">name_i</span><span class="p">]:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">protein_bonds</span><span class="p">[</span><span class="n">resi_i</span><span class="p">][</span><span class="n">name_i</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name_j</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">resi_j</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">protein_bonds</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">protein_bonds</span><span class="p">[</span><span class="n">resi_j</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">name_j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">protein_bonds</span><span class="p">[</span><span class="n">resi_j</span><span class="p">]:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">protein_bonds</span><span class="p">[</span><span class="n">resi_j</span><span class="p">][</span><span class="n">name_j</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">name_i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">protein_bonds</span><span class="p">[</span><span class="n">resi_j</span><span class="p">][</span><span class="n">name_j</span><span class="p">]:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">protein_bonds</span><span class="p">[</span><span class="n">resi_j</span><span class="p">][</span><span class="n">name_j</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">name_i</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

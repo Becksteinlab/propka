@@ -1,0 +1,624 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>propka.atom &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">2. Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">3. API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>propka.atom</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for propka.atom</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Atom</span>
+<span class="sd">====</span>
+
+<span class="sd">The :class:`Atom` class contains all atom information found in the PDB file.</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">string</span>
+<span class="kn">from</span> <span class="nn">propka.lib</span> <span class="kn">import</span> <span class="n">make_tidy_atom_label</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">hybrid36</span>
+
+
+<span class="c1"># Format strings that get used in multiple places (or are very complex)</span>
+<span class="n">PKA_FMT</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{:6.2f}</span><span class="s2">&quot;</span>
+<span class="n">INPUT_LINE_FMT</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;</span><span class="si">{type:6s}{r.numb:&gt;5d}</span><span class="s2"> </span><span class="si">{atom_label}</span><span class="s2"> </span><span class="si">{r.res_name}{r.chain_id:&gt;2s}</span><span class="s2">&quot;</span>
+    <span class="s2">&quot;</span><span class="si">{r.res_num:&gt;4d}{r.x:&gt;12.3f}{r.y:&gt;8.3f}{r.z:&gt;8.3f}{group:&gt;6s}{pka:&gt;6s}</span><span class="s2"> </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">PDB_LINE_FMT1</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;</span><span class="si">{type:6s}{r.numb:&gt;5d}</span><span class="s2"> </span><span class="si">{atom_label}</span><span class="s2"> </span><span class="si">{r.res_name}{r.chain_id:&gt;2s}</span><span class="s2">&quot;</span>
+    <span class="s2">&quot;</span><span class="si">{r.res_num:&gt;4d}{r.x:&gt;12.3f}{r.y:&gt;8.3f}{r.z:&gt;8.3f}{r.occ:&gt;6s}</span><span class="s2">&quot;</span>
+    <span class="s2">&quot;</span><span class="si">{r.beta:&gt;6s}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">MOL2_LINE_FMT</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;</span><span class="si">{id:&lt;4d}</span><span class="s2"> </span><span class="si">{atom_label:4s}</span><span class="s2"> &quot;</span>
+    <span class="s2">&quot;</span><span class="si">{r.x:&gt;10.4f}</span><span class="s2"> </span><span class="si">{r.y:&gt;10.4f}</span><span class="s2"> </span><span class="si">{r.z:&gt;10.4f}</span><span class="s2"> &quot;</span>
+    <span class="s2">&quot;</span><span class="si">{r.sybyl_type:&gt;6s}</span><span class="s2"> </span><span class="si">{r.res_num:&gt;6d}</span><span class="s2"> </span><span class="si">{r.res_name:&gt;10s}</span><span class="s2">     0.0000</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">PDB_LINE_FMT2</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;ATOM </span><span class="si">{numb:&gt;6d}</span><span class="s2"> </span><span class="si">{atom_label}</span><span class="s2"> </span><span class="si">{res_name}{chain_id:&gt;2s}{res_num:&gt;4d}</span><span class="s2">&quot;</span>
+    <span class="s2">&quot;</span><span class="si">{x:&gt;12.3f}{y:&gt;8.3f}{z:&gt;8.3f}{occ:&gt;6.2f}{beta:&gt;6.2f}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="n">STR_FMT</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s2">&quot;</span><span class="si">{r.numb:&gt;5d}</span><span class="s2">-</span><span class="si">{r.name:&gt;4s}</span><span class="s2"> </span><span class="si">{r.res_num:&gt;5d}</span><span class="s2">-</span><span class="si">{r.res_name:&gt;3s}</span><span class="s2"> &quot;</span>
+    <span class="s2">&quot;(</span><span class="si">{r.chain_id:1s}</span><span class="s2">) [</span><span class="si">{r.x:&gt;8.3f}</span><span class="s2"> </span><span class="si">{r.y:&gt;8.3f}</span><span class="s2"> </span><span class="si">{r.z:&gt;8.3f}</span><span class="s2">] </span><span class="si">{r.element:s}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Atom"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom">[docs]</a><span class="k">class</span> <span class="nc">Atom</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Atom class - contains all atom information found in the PDB file&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize Atom object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            line:  Line from a PDB file to set properties of atom.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numb</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">res_name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chain_id</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icode</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">res_num</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_type</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_label</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_model_pka</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_model_pka_set</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_bonded_elements</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cysteine_bridge</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bonded_atoms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residue</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conformation_container</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">molecular_container</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_protonated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steric_num_lone_pairs_set</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">charge_set</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steric_number</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_lone_pairs</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">number_of_protons_to_add</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_2_3_bonds</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">num_pi_elec_conj_2_3_bonds</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groups_extracted</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_properties</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{r.name:3s}{r.res_num:&gt;4d}{r.chain_id:&gt;2s}</span><span class="s2">&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">residue_label</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># ligand atom types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sybyl_type</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sybyl_assigned</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">marvin_pka</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="Atom.set_properties"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.set_properties">[docs]</a>    <span class="k">def</span> <span class="nf">set_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Line from PDB file to set properties of atom.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            line:  PDB file line</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">numb</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">res_num</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">res_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chain_id</span> <span class="o">=</span> <span class="s1">&#39;A&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="s1">&#39;1.0&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="s1">&#39;0.0&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">icode</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="n">line</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">16</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">numb</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">hybrid36</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">6</span><span class="p">:</span><span class="mi">11</span><span class="p">]))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">30</span><span class="p">:</span><span class="mi">38</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">38</span><span class="p">:</span><span class="mi">46</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">46</span><span class="p">:</span><span class="mi">54</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">res_num</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">22</span><span class="p">:</span><span class="mi">26</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">res_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0:&lt;3s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">17</span><span class="p">:</span><span class="mi">20</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chain_id</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">21</span><span class="p">]</span>
+            <span class="c1"># Set chain id to &quot;_&quot; if it is just white space.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain_id</span><span class="o">.</span><span class="n">strip</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">chain_id</span> <span class="o">=</span> <span class="s1">&#39;_&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="mi">6</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+            <span class="c1"># TODO - define nucleic acid residue names elsewhere</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">res_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;DA &#39;</span><span class="p">,</span> <span class="s1">&#39;DC &#39;</span><span class="p">,</span> <span class="s1">&#39;DG &#39;</span><span class="p">,</span> <span class="s1">&#39;DT &#39;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="s1">&#39;hetatm&#39;</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">55</span><span class="p">:</span><span class="mi">60</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">60</span><span class="p">:</span><span class="mi">66</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">icode</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">26</span><span class="p">:</span><span class="mi">27</span><span class="p">]</span>
+
+            <span class="c1"># Set the element using the position of the name in the pdb file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">14</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">digits</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:1s}{1:1s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Atom.set_group_type"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.set_group_type">[docs]</a>    <span class="k">def</span> <span class="nf">set_group_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set group type of atom.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            type_:  group type of atom</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">group_type</span> <span class="o">=</span> <span class="n">type_</span></div>
+
+<div class="viewcode-block" id="Atom.count_bonded_elements"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.count_bonded_elements">[docs]</a>    <span class="k">def</span> <span class="nf">count_bonded_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Count number of bonded atoms with same element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element:  element type for test.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            number of bonded atoms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_bonded_elements</span><span class="p">(</span><span class="n">element</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="Atom.get_bonded_elements"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.get_bonded_elements">[docs]</a>    <span class="k">def</span> <span class="nf">get_bonded_elements</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get bonded atoms with same element.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            element:  element type for test.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            array of bonded atoms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">bond_atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">bond_atom</span><span class="o">.</span><span class="n">element</span> <span class="o">==</span> <span class="n">element</span><span class="p">:</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bond_atom</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="Atom.get_bonded_heavy_atoms"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.get_bonded_heavy_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">get_bonded_heavy_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the atoms bonded to this one that aren&#39;t hydrogen.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of atoms.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">ba</span> <span class="k">for</span> <span class="n">ba</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonded_atoms</span> <span class="k">if</span> <span class="n">ba</span><span class="o">.</span><span class="n">element</span> <span class="o">!=</span> <span class="s1">&#39;H&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Atom.is_atom_within_bond_distance"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.is_atom_within_bond_distance">[docs]</a>    <span class="k">def</span> <span class="nf">is_atom_within_bond_distance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_atom</span><span class="p">,</span> <span class="n">max_bonds</span><span class="p">,</span> <span class="n">cur_bond</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if &lt;other_atom&gt; is found within &lt;max_bonds&gt; bonds of self.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other_atom:  atom to check</span>
+<span class="sd">            max_bonds:  number of bonds to check for other atom bonding to self</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            Boolean for atom bond distance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">ba</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ba</span> <span class="o">==</span> <span class="n">other_atom</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">max_bonds</span> <span class="o">&gt;</span> <span class="n">cur_bond</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">ba</span><span class="o">.</span><span class="n">is_atom_within_bond_distance</span><span class="p">(</span><span class="n">other_atom</span><span class="p">,</span> <span class="n">max_bonds</span><span class="p">,</span>
+                                                   <span class="n">cur_bond</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="Atom.set_property"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.set_property">[docs]</a>    <span class="k">def</span> <span class="nf">set_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">res_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chain_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">res_num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">occ</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                     <span class="n">beta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set properties of the atom object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            numb:  Atom number</span>
+<span class="sd">            name:  Atom name</span>
+<span class="sd">            res_name:  residue name</span>
+<span class="sd">            chain_id:  chain ID</span>
+<span class="sd">            res_num:  residue number</span>
+<span class="sd">            x:  atom x-coordinate</span>
+<span class="sd">            y:  atom y-coordinate</span>
+<span class="sd">            z:  atom z-coordinate</span>
+<span class="sd">            occ:  atom occupancy</span>
+<span class="sd">            beta:  atom temperature factor</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">numb</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">numb</span> <span class="o">=</span> <span class="n">numb</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">if</span> <span class="n">res_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">res_name</span> <span class="o">=</span> <span class="n">res_name</span>
+        <span class="k">if</span> <span class="n">chain_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chain_id</span> <span class="o">=</span> <span class="n">chain_id</span>
+        <span class="k">if</span> <span class="n">res_num</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">res_num</span> <span class="o">=</span> <span class="n">res_num</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="n">z</span>
+        <span class="k">if</span> <span class="n">occ</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="n">occ</span>
+        <span class="k">if</span> <span class="n">beta</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="n">beta</span></div>
+
+<div class="viewcode-block" id="Atom.make_copy"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.make_copy">[docs]</a>    <span class="k">def</span> <span class="nf">make_copy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Make a copy of this atom.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            Another atom object copy of this one.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_atom</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">()</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">numb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numb</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">res_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">res_name</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">res_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">res_num</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">chain_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain_id</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminal</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">residue_label</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">residue_label</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">icode</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">icode</span>
+        <span class="k">return</span> <span class="n">new_atom</span></div>
+
+<div class="viewcode-block" id="Atom.make_input_line"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.make_input_line">[docs]</a>    <span class="k">def</span> <span class="nf">make_input_line</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;PDB line for this atom.</span>
+
+<span class="sd">        TODO - Could be @property method/attribute</span>
+<span class="sd">        TODO - figure out difference between make_pdb_line, make_input_line,</span>
+<span class="sd">               and make_pdb_line2</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            String with PDB-format line.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+        <span class="n">model_pka</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="p">:</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">type</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">terminal</span> <span class="o">==</span> <span class="s1">&#39;C-&#39;</span><span class="p">:</span>
+                <span class="n">group</span> <span class="o">=</span> <span class="s1">&#39;C-&#39;</span> <span class="c1">## circumventing C-/COO parameter unification</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">titratable</span><span class="p">:</span>
+                <span class="n">model_pka</span> <span class="o">=</span> <span class="n">PKA_FMT</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">model_pka</span><span class="p">)</span>
+        <span class="n">str_</span> <span class="o">=</span> <span class="n">INPUT_LINE_FMT</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">atom_label</span><span class="o">=</span><span class="n">make_tidy_atom_label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="p">),</span>
+            <span class="n">group</span><span class="o">=</span><span class="n">group</span><span class="p">,</span> <span class="n">pka</span><span class="o">=</span><span class="n">model_pka</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">str_</span></div>
+
+<div class="viewcode-block" id="Atom.make_conect_line"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.make_conect_line">[docs]</a>    <span class="k">def</span> <span class="nf">make_conect_line</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;PDB line for bonding within this molecule.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            String with PDB line.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="s1">&#39;CONECT</span><span class="si">{0:5d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">numb</span><span class="p">)</span>
+
+        <span class="n">bonded</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">:</span>
+            <span class="n">bonded</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">numb</span><span class="p">)</span>
+        <span class="n">bonded</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">bond</span> <span class="ow">in</span> <span class="n">bonded</span><span class="p">:</span>
+            <span class="n">res</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{0:5d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">bond</span><span class="p">)</span>
+        <span class="n">res</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="Atom.get_input_parameters"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.get_input_parameters">[docs]</a>    <span class="k">def</span> <span class="nf">get_input_parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extract the input parameters stored in the occupancy and b-factor</span>
+<span class="sd">        fields in input files&quot;&quot;&quot;</span>
+        <span class="c1"># Set the group type</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">!=</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+            <span class="c1"># make sure to set the terminal</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;N+&#39;</span><span class="p">,</span> <span class="s1">&#39;C-&#39;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">terminal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span>
+            <span class="c1"># save the ligand group charge</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">==</span> <span class="s1">&#39;BLG&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="o">+</span><span class="mi">1</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">==</span> <span class="s1">&#39;ALG&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">charge</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="c1"># generic ions</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;1P&#39;</span><span class="p">,</span> <span class="s1">&#39;2P&#39;</span><span class="p">,</span> <span class="s1">&#39;1N&#39;</span><span class="p">,</span> <span class="s1">&#39;2N&#39;</span><span class="p">]:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">res_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="s1">&#39;Ion&#39;</span>
+            <span class="c1"># correct the group type</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;N+&#39;</span><span class="p">,</span> <span class="s1">&#39;Nterm&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;C-&#39;</span><span class="p">,</span> <span class="s1">&#39;Cterm&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;ION&#39;</span><span class="p">,</span> <span class="s1">&#39;Ion&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;ALG&#39;</span><span class="p">,</span> <span class="s1">&#39;titratable_ligand&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;BLG&#39;</span><span class="p">,</span> <span class="s1">&#39;titratable_ligand&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;LG&#39;</span><span class="p">,</span> <span class="s1">&#39;non_titratable_ligand&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">group_label</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{0:s}</span><span class="s2">_group&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">occ</span><span class="p">)</span>
+        <span class="c1"># set the model pKa value</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">!=</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">group_model_pka</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">beta</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">group_model_pka_set</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># set occ and beta to standard values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="s1">&#39;1.00&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">beta</span> <span class="o">=</span> <span class="s1">&#39;0.00&#39;</span></div>
+
+<div class="viewcode-block" id="Atom.make_pdb_line"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.make_pdb_line">[docs]</a>    <span class="k">def</span> <span class="nf">make_pdb_line</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create PDB line.</span>
+
+<span class="sd">        TODO - this could/should be a @property method/attribute</span>
+<span class="sd">        TODO - figure out difference between make_pdb_line, make_input_line,</span>
+<span class="sd">               and make_pdb_line2</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            String with PDB line.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">str_</span> <span class="o">=</span> <span class="n">PDB_LINE_FMT1</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">upper</span><span class="p">(),</span> <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">atom_label</span><span class="o">=</span><span class="n">make_tidy_atom_label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">str_</span></div>
+
+<div class="viewcode-block" id="Atom.make_mol2_line"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.make_mol2_line">[docs]</a>    <span class="k">def</span> <span class="nf">make_mol2_line</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">id_</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create MOL2 line.</span>
+
+<span class="sd">        Format: 1      S1     3.6147     2.0531     1.4795     S.3     1       noname  -0.1785</span>
+
+<span class="sd">        TODO - this could/should be a @property method/attribute</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            String with MOL2 line.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">str_</span> <span class="o">=</span> <span class="n">MOL2_LINE_FMT</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="nb">id</span><span class="o">=</span><span class="n">id_</span><span class="p">,</span> <span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
+            <span class="n">atom_label</span><span class="o">=</span><span class="n">make_tidy_atom_label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">str_</span></div>
+
+<div class="viewcode-block" id="Atom.make_pdb_line2"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.make_pdb_line2">[docs]</a>    <span class="k">def</span> <span class="nf">make_pdb_line2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">numb</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">res_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chain_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">res_num</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">occ</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">beta</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a PDB line.</span>
+
+<span class="sd">        TODO - this could/should be a @property method/attribute</span>
+<span class="sd">        TODO - figure out difference between make_pdb_line, make_input_line,</span>
+<span class="sd">               and make_pdb_line2</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            String with PDB line.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">numb</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">numb</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">numb</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">if</span> <span class="n">res_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">res_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">res_name</span>
+        <span class="k">if</span> <span class="n">chain_id</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">chain_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chain_id</span>
+        <span class="k">if</span> <span class="n">res_num</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">res_num</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">res_num</span>
+        <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">x</span>
+        <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">y</span>
+        <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">z</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">z</span>
+        <span class="k">if</span> <span class="n">occ</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">occ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">occ</span>
+        <span class="k">if</span> <span class="n">beta</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">beta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">beta</span>
+        <span class="n">str_</span> <span class="o">=</span> <span class="n">PDB_LINE_FMT2</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">numb</span><span class="o">=</span><span class="n">numb</span><span class="p">,</span> <span class="n">res_name</span><span class="o">=</span><span class="n">res_name</span><span class="p">,</span> <span class="n">chain_id</span><span class="o">=</span><span class="n">chain_id</span><span class="p">,</span> <span class="n">res_num</span><span class="o">=</span><span class="n">res_num</span><span class="p">,</span>
+            <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z</span><span class="p">,</span> <span class="n">occ</span><span class="o">=</span><span class="n">occ</span><span class="p">,</span> <span class="n">beta</span><span class="o">=</span><span class="n">beta</span><span class="p">,</span>
+            <span class="n">atom_label</span><span class="o">=</span><span class="n">make_tidy_atom_label</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">str_</span></div>
+
+<div class="viewcode-block" id="Atom.get_tidy_label"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.get_tidy_label">[docs]</a>    <span class="k">def</span> <span class="nf">get_tidy_label</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a &#39;tidier&#39; atom label for printing the new pdbfile</span>
+
+<span class="sd">        TODO - this could/should be a @property method/attribute</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            String with label&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">make_tidy_atom_label</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">element</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return an undefined-format string version of this atom.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">STR_FMT</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">r</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Atom.set_residue"><a class="viewcode-back" href="../../api/propka.atom.html#propka.atom.Atom.set_residue">[docs]</a>    <span class="k">def</span> <span class="nf">set_residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">residue</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Makes a reference to the parent residue</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            residue:  the parent residue</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">residue</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">residue</span> <span class="o">=</span> <span class="n">residue</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,615 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>propka.lib &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">2. Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">3. API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>propka.lib</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for propka.lib</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Set-up of a PROPKA calculation</span>
+<span class="sd">==============================</span>
+
+<span class="sd">Implements many of the main functions used to call PROPKA.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">pkg_resources</span>
+
+
+<span class="n">_LOGGER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;propka&quot;</span><span class="p">)</span>
+<span class="n">_STDOUT_HANDLER</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="p">)</span>
+<span class="n">_STDOUT_HANDLER</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">Formatter</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">))</span>
+<span class="n">_LOGGER</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="n">_STDOUT_HANDLER</span><span class="p">)</span>
+
+
+<span class="n">EXPECTED_ATOM_NUMBERS</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;ALA&#39;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;ARG&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;ASN&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;ASP&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;CYS&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span>
+                         <span class="s1">&#39;GLY&#39;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span> <span class="s1">&#39;GLN&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;GLU&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;HIS&#39;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="s1">&#39;ILE&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+                         <span class="s1">&#39;LEU&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;LYS&#39;</span><span class="p">:</span> <span class="mi">9</span><span class="p">,</span> <span class="s1">&#39;MET&#39;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span> <span class="s1">&#39;PHE&#39;</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span> <span class="s1">&#39;PRO&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span>
+                         <span class="s1">&#39;SER&#39;</span><span class="p">:</span> <span class="mi">6</span><span class="p">,</span> <span class="s1">&#39;THR&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">,</span> <span class="s1">&#39;TRP&#39;</span><span class="p">:</span> <span class="mi">14</span><span class="p">,</span> <span class="s1">&#39;TYR&#39;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span> <span class="s1">&#39;VAL&#39;</span><span class="p">:</span> <span class="mi">7</span><span class="p">}</span>
+
+
+<div class="viewcode-block" id="protein_precheck"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.protein_precheck">[docs]</a><span class="k">def</span> <span class="nf">protein_precheck</span><span class="p">(</span><span class="n">conformations</span><span class="p">,</span> <span class="n">names</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Check protein for correct number of atoms, etc.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        names:  conformation names to check</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">names</span><span class="p">:</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="n">conformations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">atoms</span>
+        <span class="c1"># Group the atoms by their residue:</span>
+        <span class="n">atoms_by_residue</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">element</span> <span class="o">!=</span> <span class="s1">&#39;H&#39;</span><span class="p">:</span>
+                <span class="n">res_id</span> <span class="o">=</span> <span class="n">resid_from_atom</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">atoms_by_residue</span><span class="p">[</span><span class="n">res_id</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="n">atoms_by_residue</span><span class="p">[</span><span class="n">res_id</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">res_id</span><span class="p">,</span> <span class="n">res_atoms</span> <span class="ow">in</span> <span class="n">atoms_by_residue</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">res_name</span> <span class="o">=</span> <span class="n">res_atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">res_name</span>
+            <span class="n">residue_label</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:&gt;3s}{1:&gt;5s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">res_name</span><span class="p">,</span> <span class="n">res_id</span><span class="p">)</span>
+            <span class="c1"># ignore ligand residues</span>
+            <span class="k">if</span> <span class="n">res_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">EXPECTED_ATOM_NUMBERS</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># check for c-terminal</span>
+            <span class="k">if</span> <span class="s1">&#39;C-&#39;</span> <span class="ow">in</span> <span class="p">[</span><span class="n">a</span><span class="o">.</span><span class="n">terminal</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">res_atoms</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res_atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="n">EXPECTED_ATOM_NUMBERS</span><span class="p">[</span><span class="n">res_name</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">:</span>
+                    <span class="n">str_</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Unexpected number (</span><span class="si">{num:d}</span><span class="s2">) of atoms in residue &quot;</span>
+                            <span class="s2">&quot;</span><span class="si">{res:s}</span><span class="s2"> in conformation </span><span class="si">{conf:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">res_atoms</span><span class="p">),</span> <span class="n">res</span><span class="o">=</span><span class="n">residue_label</span><span class="p">,</span>
+                                <span class="n">conf</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
+                    <span class="n">warning</span><span class="p">(</span><span class="n">str_</span><span class="p">)</span>
+                <span class="k">continue</span>
+            <span class="c1"># check number of atoms in residue</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res_atoms</span><span class="p">)</span> <span class="o">!=</span> <span class="n">EXPECTED_ATOM_NUMBERS</span><span class="p">[</span><span class="n">res_name</span><span class="p">]:</span>
+                <span class="n">str_</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Unexpected number (</span><span class="si">{num:d}</span><span class="s2">) of atoms in residue &quot;</span>
+                        <span class="s2">&quot;</span><span class="si">{res:s}</span><span class="s2"> in conformation </span><span class="si">{conf:s}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">num</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">res_atoms</span><span class="p">),</span> <span class="n">res</span><span class="o">=</span><span class="n">residue_label</span><span class="p">,</span>
+                            <span class="n">conf</span><span class="o">=</span><span class="n">name</span><span class="p">))</span>
+                <span class="n">warning</span><span class="p">(</span><span class="n">str_</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="resid_from_atom"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.resid_from_atom">[docs]</a><span class="k">def</span> <span class="nf">resid_from_atom</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Return string with atom residue information.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        atom:  atom to generate string for</span>
+<span class="sd">    Returns</span>
+<span class="sd">        string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0:&gt;4d}</span><span class="s1"> </span><span class="si">{1:s}</span><span class="s1"> </span><span class="si">{2:s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">atom</span><span class="o">.</span><span class="n">res_num</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">chain_id</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">icode</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="split_atoms_into_molecules"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.split_atoms_into_molecules">[docs]</a><span class="k">def</span> <span class="nf">split_atoms_into_molecules</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Maps atoms into molecules.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        atoms:  list of atoms</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        list of molecules</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">molecules</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">initial_atom</span> <span class="o">=</span> <span class="n">atoms</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="n">molecules</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">make_molecule</span><span class="p">(</span><span class="n">initial_atom</span><span class="p">,</span> <span class="n">atoms</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">molecules</span></div>
+
+
+<div class="viewcode-block" id="make_molecule"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.make_molecule">[docs]</a><span class="k">def</span> <span class="nf">make_molecule</span><span class="p">(</span><span class="n">atom</span><span class="p">,</span> <span class="n">atoms</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a molecule from atoms.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        atom:  one of the atoms</span>
+<span class="sd">        atoms:  a list of the remaining atoms</span>
+<span class="sd">    Return:</span>
+<span class="sd">        list of atoms</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">bonded_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">atoms</span> <span class="k">if</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">a</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">]</span>
+    <span class="n">res_atoms</span> <span class="o">=</span> <span class="p">[</span><span class="n">atom</span><span class="p">,]</span>
+    <span class="k">for</span> <span class="n">bond_atom</span> <span class="ow">in</span> <span class="n">bonded_atoms</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">bond_atom</span> <span class="ow">in</span> <span class="n">atoms</span><span class="p">:</span>
+            <span class="n">atoms</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">bond_atom</span><span class="p">)</span>
+            <span class="n">res_atoms</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">make_molecule</span><span class="p">(</span><span class="n">bond_atom</span><span class="p">,</span> <span class="n">atoms</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">res_atoms</span></div>
+
+
+<div class="viewcode-block" id="make_grid"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.make_grid">[docs]</a><span class="k">def</span> <span class="nf">make_grid</span><span class="p">(</span><span class="n">min_</span><span class="p">,</span> <span class="n">max_</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a grid across the specified tange.</span>
+
+<span class="sd">    TODO - figure out if this duplicates existing generators like `range` or</span>
+<span class="sd">    numpy function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        min_:  minimum value of grid</span>
+<span class="sd">        max_:  maximum value of grid</span>
+<span class="sd">        step:  grid step size</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">min_</span>
+    <span class="k">while</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">max_</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">x</span>
+        <span class="n">x</span> <span class="o">+=</span> <span class="n">step</span></div>
+
+
+<div class="viewcode-block" id="generate_combinations"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.generate_combinations">[docs]</a><span class="k">def</span> <span class="nf">generate_combinations</span><span class="p">(</span><span class="n">interactions</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate combinations of interactions.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        interactions:  list of interactions</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        list of combinations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[[]]</span>
+    <span class="k">for</span> <span class="n">interaction</span> <span class="ow">in</span> <span class="n">interactions</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">make_combination</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="n">interaction</span><span class="p">)</span>
+    <span class="n">res</span><span class="o">.</span><span class="n">remove</span><span class="p">([])</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="make_combination"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.make_combination">[docs]</a><span class="k">def</span> <span class="nf">make_combination</span><span class="p">(</span><span class="n">combis</span><span class="p">,</span> <span class="n">interaction</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Make a specific set of combinations.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        combis:  list of combinations</span>
+<span class="sd">        interaction:  interaction to add to combinations</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        list of combinations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">combi</span> <span class="ow">in</span> <span class="n">combis</span><span class="p">:</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">combi</span><span class="o">+</span><span class="p">[</span><span class="n">interaction</span><span class="p">])</span>
+        <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">combi</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span></div>
+
+
+<div class="viewcode-block" id="parse_res_string"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.parse_res_string">[docs]</a><span class="k">def</span> <span class="nf">parse_res_string</span><span class="p">(</span><span class="n">res_str</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parse a residue string.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        res_string:  residue string in format &quot;chain:resnum[inscode]&quot;</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        a tuple of (chain, resnum, inscode).</span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError if the input string is invalid.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">chain</span><span class="p">,</span> <span class="n">resnum_str</span> <span class="o">=</span> <span class="n">res_str</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid residue string (must contain 2 &quot;</span>
+                         <span class="s2">&quot;colon-separated values)&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">resnum</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resnum_str</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">resnum</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">resnum_str</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Invalid residue number (not an int)&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inscode</span> <span class="o">=</span> <span class="n">resnum_str</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">inscode</span> <span class="o">=</span> <span class="s2">&quot; &quot;</span>
+    <span class="k">return</span> <span class="n">chain</span><span class="p">,</span> <span class="n">resnum</span><span class="p">,</span> <span class="n">inscode</span></div>
+
+
+<div class="viewcode-block" id="build_parser"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.build_parser">[docs]</a><span class="k">def</span> <span class="nf">build_parser</span><span class="p">(</span><span class="n">parser</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Build an argument parser for PROPKA.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        parser:  existing parser. If this is not None, then the PROPKA parser will</span>
+<span class="sd">                 be created as a subparser to this existing parser.  Otherwise, a</span>
+<span class="sd">                 new parser will be created.</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        ArgumentParser object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">parser</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;PROPKA invoation options&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span>
+            <span class="n">description</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;PROPKA predicts the pKa values of ionizable &quot;</span>
+                         <span class="s2">&quot;groups in proteins and protein-ligand &quot;</span>
+                         <span class="s2">&quot;complexes based in the 3D structure&quot;</span><span class="p">),</span>
+            <span class="n">formatter_class</span><span class="o">=</span><span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentDefaultsHelpFormatter</span><span class="p">)</span>
+        <span class="c1"># This is duck-typing at its finest</span>
+        <span class="n">group</span> <span class="o">=</span> <span class="n">parser</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s2">&quot;input_pdb&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;read data from &lt;filename&gt;&quot;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-f&quot;</span><span class="p">,</span> <span class="s2">&quot;--file&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;append&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;filenames&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="p">[],</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;read data from &lt;filename&gt;, i.e. &lt;filename&gt; is added to arguments&quot;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-r&quot;</span><span class="p">,</span> <span class="s2">&quot;--reference&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;reference&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;neutral&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;setting which reference to use for stability calculations &quot;</span>
+              <span class="s2">&quot;[neutral/low-pH]&quot;</span><span class="p">))</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-c&quot;</span><span class="p">,</span> <span class="s2">&quot;--chain&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;append&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;chains&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;creating the protein with only a specified chain. Specify &#39;</span>
+              <span class="s1">&#39;&quot; &quot; for chains without ID [all]&#39;</span><span class="p">))</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-i&quot;</span><span class="p">,</span> <span class="s2">&quot;--titrate_only&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;titrate_only&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39;Treat only the specified residues as titratable. Value should &#39;</span>
+              <span class="s1">&#39;be a comma-separated list of &quot;chain:resnum&quot; values; for example: &#39;</span>
+              <span class="s1">&#39;-i &quot;A:10,A:11&quot;&#39;</span><span class="p">))</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-t&quot;</span><span class="p">,</span> <span class="s2">&quot;--thermophile&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;append&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;thermophiles&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;defining a thermophile filename; usually used in &quot;</span>
+              <span class="s2">&quot;&#39;alignment-mutations&#39;&quot;</span><span class="p">))</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-a&quot;</span><span class="p">,</span> <span class="s2">&quot;--alignment&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;append&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;alignment&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;alignment file connecting &lt;filename&gt; and &lt;thermophile&gt; &quot;</span>
+              <span class="s2">&quot;[&lt;thermophile&gt;.pir]&quot;</span><span class="p">))</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;--mutation&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;append&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;mutations&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;specifying mutation labels which is used to modify &quot;</span>
+              <span class="s2">&quot;&lt;filename&gt; according to, e.g. N25R/N181D&quot;</span><span class="p">))</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="s2">&quot;--version&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;version_label&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;Jan15&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;specifying the sub-version of propka [Jan15/Dec19]&quot;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="s2">&quot;--parameters&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;parameters&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">pkg_resources</span><span class="o">.</span><span class="n">resource_filename</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;propka.cfg&quot;</span><span class="p">),</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;set the parameter file [</span><span class="si">{default:s}</span><span class="s2">]&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+            <span class="s2">&quot;--log-level&quot;</span><span class="p">,</span>
+            <span class="n">choices</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">,</span> <span class="s2">&quot;INFO&quot;</span><span class="p">,</span> <span class="s2">&quot;WARNING&quot;</span><span class="p">,</span> <span class="s2">&quot;ERROR&quot;</span><span class="p">,</span> <span class="s2">&quot;CRITICAL&quot;</span><span class="p">],</span>
+            <span class="n">help</span><span class="o">=</span><span class="s2">&quot;logging level verbosity&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="s2">&quot;INFO&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentError</span><span class="p">:</span>
+        <span class="c1"># It is possible that --log-level has already been set by APBS</span>
+        <span class="k">pass</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-o&quot;</span><span class="p">,</span> <span class="s2">&quot;--pH&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;pH&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">7.0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;setting pH-value used in e.g. stability calculations [7.0]&quot;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-w&quot;</span><span class="p">,</span> <span class="s2">&quot;--window&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;window&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">14.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;setting the pH-window to show e.g. stability profiles &quot;</span>
+              <span class="s2">&quot;[0.0, 14.0, 1.0]&quot;</span><span class="p">))</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-g&quot;</span><span class="p">,</span> <span class="s2">&quot;--grid&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;grid&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">14.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;setting the pH-grid to calculate e.g. stability &quot;</span>
+              <span class="s2">&quot;related properties [0.0, 14.0, 0.1]&quot;</span><span class="p">))</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--mutator&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;mutator&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;setting approach for mutating &lt;filename&gt; [alignment/scwrl/jackal]&quot;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--mutator-option&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;mutator_options&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;append&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;setting property for mutator [e.g. type=</span><span class="se">\&quot;</span><span class="s2">side-chain</span><span class="se">\&quot;</span><span class="s2">]&quot;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-d&quot;</span><span class="p">,</span> <span class="s2">&quot;--display-coupled-residues&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;display_coupled_residues&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Displays alternative pKa values due &quot;</span>
+              <span class="s2">&quot;to coupling of titratable groups&quot;</span><span class="p">))</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-l&quot;</span><span class="p">,</span> <span class="s2">&quot;--reuse-ligand-mol2-files&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;reuse_ligand_mol2_file&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;Reuses the ligand mol2 files allowing the user to alter &quot;</span>
+              <span class="s2">&quot;ligand bond orders&quot;</span><span class="p">))</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-k&quot;</span><span class="p">,</span> <span class="s2">&quot;--keep-protons&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;keep_protons&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Keep protons in input file&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-q&quot;</span><span class="p">,</span> <span class="s2">&quot;--quiet&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_const&quot;</span><span class="p">,</span> <span class="n">const</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;log_level&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;suppress non-warning messages&quot;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--generate-propka-input&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Generate a PROPKA input file&quot;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--protonate-all&quot;</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;protonate_all&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Protonate all atoms (will not influence pKa calculation)&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">parser</span></div>
+
+
+<div class="viewcode-block" id="loadOptions"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.loadOptions">[docs]</a><span class="k">def</span> <span class="nf">loadOptions</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load the arguments parser with options. Note that verbosity is set as soon</span>
+<span class="sd">    as this function is invoked.</span>
+
+<span class="sd">    Arguments:</span>
+<span class="sd">        args:  list of arguments</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        argparse namespace</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># loading the parser</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">build_parser</span><span class="p">()</span>
+    <span class="c1"># parsing and returning options and arguments</span>
+    <span class="n">options</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="c1"># adding specified filenames to arguments</span>
+    <span class="n">options</span><span class="o">.</span><span class="n">filenames</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">input_pdb</span><span class="p">)</span>
+    <span class="c1"># Convert titrate_only string to a list of (chain, resnum) items:</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">titrate_only</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">res_list</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">res_str</span> <span class="ow">in</span> <span class="n">options</span><span class="o">.</span><span class="n">titrate_only</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">chain</span><span class="p">,</span> <span class="n">resnum</span><span class="p">,</span> <span class="n">inscode</span> <span class="o">=</span> <span class="n">parse_res_string</span><span class="p">(</span><span class="n">res_str</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="n">_LOGGER</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span>
+                    <span class="s1">&#39;Invalid residue string: &quot;</span><span class="si">{0:s}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">res_str</span><span class="p">))</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">res_list</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">chain</span><span class="p">,</span> <span class="n">resnum</span><span class="p">,</span> <span class="n">inscode</span><span class="p">))</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">titrate_only</span> <span class="o">=</span> <span class="n">res_list</span>
+    <span class="c1"># Set the no-print variable</span>
+    <span class="n">level</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">logging</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">log_level</span><span class="p">)</span>
+    <span class="n">_LOGGER</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+    <span class="c1"># done!</span>
+    <span class="k">return</span> <span class="n">options</span></div>
+
+
+<div class="viewcode-block" id="make_tidy_atom_label"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.make_tidy_atom_label">[docs]</a><span class="k">def</span> <span class="nf">make_tidy_atom_label</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">element</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Returns a &#39;tidier&#39; atom label for printing to the new PDB file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name:  atom name</span>
+<span class="sd">        element:  atom element</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">:</span> <span class="c1"># if longer than 4, just truncate the name</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">name</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">==</span> <span class="mi">4</span><span class="p">:</span> <span class="c1"># if length is 4, otherwise use the name as it is</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">name</span>
+    <span class="k">else</span><span class="p">:</span> <span class="c1"># if less than 4 characters long, insert white space as needed</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">element</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39; </span><span class="si">{0:&lt;3s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span> <span class="c1"># The element should occupy the two first chars</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0:&lt;4s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">label</span></div>
+
+
+<div class="viewcode-block" id="get_sorted_configurations"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.get_sorted_configurations">[docs]</a><span class="k">def</span> <span class="nf">get_sorted_configurations</span><span class="p">(</span><span class="n">configuration_keys</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Extract and sort configurations.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        configuration_keys:  list of configuration keys</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        list of configurations</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">configurations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">configuration_keys</span><span class="p">)</span>
+    <span class="n">configurations</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">configuration_compare</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">configurations</span></div>
+
+
+<div class="viewcode-block" id="configuration_compare"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.configuration_compare">[docs]</a><span class="k">def</span> <span class="nf">configuration_compare</span><span class="p">(</span><span class="n">conf</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;TODO - figure out what this function does.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="mi">100</span><span class="o">*</span><span class="nb">int</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="o">+</span> <span class="nb">ord</span><span class="p">(</span><span class="n">conf</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span></div>
+
+
+<span class="k">def</span> <span class="nf">_args_to_str</span><span class="p">(</span><span class="n">arg_list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Summarize list of arguments in string.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        arg_list:  list of arguments</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">arg_list</span><span class="p">))</span>
+
+
+<div class="viewcode-block" id="info"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.info">[docs]</a><span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Log a message to info.</span>
+
+<span class="sd">    Level defaults to INFO unless overridden.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        args:  argument list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_LOGGER</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">_args_to_str</span><span class="p">(</span><span class="n">args</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="debug"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.debug">[docs]</a><span class="k">def</span> <span class="nf">debug</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Log a message to debug.</span>
+
+<span class="sd">    Level defaults to DEBUG unless overridden.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        args:  argument list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_LOGGER</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">_args_to_str</span><span class="p">(</span><span class="n">args</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="warning"><a class="viewcode-back" href="../../api/propka.lib.html#propka.lib.warning">[docs]</a><span class="k">def</span> <span class="nf">warning</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Log a message to warning.</span>
+
+<span class="sd">    Level defaults to WARNING unless overridden.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        args:  argument list</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_LOGGER</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="n">_args_to_str</span><span class="p">(</span><span class="n">args</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,37 @@
+propka.conformation\_container
+==============================
+
+.. automodule:: propka.conformation_container
+   :members:
+   
+   
+   
+   .. rubric:: Module Attributes
+
+   .. autosummary::
+   
+      UNICODE_MULTIPLIER
+      RESIDUE_MULTIPLIER
+   
+   
+
+   
+   
+   
+
+   
+   
+   .. rubric:: Classes
+
+   .. autosummary::
+   
+      ConformationContainer
+   
+   
+
+   
+   
+   
+
+
+

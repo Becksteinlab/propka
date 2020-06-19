@@ -1,0 +1,816 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>propka.conformation_container &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">2. Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">3. API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>propka.conformation_container</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for propka.conformation_container</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Molecular data structures</span>
+<span class="sd">=========================</span>
+
+<span class="sd">Container data structure for molecular conformations.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">propka.ligand</span>
+<span class="kn">from</span> <span class="nn">propka.output</span> <span class="kn">import</span> <span class="n">make_interaction_map</span>
+<span class="kn">from</span> <span class="nn">propka.determinant</span> <span class="kn">import</span> <span class="n">Determinant</span>
+<span class="kn">from</span> <span class="nn">propka.coupled_groups</span> <span class="kn">import</span> <span class="n">NCCG</span>
+<span class="kn">from</span> <span class="nn">propka.determinants</span> <span class="kn">import</span> <span class="n">set_backbone_determinants</span><span class="p">,</span> <span class="n">set_ion_determinants</span>
+<span class="kn">from</span> <span class="nn">propka.determinants</span> <span class="kn">import</span> <span class="n">set_determinants</span>
+<span class="kn">from</span> <span class="nn">propka.group</span> <span class="kn">import</span> <span class="n">Group</span><span class="p">,</span> <span class="n">is_group</span>
+<span class="kn">from</span> <span class="nn">propka.lib</span> <span class="kn">import</span> <span class="n">info</span>
+
+
+<span class="c1">#: A large number that gets multipled with the integer obtained from applying</span>
+<span class="c1">#: :func:`ord` to the atom chain ID.  Used in calculating atom keys for sorting.</span>
+<span class="n">UNICODE_MULTIPLIER</span> <span class="o">=</span> <span class="mf">1e7</span>
+
+<span class="c1">#: A number that gets mutiplied with an atom&#39;s residue number.  Used in</span>
+<span class="c1">#: calculating keys for atom sorting.</span>
+<span class="n">RESIDUE_MULTIPLIER</span> <span class="o">=</span> <span class="mi">1000</span>
+
+
+<div class="viewcode-block" id="ConformationContainer"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer">[docs]</a><span class="k">class</span> <span class="nc">ConformationContainer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Container for molecular conformations&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">molecular_container</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize conformation container.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name:  name for conformation</span>
+<span class="sd">            parameters:  parmameters for conformation</span>
+<span class="sd">            molecular_container:  container for molecule</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">molecular_container</span> <span class="o">=</span> <span class="n">molecular_container</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="n">parameters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chains</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_iter_item</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">marvin_pkas_calculated</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">non_covalently_coupled_groups</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="ConformationContainer.extract_groups"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.extract_groups">[docs]</a>    <span class="k">def</span> <span class="nf">extract_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate molecular groups needed for calculating pKa values.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_non_hydrogen_atoms</span><span class="p">():</span>
+            <span class="c1"># has this atom been checked for groups?</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">groups_extracted</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">group</span> <span class="o">=</span> <span class="n">is_group</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">atom</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">group</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">group</span>
+                <span class="c1"># if the atom has been checked in a another conformation, check</span>
+                <span class="c1"># if it has a group that should be used in this conformation as well</span>
+            <span class="k">if</span> <span class="n">group</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">setup_and_add_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.additional_setup_when_reading_input_file"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.additional_setup_when_reading_input_file">[docs]</a>    <span class="k">def</span> <span class="nf">additional_setup_when_reading_input_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate interaction map and charge centers.&quot;&quot;&quot;</span>
+        <span class="c1"># if a group is coupled and we are reading a .propka_input file, then</span>
+        <span class="c1"># some more configuration might be needed</span>
+        <span class="n">map_</span> <span class="o">=</span> <span class="n">make_interaction_map</span><span class="p">(</span>
+            <span class="s1">&#39;Covalent coupling map for </span><span class="si">{0:s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_covalently_coupled_groups</span><span class="p">(),</span>
+            <span class="k">lambda</span> <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">:</span> <span class="n">g1</span> <span class="ow">in</span> <span class="n">g2</span><span class="o">.</span><span class="n">covalently_coupled_groups</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="n">map_</span><span class="p">)</span>
+        <span class="c1"># check if we should set a common charge centre as well</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">common_charge_centre</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_common_charge_centres</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.set_common_charge_centres"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.set_common_charge_centres">[docs]</a>    <span class="k">def</span> <span class="nf">set_common_charge_centres</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Assign charge centers to groups.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">system</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_coupled_systems</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_covalently_coupled_groups</span><span class="p">(),</span>
+                <span class="n">Group</span><span class="o">.</span><span class="n">get_covalently_coupled_groups</span><span class="p">):</span>
+            <span class="c1"># make a list of the charge centre coordinates</span>
+            <span class="n">all_coordinates</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="p">[</span><span class="n">g</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">z</span><span class="p">],</span> <span class="n">system</span><span class="p">))</span>
+            <span class="c1"># find the common charge center</span>
+            <span class="n">ccc</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span>
+                <span class="k">lambda</span> <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">:</span> <span class="p">[</span><span class="n">g1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">g2</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">g1</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="n">g2</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">g1</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="n">g2</span><span class="p">[</span><span class="mi">2</span><span class="p">]],</span>
+                <span class="n">all_coordinates</span><span class="p">)</span>
+            <span class="n">ccc</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">c</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">system</span><span class="p">),</span> <span class="n">ccc</span><span class="p">))</span>
+            <span class="c1"># set the ccc for all coupled groups in this system</span>
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">system</span><span class="p">:</span>
+                <span class="p">[</span><span class="n">group</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">y</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">z</span><span class="p">]</span> <span class="o">=</span> <span class="n">ccc</span>
+                <span class="n">group</span><span class="o">.</span><span class="n">common_charge_centre</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.find_covalently_coupled_groups"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.find_covalently_coupled_groups">[docs]</a>    <span class="k">def</span> <span class="nf">find_covalently_coupled_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find covalently coupled groups and set common charge centres.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_titratable_groups</span><span class="p">():</span>
+            <span class="c1"># Find covalently bonded groups</span>
+            <span class="n">bonded_groups</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_bonded_titratable_groups</span><span class="p">(</span>
+                <span class="n">group</span><span class="o">.</span><span class="n">atom</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">group</span><span class="o">.</span><span class="n">atom</span><span class="p">)</span>
+            <span class="c1"># coupled groups</span>
+            <span class="k">for</span> <span class="n">bond_group</span> <span class="ow">in</span> <span class="n">bonded_groups</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">bond_group</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">covalently_coupled_groups</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">if</span> <span class="n">bond_group</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">sybyl_type</span> <span class="o">==</span> <span class="n">group</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">sybyl_type</span><span class="p">:</span>
+                    <span class="n">group</span><span class="o">.</span><span class="n">couple_covalently</span><span class="p">(</span><span class="n">bond_group</span><span class="p">)</span>
+        <span class="c1"># check if we should set a common charge centre as well</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">common_charge_centre</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_common_charge_centres</span><span class="p">()</span>
+        <span class="c1"># print coupling map</span>
+        <span class="n">map_</span> <span class="o">=</span> <span class="n">make_interaction_map</span><span class="p">(</span>
+            <span class="s1">&#39;Covalent coupling map for </span><span class="si">{0:s}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_covalently_coupled_groups</span><span class="p">(),</span>
+            <span class="k">lambda</span> <span class="n">g1</span><span class="p">,</span> <span class="n">g2</span><span class="p">:</span> <span class="n">g1</span> <span class="ow">in</span> <span class="n">g2</span><span class="o">.</span><span class="n">covalently_coupled_groups</span><span class="p">)</span>
+        <span class="n">info</span><span class="p">(</span><span class="n">map_</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.find_non_covalently_coupled_groups"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.find_non_covalently_coupled_groups">[docs]</a>    <span class="k">def</span> <span class="nf">find_non_covalently_coupled_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find non-covalently coupled groups and set common charge centres.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            verbose:  verbose output</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># check if non-covalent coupling has already been set up in an input file</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">non_covalently_coupled_groups</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">get_titratable_groups</span><span class="p">())))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">non_covalently_coupled_groups</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="n">NCCG</span><span class="o">.</span><span class="n">identify_non_covalently_coupled_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span>
+        <span class="c1"># re-do the check</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">non_covalently_coupled_groups</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">get_titratable_groups</span><span class="p">())))</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">non_covalently_coupled_groups</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.find_bonded_titratable_groups"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.find_bonded_titratable_groups">[docs]</a>    <span class="k">def</span> <span class="nf">find_bonded_titratable_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">,</span> <span class="n">num_bonds</span><span class="p">,</span> <span class="n">original_atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find bonded titrable groups.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom:  atom to check for bonds</span>
+<span class="sd">            num_bonds:  number of bonds for coupling</span>
+<span class="sd">            original_atom:  another atom to check for bonds</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            a set of bonded atom groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">bond_atom</span> <span class="ow">in</span> <span class="n">atom</span><span class="o">.</span><span class="n">bonded_atoms</span><span class="p">:</span>
+            <span class="c1"># skip the original atom</span>
+            <span class="k">if</span> <span class="n">bond_atom</span> <span class="o">==</span> <span class="n">original_atom</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="c1"># check if this atom has a titratable group</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">bond_atom</span><span class="o">.</span><span class="n">group</span> <span class="ow">and</span> <span class="n">bond_atom</span><span class="o">.</span><span class="n">group</span><span class="o">.</span><span class="n">titratable</span>
+                    <span class="ow">and</span> <span class="n">num_bonds</span>
+                    <span class="o">&lt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">coupling_max_number_of_bonds</span><span class="p">):</span>
+                <span class="n">res</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">bond_atom</span><span class="o">.</span><span class="n">group</span><span class="p">)</span>
+            <span class="c1"># check for titratable groups bonded to this atom</span>
+            <span class="k">if</span> <span class="n">num_bonds</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">coupling_max_number_of_bonds</span><span class="p">:</span>
+                <span class="n">res</span> <span class="o">|=</span> <span class="bp">self</span><span class="o">.</span><span class="n">find_bonded_titratable_groups</span><span class="p">(</span>
+                    <span class="n">bond_atom</span><span class="p">,</span> <span class="n">num_bonds</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">original_atom</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">res</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.setup_and_add_group"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.setup_and_add_group">[docs]</a>    <span class="k">def</span> <span class="nf">setup_and_add_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Check if we want to include this group in the calculations.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group:  group to check</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Is it recognized as a group at all?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">group</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="c1"># Other checks (include ligands, which chains etc.)</span>
+        <span class="c1"># if all ok, accept the group</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.init_group"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.init_group">[docs]</a>    <span class="k">def</span> <span class="nf">init_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the given Group object.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group:  group object to initialize</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># set up the group</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="n">group</span><span class="o">.</span><span class="n">setup</span><span class="p">()</span>
+
+        <span class="c1"># If --titrate_only option is set, make non-specified residues</span>
+        <span class="c1"># un-titratable:</span>
+        <span class="n">titrate_only</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecular_container</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">titrate_only</span>
+        <span class="k">if</span> <span class="n">titrate_only</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">atom</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">atom</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">chain_id</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">res_num</span><span class="p">,</span> <span class="n">atom</span><span class="o">.</span><span class="n">icode</span><span class="p">)</span> <span class="ow">in</span> <span class="n">titrate_only</span><span class="p">:</span>
+                <span class="n">group</span><span class="o">.</span><span class="n">titratable</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">residue_type</span> <span class="o">==</span> <span class="s1">&#39;CYS&#39;</span><span class="p">:</span>
+                    <span class="n">group</span><span class="o">.</span><span class="n">exclude_cys_from_results</span> <span class="o">=</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.calculate_pka"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.calculate_pka">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pka</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate pKas for conformation container.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            version:  version object</span>
+<span class="sd">            options:  option object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">info</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Calculating pKas for&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># calculate desolvation</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_titratable_groups</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ions</span><span class="p">():</span>
+            <span class="n">version</span><span class="o">.</span><span class="n">calculate_desolvation</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+        <span class="c1"># calculate backbone interactions</span>
+        <span class="n">set_backbone_determinants</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_titratable_groups</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_backbone_groups</span><span class="p">(),</span> <span class="n">version</span><span class="p">)</span>
+        <span class="c1"># setting ion determinants</span>
+        <span class="n">set_ion_determinants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
+        <span class="c1"># calculating the back-bone reorganization/desolvation term</span>
+        <span class="n">version</span><span class="o">.</span><span class="n">calculate_backbone_reorganization</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="c1"># setting remaining non-iterative and iterative side-chain &amp; Coulomb</span>
+        <span class="c1"># interaction determinants</span>
+        <span class="n">set_determinants</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_sidechain_groups</span><span class="p">(),</span> <span class="n">version</span><span class="o">=</span><span class="n">version</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">)</span>
+        <span class="c1"># calculating the total pKa values</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+            <span class="n">group</span><span class="o">.</span><span class="n">calculate_total_pka</span><span class="p">()</span>
+        <span class="c1"># take coupling effects into account</span>
+        <span class="n">penalised_labels</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coupling_effects</span><span class="p">()</span>
+        <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">remove_penalised_group</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">penalised_labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">info</span><span class="p">(</span><span class="s1">&#39;Removing penalised groups!!!&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_titratable_groups</span><span class="p">():</span>
+                <span class="n">group</span><span class="o">.</span><span class="n">remove_determinants</span><span class="p">(</span><span class="n">penalised_labels</span><span class="p">)</span>
+            <span class="c1"># re-calculating the total pKa values</span>
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="n">group</span><span class="o">.</span><span class="n">calculate_total_pka</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.coupling_effects"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.coupling_effects">[docs]</a>    <span class="k">def</span> <span class="nf">coupling_effects</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Penalize groups based on coupling effects.</span>
+
+<span class="sd">        Bases: The group with the highest pKa (the most stable one in the</span>
+<span class="sd">        charged form) will be the first one to adopt a proton as pH is lowered</span>
+<span class="sd">        and this group is allowed to titrate. The remaining groups are</span>
+<span class="sd">        penalised.</span>
+
+<span class="sd">        Acids: The group with the highest pKa (the least stable one in the</span>
+<span class="sd">        charged form) will be the last group to loose the proton as pH is</span>
+<span class="sd">        raised and will be penalised. The remaining groups are allowed to</span>
+<span class="sd">        titrate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">penalised_labels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">all_groups</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_coupled_systems</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_covalently_coupled_groups</span><span class="p">(),</span>
+                <span class="n">Group</span><span class="o">.</span><span class="n">get_covalently_coupled_groups</span><span class="p">):</span>
+            <span class="c1"># check if we should share determinants</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">shared_determinants</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">share_determinants</span><span class="p">(</span><span class="n">all_groups</span><span class="p">)</span>
+            <span class="c1"># find the group that has the highest pKa value</span>
+            <span class="n">first_group</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">all_groups</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">pka_value</span><span class="p">)</span>
+            <span class="c1"># In case of acids</span>
+            <span class="k">if</span> <span class="n">first_group</span><span class="o">.</span><span class="n">charge</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">first_group</span><span class="o">.</span><span class="n">coupled_titrating_group</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span>
+                    <span class="n">all_groups</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">g</span><span class="p">:</span> <span class="n">g</span><span class="o">.</span><span class="n">pka_value</span><span class="p">)</span>
+                <span class="c1"># group with the highest pKa is penalised</span>
+                <span class="n">penalised_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">first_group</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+            <span class="c1"># In case of bases</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">all_groups</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">group</span> <span class="o">==</span> <span class="n">first_group</span><span class="p">:</span>
+                        <span class="c1"># group with the highest pKa is allowed to titrate...</span>
+                        <span class="k">continue</span>
+                    <span class="n">group</span><span class="o">.</span><span class="n">coupled_titrating_group</span> <span class="o">=</span> <span class="n">first_group</span>
+                    <span class="c1">#... and the rest are penalised</span>
+                    <span class="n">penalised_labels</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">label</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">penalised_labels</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.share_determinants"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.share_determinants">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">share_determinants</span><span class="p">(</span><span class="n">groups</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Share sidechain, backbone, and Coloumb determinants between groups.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            groups:  groups to share between</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># make a list of the determinants to share</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;sidechain&#39;</span><span class="p">,</span> <span class="s1">&#39;backbone&#39;</span><span class="p">,</span> <span class="s1">&#39;coulomb&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">type_</span> <span class="ow">in</span> <span class="n">types</span><span class="p">:</span>
+            <span class="c1"># find maximum value for each determinant</span>
+            <span class="n">max_dets</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">det</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">determinants</span><span class="p">[</span><span class="n">type_</span><span class="p">]:</span>
+                    <span class="c1"># update max dets</span>
+                    <span class="k">if</span> <span class="n">det</span><span class="o">.</span><span class="n">group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">max_dets</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                        <span class="n">max_dets</span><span class="p">[</span><span class="n">det</span><span class="o">.</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="n">det</span><span class="o">.</span><span class="n">value</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">max_dets</span><span class="p">[</span><span class="n">det</span><span class="o">.</span><span class="n">group</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">det</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
+                                                  <span class="n">max_dets</span><span class="p">[</span><span class="n">det</span><span class="o">.</span><span class="n">group</span><span class="p">],</span>
+                                                  <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+             <span class="c1"># overwrite/add maximum value for each determinant</span>
+            <span class="k">for</span> <span class="n">det_group</span> <span class="ow">in</span> <span class="n">max_dets</span><span class="p">:</span>
+                <span class="n">new_determinant</span> <span class="o">=</span> <span class="n">Determinant</span><span class="p">(</span><span class="n">det_group</span><span class="p">,</span> <span class="n">max_dets</span><span class="p">[</span><span class="n">det_group</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+                    <span class="n">group</span><span class="o">.</span><span class="n">set_determinant</span><span class="p">(</span><span class="n">new_determinant</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_coupled_systems"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_coupled_systems">[docs]</a>    <span class="k">def</span> <span class="nf">get_coupled_systems</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">groups</span><span class="p">,</span> <span class="n">get_coupled_groups</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;A generator that yields covalently coupled systems.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            groups:  groups for generating coupled systems</span>
+<span class="sd">            get_coupled_groups:  TODO - I don&#39;t know what this is</span>
+<span class="sd">        Yields:</span>
+<span class="sd">            covalently coupled systems</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">groups</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># extract a system of coupled groups ...</span>
+            <span class="n">system</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_a_coupled_system_of_groups</span><span class="p">(</span>
+                <span class="n">groups</span><span class="o">.</span><span class="n">pop</span><span class="p">(),</span> <span class="n">system</span><span class="p">,</span> <span class="n">get_coupled_groups</span><span class="p">)</span>
+            <span class="c1"># ... and remove them from the list</span>
+            <span class="n">groups</span> <span class="o">-=</span> <span class="n">system</span>
+            <span class="k">yield</span> <span class="n">system</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_a_coupled_system_of_groups"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_a_coupled_system_of_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_a_coupled_system_of_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new_group</span><span class="p">,</span> <span class="n">coupled_groups</span><span class="p">,</span>
+                                       <span class="n">get_coupled_groups</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set up coupled systems of groups.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            new_group:  added to coupled_groups</span>
+<span class="sd">            coupled_groups:  existing coupled groups</span>
+<span class="sd">            get_coupled_groups:  TODO - I don&#39;t know what this</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">coupled_groups</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">new_group</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">coupled_group</span> <span class="ow">in</span> <span class="n">get_coupled_groups</span><span class="p">(</span><span class="n">new_group</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">coupled_group</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">coupled_groups</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">get_a_coupled_system_of_groups</span><span class="p">(</span><span class="n">coupled_group</span><span class="p">,</span>
+                                                    <span class="n">coupled_groups</span><span class="p">,</span>
+                                                    <span class="n">get_coupled_groups</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.calculate_folding_energy"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.calculate_folding_energy">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_folding_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ph</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate folding energy over all groups in conformation container.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ph:  pH for calculation</span>
+<span class="sd">            reference:  reference state</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            folding energy</span>
+<span class="sd">            TODO - need units</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ddg</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+            <span class="n">ddg</span> <span class="o">+=</span> <span class="n">group</span><span class="o">.</span><span class="n">calculate_folding_energy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">ph</span><span class="o">=</span><span class="n">ph</span><span class="p">,</span>
+                                                  <span class="n">reference</span><span class="o">=</span><span class="n">reference</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ddg</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.calculate_charge"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.calculate_charge">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_charge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">ph</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate charge for folded and unfolded states.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parameters:  parameters for calculation</span>
+<span class="sd">            ph:  pH for calculation</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            1. charge for unfolded state</span>
+<span class="sd">            2. charge for folded state</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">unfolded</span> <span class="o">=</span> <span class="n">folded</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_titratable_groups</span><span class="p">():</span>
+            <span class="n">unfolded</span> <span class="o">+=</span> <span class="n">group</span><span class="o">.</span><span class="n">calculate_charge</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">ph</span><span class="o">=</span><span class="n">ph</span><span class="p">,</span>
+                                               <span class="n">state</span><span class="o">=</span><span class="s1">&#39;unfolded&#39;</span><span class="p">)</span>
+            <span class="n">folded</span> <span class="o">+=</span> <span class="n">group</span><span class="o">.</span><span class="n">calculate_charge</span><span class="p">(</span><span class="n">parameters</span><span class="p">,</span> <span class="n">ph</span><span class="o">=</span><span class="n">ph</span><span class="p">,</span>
+                                             <span class="n">state</span><span class="o">=</span><span class="s1">&#39;folded&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">unfolded</span><span class="p">,</span> <span class="n">folded</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_backbone_groups"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_backbone_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_backbone_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get backbone groups needed for the pKa calculations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">group</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="k">if</span> <span class="s1">&#39;BB&#39;</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">type</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_sidechain_groups"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_sidechain_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_sidechain_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get sidechain groups needed for the pKa calculations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">group</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span>
+            <span class="k">if</span> <span class="p">(</span><span class="s1">&#39;BB&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">group</span><span class="o">.</span><span class="n">type</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">group</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">cysteine_bridge</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_covalently_coupled_groups"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_covalently_coupled_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_covalently_coupled_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get covalently coupled groups needed for pKa calculations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">covalently_coupled_groups</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_non_covalently_coupled_groups"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_non_covalently_coupled_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_non_covalently_coupled_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get non-covalently coupled groups needed for pKa calculations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">g</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">g</span><span class="o">.</span><span class="n">non_covalently_coupled_groups</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_backbone_nh_groups"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_backbone_nh_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_backbone_nh_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get NH backbone groups needed for pKa calculations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">group</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;BBN&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_backbone_co_groups"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_backbone_co_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_backbone_co_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get CO backbone groups needed for pKa calculations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">group</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;BBC&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_groups_in_residue"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_groups_in_residue">[docs]</a>    <span class="k">def</span> <span class="nf">get_groups_in_residue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">residue</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get residue groups needed for pKa calculations.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            residue:  specific residue with groups</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            list of groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">group</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">residue_type</span> <span class="o">==</span> <span class="n">residue</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_titratable_groups"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_titratable_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_titratable_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get all titratable groups needed for pKa calculations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">group</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">titratable</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_groups_for_calculations"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_groups_for_calculations">[docs]</a>    <span class="k">def</span> <span class="nf">get_groups_for_calculations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get a list of groups that should be included in results report.</span>
+
+<span class="sd">        If --titrate_only option is specified, only residues that are titratable</span>
+<span class="sd">        and are in that list are included; otherwise all titratable residues</span>
+<span class="sd">        and CYS residues are included.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">group</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">use_in_calculations</span><span class="p">()]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_acids"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_acids">[docs]</a>    <span class="k">def</span> <span class="nf">get_acids</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get acid groups needed for pKa calculations.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">group</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">residue_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">acid_list</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">group</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">cysteine_bridge</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_backbone_reorganisation_groups"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_backbone_reorganisation_groups">[docs]</a>    <span class="k">def</span> <span class="nf">get_backbone_reorganisation_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get groups involved with backbone reorganization.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">group</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">group</span><span class="o">.</span><span class="n">residue_type</span>
+                <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">backbone_reorganisation_list</span>
+                <span class="ow">and</span> <span class="ow">not</span> <span class="n">group</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">cysteine_bridge</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_ions"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_ions">[docs]</a>    <span class="k">def</span> <span class="nf">get_ions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get ion groups.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">group</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span>
+            <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">residue_type</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">ions</span><span class="o">.</span><span class="n">keys</span><span class="p">()]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_group_names"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_group_names">[docs]</a>    <span class="k">def</span> <span class="nf">get_group_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group_list</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get names of groups in list.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group_list:  list to check</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            list of groups</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">group</span> <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span> <span class="k">if</span> <span class="n">group</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="n">group_list</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_ligand_atoms"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_ligand_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">get_ligand_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get atoms associated with ligands.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of atoms</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;hetatm&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_heavy_ligand_atoms"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_heavy_ligand_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">get_heavy_ligand_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get heavy atoms associated with ligands.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of atoms</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span>
+            <span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span>
+            <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;hetatm&#39;</span> <span class="ow">and</span> <span class="n">atom</span><span class="o">.</span><span class="n">element</span> <span class="o">!=</span> <span class="s1">&#39;H&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_chain"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_chain">[docs]</a>    <span class="k">def</span> <span class="nf">get_chain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">chain</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get atoms associated with a specific chain.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            chain:  chain to select</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            list of atoms</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">chain_id</span> <span class="o">!=</span> <span class="n">chain</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.add_atom"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.add_atom">[docs]</a>    <span class="k">def</span> <span class="nf">add_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add atom to container.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom:  atom to add</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">atom</span><span class="o">.</span><span class="n">conformation_container</span><span class="p">:</span>
+            <span class="n">atom</span><span class="o">.</span><span class="n">conformation_container</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">atom</span><span class="o">.</span><span class="n">molecular_container</span><span class="p">:</span>
+            <span class="n">atom</span><span class="o">.</span><span class="n">molecular_container</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">molecular_container</span>
+        <span class="c1"># store chain id for bookkeeping</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">atom</span><span class="o">.</span><span class="n">chain_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">chains</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">chain_id</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.copy_atom"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.copy_atom">[docs]</a>    <span class="k">def</span> <span class="nf">copy_atom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a copy of the atom to container.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom:  atom to copy and add</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">new_atom</span> <span class="o">=</span> <span class="n">atom</span><span class="o">.</span><span class="n">make_copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_atom</span><span class="p">)</span>
+        <span class="n">new_atom</span><span class="o">.</span><span class="n">conformation_container</span> <span class="o">=</span> <span class="bp">self</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.get_non_hydrogen_atoms"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.get_non_hydrogen_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">get_non_hydrogen_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get atoms that are not hydrogens.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            list of atoms</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">atom</span> <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span> <span class="k">if</span> <span class="n">atom</span><span class="o">.</span><span class="n">element</span> <span class="o">!=</span> <span class="s1">&#39;H&#39;</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.top_up"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.top_up">[docs]</a>    <span class="k">def</span> <span class="nf">top_up</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds any atoms found in `other` but not in this container.</span>
+
+<span class="sd">        Tops up self with all atoms found in other but not in self.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            other:  conformation container with atoms to add</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">my_residue_labels</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="o">.</span><span class="n">residue_label</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">other</span><span class="o">.</span><span class="n">atoms</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">atom</span><span class="o">.</span><span class="n">residue_label</span> <span class="ow">in</span> <span class="n">my_residue_labels</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">copy_atom</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.find_group"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.find_group">[docs]</a>    <span class="k">def</span> <span class="nf">find_group</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find a group in the container.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            group:  group to find</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            False (if group not found) or group</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">group_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">group_</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">residue_label</span> <span class="o">==</span> <span class="n">group</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">residue_label</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">group_</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">group</span><span class="o">.</span><span class="n">type</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">group_</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.set_ligand_atom_names"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.set_ligand_atom_names">[docs]</a>    <span class="k">def</span> <span class="nf">set_ligand_atom_names</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set names for atoms in ligands.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">atom</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ligand_atoms</span><span class="p">():</span>
+            <span class="n">propka</span><span class="o">.</span><span class="n">ligand</span><span class="o">.</span><span class="n">assign_sybyl_type</span><span class="p">(</span><span class="n">atom</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;String that lists statistics of atoms and groups.&quot;&quot;&quot;</span>
+        <span class="n">fmt</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;Conformation container </span><span class="si">{name}</span><span class="s2"> with </span><span class="si">{natoms:d}</span><span class="s2"> atoms and &quot;</span>
+            <span class="s2">&quot;</span><span class="si">{ngroups:d}</span><span class="s2"> groups&quot;</span><span class="p">)</span>
+        <span class="n">str_</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">natoms</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="n">ngroups</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">str_</span>
+
+    <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Number of atoms in container.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ConformationContainer.sort_atoms"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.sort_atoms">[docs]</a>    <span class="k">def</span> <span class="nf">sort_atoms</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Sort atoms by `self.sort_atoms_key()` and renumber.&quot;&quot;&quot;</span>
+        <span class="c1"># sort the atoms ...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">sort_atoms_key</span><span class="p">)</span>
+        <span class="c1"># ... and re-number them</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">numb</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span></div>
+
+<div class="viewcode-block" id="ConformationContainer.sort_atoms_key"><a class="viewcode-back" href="../../api/propka.conformation_container.html#propka.conformation_container.ConformationContainer.sort_atoms_key">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">sort_atoms_key</span><span class="p">(</span><span class="n">atom</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate key for atom sorting.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            atom:  atom for key generation.</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            key for atom</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">chain_id</span><span class="p">)</span> <span class="o">*</span> <span class="n">UNICODE_MULTIPLIER</span>
+        <span class="n">key</span> <span class="o">+=</span> <span class="n">atom</span><span class="o">.</span><span class="n">res_num</span> <span class="o">*</span> <span class="n">RESIDUE_MULTIPLIER</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="p">):</span>
+            <span class="n">key</span> <span class="o">+=</span> <span class="nb">ord</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">name</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">atom</span><span class="o">.</span><span class="n">element</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="n">key</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

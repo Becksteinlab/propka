@@ -1,0 +1,451 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>propka.molecular_container &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">2. Quickstart Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">3. API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>propka.molecular_container</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for propka.molecular_container</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">PDB molecular container</span>
+<span class="sd">=======================</span>
+
+<span class="sd">Molecular container for storing all contents of PDB files.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">propka.version</span>
+<span class="kn">from</span> <span class="nn">propka.output</span> <span class="kn">import</span> <span class="n">write_propka</span><span class="p">,</span> <span class="n">write_pka</span><span class="p">,</span> <span class="n">print_header</span><span class="p">,</span> <span class="n">print_result</span>
+<span class="kn">from</span> <span class="nn">propka.conformation_container</span> <span class="kn">import</span> <span class="n">ConformationContainer</span>
+<span class="kn">from</span> <span class="nn">propka.lib</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">warning</span><span class="p">,</span> <span class="n">make_grid</span>
+
+
+<span class="c1"># TODO - these are constants whose origins are a little murky</span>
+<span class="n">UNK_PI_CUTOFF</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="c1"># Maximum number of iterations for finding PI</span>
+<span class="n">MAX_ITERATION</span> <span class="o">=</span> <span class="mi">4</span>
+
+
+<div class="viewcode-block" id="MolecularContainer"><a class="viewcode-back" href="../../api/propka.molecular_container.html#propka.molecular_container.MolecularContainer">[docs]</a><span class="k">class</span> <span class="nc">MolecularContainer</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Container for storing molecular contents of PDB files.</span>
+
+<span class="sd">    TODO - this class name does not conform to PEP8 but has external use.</span>
+<span class="sd">    We should deprecate and change eventually.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize molecular container.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            parameters:  Parameters() object</span>
+<span class="sd">            options:  options object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># printing out header before parsing input</span>
+        <span class="n">print_header</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conformation_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">version_class</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">propka</span><span class="o">.</span><span class="n">version</span><span class="p">,</span> <span class="n">parameters</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="o">=</span> <span class="n">version_class</span><span class="p">(</span><span class="n">parameters</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span> <span class="k">as</span> <span class="n">err</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+            <span class="n">errstr</span> <span class="o">=</span> <span class="s1">&#39;Error: Version </span><span class="si">{0:s}</span><span class="s1"> does not exist&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">parameters</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">errstr</span><span class="p">)</span>
+
+<div class="viewcode-block" id="MolecularContainer.top_up_conformations"><a class="viewcode-back" href="../../api/propka.molecular_container.html#propka.molecular_container.MolecularContainer.top_up_conformations">[docs]</a>    <span class="k">def</span> <span class="nf">top_up_conformations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Makes sure that all atoms are present in all conformations.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">:</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;1A&#39;</span> <span class="ow">and</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+                                  <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="s1">&#39;1A&#39;</span><span class="p">]))):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">top_up</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="s1">&#39;1A&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="MolecularContainer.find_covalently_coupled_groups"><a class="viewcode-back" href="../../api/propka.molecular_container.html#propka.molecular_container.MolecularContainer.find_covalently_coupled_groups">[docs]</a>    <span class="k">def</span> <span class="nf">find_covalently_coupled_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find covalently coupled groups.&quot;&quot;&quot;</span>
+        <span class="n">info</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">103</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">find_covalently_coupled_groups</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MolecularContainer.find_non_covalently_coupled_groups"><a class="viewcode-back" href="../../api/propka.molecular_container.html#propka.molecular_container.MolecularContainer.find_non_covalently_coupled_groups">[docs]</a>    <span class="k">def</span> <span class="nf">find_non_covalently_coupled_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find non-covalently coupled groups.&quot;&quot;&quot;</span>
+        <span class="n">info</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">103</span><span class="p">)</span>
+        <span class="n">verbose</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">display_coupled_residues</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">find_non_covalently_coupled_groups</span><span class="p">(</span>
+                <span class="n">verbose</span><span class="o">=</span><span class="n">verbose</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MolecularContainer.extract_groups"><a class="viewcode-back" href="../../api/propka.molecular_container.html#propka.molecular_container.MolecularContainer.extract_groups">[docs]</a>    <span class="k">def</span> <span class="nf">extract_groups</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Identify the groups needed for pKa calculation.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">extract_groups</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MolecularContainer.additional_setup_when_reading_input_file"><a class="viewcode-back" href="../../api/propka.molecular_container.html#propka.molecular_container.MolecularContainer.additional_setup_when_reading_input_file">[docs]</a>    <span class="k">def</span> <span class="nf">additional_setup_when_reading_input_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Additional setup.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">additional_setup_when_reading_input_file</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MolecularContainer.calculate_pka"><a class="viewcode-back" href="../../api/propka.molecular_container.html#propka.molecular_container.MolecularContainer.calculate_pka">[docs]</a>    <span class="k">def</span> <span class="nf">calculate_pka</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Calculate pKa values.&quot;&quot;&quot;</span>
+        <span class="c1"># calculate for each conformation</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">calculate_pka</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
+        <span class="c1"># find non-covalently coupled groups</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">find_non_covalently_coupled_groups</span><span class="p">()</span>
+        <span class="c1"># find the average of the conformations</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">average_of_conformations</span><span class="p">()</span>
+        <span class="c1"># print out the conformation-average results</span>
+        <span class="n">print_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;AVR&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">parameters</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MolecularContainer.average_of_conformations"><a class="viewcode-back" href="../../api/propka.molecular_container.html#propka.molecular_container.MolecularContainer.average_of_conformations">[docs]</a>    <span class="k">def</span> <span class="nf">average_of_conformations</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate an average of conformations.&quot;&quot;&quot;</span>
+        <span class="n">parameters</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">parameters</span>
+        <span class="c1"># make a new configuration to hold the average values</span>
+        <span class="n">avr_conformation</span> <span class="o">=</span> <span class="n">ConformationContainer</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="s1">&#39;average&#39;</span><span class="p">,</span> <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span> <span class="n">molecular_container</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">container</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">container</span><span class="o">.</span><span class="n">get_groups_for_calculations</span><span class="p">():</span>
+            <span class="c1"># new group to hold average values</span>
+            <span class="n">avr_group</span> <span class="o">=</span> <span class="n">group</span><span class="o">.</span><span class="n">clone</span><span class="p">()</span>
+            <span class="c1"># sum up all groups ...</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">:</span>
+                <span class="n">group_to_add</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">find_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">group_to_add</span><span class="p">:</span>
+                    <span class="n">avr_group</span> <span class="o">+=</span> <span class="n">group_to_add</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">str_</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="s1">&#39;Group </span><span class="si">{0:s}</span><span class="s1"> could not be found in &#39;</span>
+                        <span class="s1">&#39;conformation </span><span class="si">{1:s}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">group</span><span class="o">.</span><span class="n">atom</span><span class="o">.</span><span class="n">residue_label</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+                    <span class="n">warning</span><span class="p">(</span><span class="n">str_</span><span class="p">)</span>
+            <span class="c1"># ... and store the average value</span>
+            <span class="n">avr_group</span> <span class="o">=</span> <span class="n">avr_group</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">)</span>
+            <span class="n">avr_conformation</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">avr_group</span><span class="p">)</span>
+        <span class="c1"># store information on coupling in the average container</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="k">lambda</span> <span class="n">c</span><span class="p">:</span> <span class="n">c</span><span class="o">.</span><span class="n">non_covalently_coupled_groups</span><span class="p">,</span>
+                           <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="o">.</span><span class="n">values</span><span class="p">()))):</span>
+            <span class="n">avr_conformation</span><span class="o">.</span><span class="n">non_covalently_coupled_groups</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="c1"># store chain info</span>
+        <span class="n">avr_conformation</span><span class="o">.</span><span class="n">chains</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">conformation_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span><span class="o">.</span><span class="n">chains</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="s1">&#39;AVR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">avr_conformation</span></div>
+
+<div class="viewcode-block" id="MolecularContainer.write_propka"><a class="viewcode-back" href="../../api/propka.molecular_container.html#propka.molecular_container.MolecularContainer.write_propka">[docs]</a>    <span class="k">def</span> <span class="nf">write_propka</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write PROPKA input file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename:  file to write to</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:s}</span><span class="s1">.propka_input&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="n">write_propka</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MolecularContainer.write_pka"><a class="viewcode-back" href="../../api/propka.molecular_container.html#propka.molecular_container.MolecularContainer.write_pka">[docs]</a>    <span class="k">def</span> <span class="nf">write_pka</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="s2">&quot;neutral&quot;</span><span class="p">,</span>
+                  <span class="n">direction</span><span class="o">=</span><span class="s2">&quot;folding&quot;</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write pKa information to a file.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filename:  file to write to</span>
+<span class="sd">            reference:  reference state</span>
+<span class="sd">            direction:  folding vs. unfolding</span>
+<span class="sd">            options:  options object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:s}</span><span class="s1">.pka&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="c1"># if the display_coupled_residues option is true, write the results out</span>
+        <span class="c1"># to an alternative pka file</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">display_coupled_residues</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0:s}</span><span class="s1">_alt_state.pka&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="s1">&#39;output_file_tag&#39;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">output_file_tag</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">):</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="s1">&#39;</span><span class="si">{0:s}</span><span class="s1">_</span><span class="si">{1:s}</span><span class="s1">.pka&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">output_file_tag</span><span class="p">))</span>
+        <span class="n">write_pka</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span>
+            <span class="n">conformation</span><span class="o">=</span><span class="s1">&#39;AVR&#39;</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">reference</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="MolecularContainer.get_folding_profile"><a class="viewcode-back" href="../../api/propka.molecular_container.html#propka.molecular_container.MolecularContainer.get_folding_profile">[docs]</a>    <span class="k">def</span> <span class="nf">get_folding_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conformation</span><span class="o">=</span><span class="s1">&#39;AVR&#39;</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="s2">&quot;neutral&quot;</span><span class="p">,</span>
+                            <span class="n">grid</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Get a folding profile.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            conformation:  conformation to select</span>
+<span class="sd">            reference:  reference state</span>
+<span class="sd">            direction:  folding direction (folding)</span>
+<span class="sd">            grid:  the grid of pH values [min, max, step_size]</span>
+<span class="sd">            options:  options object</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            TODO - figure out what these are</span>
+<span class="sd">            1. profile</span>
+<span class="sd">            2. opt</span>
+<span class="sd">            3. range_80pct</span>
+<span class="sd">            4. stability_range</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># calculate stability profile</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ph</span> <span class="ow">in</span> <span class="n">make_grid</span><span class="p">(</span><span class="o">*</span><span class="n">grid</span><span class="p">):</span>
+            <span class="n">conf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">conformation</span><span class="p">]</span>
+            <span class="n">ddg</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">calculate_folding_energy</span><span class="p">(</span><span class="n">ph</span><span class="o">=</span><span class="n">ph</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="n">reference</span><span class="p">)</span>
+            <span class="n">profile</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">ph</span><span class="p">,</span> <span class="n">ddg</span><span class="p">])</span>
+        <span class="c1"># find optimum</span>
+        <span class="n">opt</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">profile</span><span class="p">:</span>
+            <span class="n">opt</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">opt</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="c1"># find values within 80 % of optimum</span>
+        <span class="n">range_80pct</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="n">values_within_80pct</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">profile</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.8</span><span class="o">*</span><span class="n">opt</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">values_within_80pct</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">range_80pct</span> <span class="o">=</span> <span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">values_within_80pct</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">values_within_80pct</span><span class="p">)]</span>
+        <span class="c1"># find stability range</span>
+        <span class="n">stability_range</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span>
+        <span class="n">stable_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">p</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">profile</span> <span class="k">if</span> <span class="n">p</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mf">0.0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">stable_values</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">stability_range</span> <span class="o">=</span> <span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">stable_values</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">stable_values</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">profile</span><span class="p">,</span> <span class="n">opt</span><span class="p">,</span> <span class="n">range_80pct</span><span class="p">,</span> <span class="n">stability_range</span></div>
+
+<div class="viewcode-block" id="MolecularContainer.get_charge_profile"><a class="viewcode-back" href="../../api/propka.molecular_container.html#propka.molecular_container.MolecularContainer.get_charge_profile">[docs]</a>    <span class="k">def</span> <span class="nf">get_charge_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conformation</span><span class="o">=</span><span class="s1">&#39;AVR&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">,</span> <span class="o">.</span><span class="mi">1</span><span class="p">]):</span>
+        <span class="sd">&quot;&quot;&quot;Get charge profile for conformation as function of pH.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            conformation:  conformation to test</span>
+<span class="sd">            grid:  grid of pH values [min, max, step]</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            list of charge state values</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">charge_profile</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">ph</span> <span class="ow">in</span> <span class="n">make_grid</span><span class="p">(</span><span class="o">*</span><span class="n">grid</span><span class="p">):</span>
+            <span class="n">conf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">conformations</span><span class="p">[</span><span class="n">conformation</span><span class="p">]</span>
+            <span class="n">q_unfolded</span><span class="p">,</span> <span class="n">q_folded</span> <span class="o">=</span> <span class="n">conf</span><span class="o">.</span><span class="n">calculate_charge</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="o">.</span><span class="n">parameters</span><span class="p">,</span> <span class="n">ph</span><span class="o">=</span><span class="n">ph</span><span class="p">)</span>
+            <span class="n">charge_profile</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">ph</span><span class="p">,</span> <span class="n">q_unfolded</span><span class="p">,</span> <span class="n">q_folded</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">charge_profile</span></div>
+
+<div class="viewcode-block" id="MolecularContainer.get_pi"><a class="viewcode-back" href="../../api/propka.molecular_container.html#propka.molecular_container.MolecularContainer.get_pi">[docs]</a>    <span class="k">def</span> <span class="nf">get_pi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">conformation</span><span class="o">=</span><span class="s1">&#39;AVR&#39;</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">iteration</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Get the isoelectric points for folded and unfolded states.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            conformation:  conformation to test</span>
+<span class="sd">            grid:  grid of pH values [min, max, step]</span>
+<span class="sd">            iteration:  iteration number of process</span>
+<span class="sd">        Returns:</span>
+<span class="sd">            1. Folded state PI</span>
+<span class="sd">            2. Unfolded state PI</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">charge_profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_charge_profile</span><span class="p">(</span>
+            <span class="n">conformation</span><span class="o">=</span><span class="n">conformation</span><span class="p">,</span> <span class="n">grid</span><span class="o">=</span><span class="n">grid</span><span class="p">)</span>
+        <span class="n">pi_folded</span> <span class="o">=</span> <span class="n">pi_unfolded</span> <span class="o">=</span> <span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">,</span> <span class="mf">1e6</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">charge_profile</span><span class="p">:</span>
+            <span class="n">pi_folded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pi_folded</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+            <span class="n">pi_unfolded</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">pi_unfolded</span><span class="p">,</span> <span class="n">point</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">v</span><span class="p">:</span> <span class="nb">abs</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="c1"># If results are not good enough, do it again with a higher sampling</span>
+        <span class="c1"># resolution</span>
+        <span class="n">pi_folded_value</span> <span class="o">=</span> <span class="n">pi_folded</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">pi_unfolded_value</span> <span class="o">=</span> <span class="n">pi_unfolded</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">step</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="c1"># TODO - need to warn if maximum number of iterations is exceeded</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">pi_folded</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">UNK_PI_CUTOFF</span>
+             <span class="ow">or</span> <span class="n">pi_unfolded</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">UNK_PI_CUTOFF</span><span class="p">)</span> <span class="ow">and</span> <span class="n">iteration</span> <span class="o">&lt;</span> <span class="n">MAX_ITERATION</span><span class="p">):</span>
+            <span class="n">pi_folded_value</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pi</span><span class="p">(</span>
+                <span class="n">conformation</span><span class="o">=</span><span class="n">conformation</span><span class="p">,</span>
+                <span class="n">grid</span><span class="o">=</span><span class="p">[</span><span class="n">pi_folded</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">step</span><span class="p">,</span> <span class="n">pi_folded</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">step</span><span class="p">,</span> <span class="n">step</span><span class="o">/</span><span class="mf">10.0</span><span class="p">],</span>
+                <span class="n">iteration</span><span class="o">=</span><span class="n">iteration</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+            <span class="n">_</span><span class="p">,</span> <span class="n">pi_unfolded_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_pi</span><span class="p">(</span>
+                <span class="n">conformation</span><span class="o">=</span><span class="n">conformation</span><span class="p">,</span>
+                <span class="n">grid</span><span class="o">=</span><span class="p">[</span><span class="n">pi_unfolded</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="n">step</span><span class="p">,</span> <span class="n">pi_unfolded</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="n">step</span><span class="p">,</span> <span class="n">step</span><span class="o">/</span><span class="mf">10.0</span><span class="p">],</span>
+                <span class="n">iteration</span><span class="o">=</span><span class="n">iteration</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pi_folded_value</span><span class="p">,</span> <span class="n">pi_unfolded_value</span></div></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

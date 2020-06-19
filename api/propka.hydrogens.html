@@ -1,0 +1,495 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>3.3.2. propka.hydrogens &mdash; PROPKA 3 3.2.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3.3.3. propka.ligand" href="propka.ligand.html" />
+    <link rel="prev" title="3.3.1. propka.protonate" href="propka.protonate.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> PROPKA 3
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../quickstart.html">2. Quickstart Guide</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">3. API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#data-structures">3.1. Data structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#i-o">3.2. I/O</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#structure-processing">3.3. Structure processing</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="propka.protonate.html">3.3.1. propka.protonate</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">3.3.2. propka.hydrogens</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#hydrogens">3.3.2.1. Hydrogens</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="propka.ligand.html">3.3.3. propka.ligand</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#calculations">3.4. Calculations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">4. References</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">PROPKA 3</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="../api.html"><span class="section-number">3. </span>API Reference</a> &raquo;</li>
+        
+      <li><span class="section-number">3.3.2. </span>propka.hydrogens</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/propka.hydrogens.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-propka.hydrogens">
+<span id="propka-hydrogens"></span><h1><span class="section-number">3.3.2. </span>propka.hydrogens<a class="headerlink" href="#module-propka.hydrogens" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="hydrogens">
+<h2><span class="section-number">3.3.2.1. </span>Hydrogens<a class="headerlink" href="#hydrogens" title="Permalink to this headline">¶</a></h2>
+<p>Calculations related to hydrogen placement.</p>
+<p class="rubric">Functions</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.hydrogens.add_amd_hydrogen" title="propka.hydrogens.add_amd_hydrogen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_amd_hydrogen</span></code></a>(residue)</p></td>
+<td><p>Adds Gln &amp; Asn hydrogen atoms to residues according to the ‘old way’.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.hydrogens.add_arg_hydrogen" title="propka.hydrogens.add_arg_hydrogen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_arg_hydrogen</span></code></a>(residue)</p></td>
+<td><p>Adds Arg hydrogen atoms to residues according to the ‘old way’.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.hydrogens.add_backbone_hydrogen" title="propka.hydrogens.add_backbone_hydrogen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_backbone_hydrogen</span></code></a>(residue, o_atom, c_atom)</p></td>
+<td><p>Adds hydrogen backbone atoms to residues according to the old way.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.hydrogens.add_his_hydrogen" title="propka.hydrogens.add_his_hydrogen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_his_hydrogen</span></code></a>(residue)</p></td>
+<td><p>Adds His hydrogen atoms to residues according to the ‘old way’.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.hydrogens.add_trp_hydrogen" title="propka.hydrogens.add_trp_hydrogen"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_trp_hydrogen</span></code></a>(residue)</p></td>
+<td><p>Adds Trp hydrogen atoms to residues according to the ‘old way’.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.hydrogens.make_new_h" title="propka.hydrogens.make_new_h"><code class="xref py py-obj docutils literal notranslate"><span class="pre">make_new_h</span></code></a>(atom, x, y, z)</p></td>
+<td><p>Add a new hydrogen to an atom at the specified position.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.hydrogens.protonate_30_style" title="propka.hydrogens.protonate_30_style"><code class="xref py py-obj docutils literal notranslate"><span class="pre">protonate_30_style</span></code></a>(molecular_container)</p></td>
+<td><p>Protonate the molecule.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.hydrogens.protonate_average_direction" title="propka.hydrogens.protonate_average_direction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">protonate_average_direction</span></code></a>(x1_atom, …)</p></td>
+<td><p>Protonates an atom, x1_atom, given a direction.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.hydrogens.protonate_direction" title="propka.hydrogens.protonate_direction"><code class="xref py py-obj docutils literal notranslate"><span class="pre">protonate_direction</span></code></a>(x1_atom, x2_atom, x3_atom)</p></td>
+<td><p>Protonates an atom, x1_atom, given a direction.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.hydrogens.protonate_sp2" title="propka.hydrogens.protonate_sp2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">protonate_sp2</span></code></a>(x1_atom, x2_atom, x3_atom)</p></td>
+<td><p>Protonates a SP2 atom, given a list of atoms</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.hydrogens.set_ligand_atom_names" title="propka.hydrogens.set_ligand_atom_names"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_ligand_atom_names</span></code></a>(molecular_container)</p></td>
+<td><p>Set names for ligands in molecular container.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.hydrogens.setup_bonding" title="propka.hydrogens.setup_bonding"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_bonding</span></code></a>(molecular_container)</p></td>
+<td><p>Set up bonding for a molecular container.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#propka.hydrogens.setup_bonding_and_protonation" title="propka.hydrogens.setup_bonding_and_protonation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_bonding_and_protonation</span></code></a>(…)</p></td>
+<td><p>Set up bonding and protonation for a molecule.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#propka.hydrogens.setup_bonding_and_protonation_30_style" title="propka.hydrogens.setup_bonding_and_protonation_30_style"><code class="xref py py-obj docutils literal notranslate"><span class="pre">setup_bonding_and_protonation_30_style</span></code></a>(…)</p></td>
+<td><p>Set up bonding for a molecular container.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="propka.hydrogens.add_amd_hydrogen">
+<code class="sig-prename descclassname">propka.hydrogens.</code><code class="sig-name descname">add_amd_hydrogen</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">residue</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/hydrogens.html#add_amd_hydrogen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.hydrogens.add_amd_hydrogen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds Gln &amp; Asn hydrogen atoms to residues according to the ‘old way’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>residue</strong> – glutamine or asparagine residue to protonate</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.hydrogens.add_arg_hydrogen">
+<code class="sig-prename descclassname">propka.hydrogens.</code><code class="sig-name descname">add_arg_hydrogen</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">residue</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/hydrogens.html#add_arg_hydrogen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.hydrogens.add_arg_hydrogen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds Arg hydrogen atoms to residues according to the ‘old way’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>residue</strong> – arginine residue to protonate</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list of hydrogen atoms</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.hydrogens.add_backbone_hydrogen">
+<code class="sig-prename descclassname">propka.hydrogens.</code><code class="sig-name descname">add_backbone_hydrogen</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">residue</span></em>, <em class="sig-param"><span class="n">o_atom</span></em>, <em class="sig-param"><span class="n">c_atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/hydrogens.html#add_backbone_hydrogen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.hydrogens.add_backbone_hydrogen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds hydrogen backbone atoms to residues according to the old way.</p>
+<p>dR is wrong for the N-terminus (i.e. first residue) but it doesn’t affect
+anything at the moment. Could be improved, but works for now.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>residue</strong> – residue to protonate</p></li>
+<li><p><strong>o_atom</strong> – backbone oxygen atom</p></li>
+<li><p><strong>c_atom</strong> – backbone carbon atom</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>[new backbone oxygen atom, new backbone carbon atom]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.hydrogens.add_his_hydrogen">
+<code class="sig-prename descclassname">propka.hydrogens.</code><code class="sig-name descname">add_his_hydrogen</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">residue</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/hydrogens.html#add_his_hydrogen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.hydrogens.add_his_hydrogen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds His hydrogen atoms to residues according to the ‘old way’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>residue</strong> – histidine residue to protonate</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.hydrogens.add_trp_hydrogen">
+<code class="sig-prename descclassname">propka.hydrogens.</code><code class="sig-name descname">add_trp_hydrogen</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">residue</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/hydrogens.html#add_trp_hydrogen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.hydrogens.add_trp_hydrogen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds Trp hydrogen atoms to residues according to the ‘old way’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>residue</strong> – tryptophan residue to protonate</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.hydrogens.make_new_h">
+<code class="sig-prename descclassname">propka.hydrogens.</code><code class="sig-name descname">make_new_h</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">atom</span></em>, <em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">y</span></em>, <em class="sig-param"><span class="n">z</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/hydrogens.html#make_new_h"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.hydrogens.make_new_h" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a new hydrogen to an atom at the specified position.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atom</strong> – atom to protonate</p></li>
+<li><p><strong>x</strong> – x position of hydrogen</p></li>
+<li><p><strong>y</strong> – y position of hydrogen</p></li>
+<li><p><strong>z</strong> – z position of hydrogen</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>new hydrogen atom</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.hydrogens.protonate_30_style">
+<code class="sig-prename descclassname">propka.hydrogens.</code><code class="sig-name descname">protonate_30_style</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">molecular_container</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/hydrogens.html#protonate_30_style"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.hydrogens.protonate_30_style" title="Permalink to this definition">¶</a></dt>
+<dd><p>Protonate the molecule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>molecular_container</strong> – molecule</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.hydrogens.protonate_average_direction">
+<code class="sig-prename descclassname">propka.hydrogens.</code><code class="sig-name descname">protonate_average_direction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1_atom</span></em>, <em class="sig-param"><span class="n">x2_atom</span></em>, <em class="sig-param"><span class="n">x3_atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/hydrogens.html#protonate_average_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.hydrogens.protonate_average_direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Protonates an atom, x1_atom, given a direction.</p>
+<p>New direction for x1_atom is (x1_atom/x2_atom -&gt; x3_atom).
+Note, this one uses the average of x1_atom &amp; x2_atom (N &amp; O) unlike
+the previous N - C = O</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1_atom</strong> – atom to be protonated</p></li>
+<li><p><strong>x2_atom</strong> – atom for direction</p></li>
+<li><p><strong>x3_atom</strong> – other atom for direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>new hydrogen atom</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.hydrogens.protonate_direction">
+<code class="sig-prename descclassname">propka.hydrogens.</code><code class="sig-name descname">protonate_direction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1_atom</span></em>, <em class="sig-param"><span class="n">x2_atom</span></em>, <em class="sig-param"><span class="n">x3_atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/hydrogens.html#protonate_direction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.hydrogens.protonate_direction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Protonates an atom, x1_atom, given a direction.</p>
+<p>New direction for x1_atom proton is (x2_atom -&gt; x3_atom).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1_atom</strong> – atom to be protonated</p></li>
+<li><p><strong>x2_atom</strong> – atom for direction</p></li>
+<li><p><strong>x3_atom</strong> – other atom for direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>new hydrogen atom</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.hydrogens.protonate_sp2">
+<code class="sig-prename descclassname">propka.hydrogens.</code><code class="sig-name descname">protonate_sp2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x1_atom</span></em>, <em class="sig-param"><span class="n">x2_atom</span></em>, <em class="sig-param"><span class="n">x3_atom</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/hydrogens.html#protonate_sp2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.hydrogens.protonate_sp2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Protonates a SP2 atom, given a list of atoms</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x1_atom</strong> – atom to set direction</p></li>
+<li><p><strong>x2_atom</strong> – atom to be protonated</p></li>
+<li><p><strong>x3_atom</strong> – other atom to set direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>new hydrogen atom</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.hydrogens.set_ligand_atom_names">
+<code class="sig-prename descclassname">propka.hydrogens.</code><code class="sig-name descname">set_ligand_atom_names</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">molecular_container</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/hydrogens.html#set_ligand_atom_names"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.hydrogens.set_ligand_atom_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set names for ligands in molecular container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>molecular_container</strong> – molecular container for ligand names</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.hydrogens.setup_bonding">
+<code class="sig-prename descclassname">propka.hydrogens.</code><code class="sig-name descname">setup_bonding</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">molecular_container</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/hydrogens.html#setup_bonding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.hydrogens.setup_bonding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up bonding for a molecular container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>molecular_container</strong> – the molecular container in question</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>BondMaker object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.hydrogens.setup_bonding_and_protonation">
+<code class="sig-prename descclassname">propka.hydrogens.</code><code class="sig-name descname">setup_bonding_and_protonation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">molecular_container</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/hydrogens.html#setup_bonding_and_protonation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.hydrogens.setup_bonding_and_protonation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up bonding and protonation for a molecule.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parameters</strong> – not used</p></li>
+<li><p><strong>molecular_container</strong> – molecule container.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="propka.hydrogens.setup_bonding_and_protonation_30_style">
+<code class="sig-prename descclassname">propka.hydrogens.</code><code class="sig-name descname">setup_bonding_and_protonation_30_style</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">molecular_container</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/propka/hydrogens.html#setup_bonding_and_protonation_30_style"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#propka.hydrogens.setup_bonding_and_protonation_30_style" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up bonding for a molecular container.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>molecular_container</strong> – the molecular container in question</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>BondMaker object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="propka.ligand.html" class="btn btn-neutral float-right" title="3.3.3. propka.ligand" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="propka.protonate.html" class="btn btn-neutral float-left" title="3.3.1. propka.protonate" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Jan H. Jensen, Chresten R. Søndergaard, Mats H. M. Olsson, Michał Rostkowski, Nathan A. Baker, Matvey Adzhigirey, Oliver Beckstein, Jimmy Charnley Kromann, Mike Beachy, Toni G, Thomas Holder
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

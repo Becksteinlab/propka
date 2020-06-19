@@ -1,0 +1,43 @@
+propka.hydrogens
+================
+
+.. automodule:: propka.hydrogens
+   :members:
+   
+   
+   
+   
+
+   
+   
+   .. rubric:: Functions
+
+   .. autosummary::
+   
+      add_amd_hydrogen
+      add_arg_hydrogen
+      add_backbone_hydrogen
+      add_his_hydrogen
+      add_trp_hydrogen
+      make_new_h
+      protonate_30_style
+      protonate_average_direction
+      protonate_direction
+      protonate_sp2
+      set_ligand_atom_names
+      setup_bonding
+      setup_bonding_and_protonation
+      setup_bonding_and_protonation_30_style
+   
+   
+
+   
+   
+   
+
+   
+   
+   
+
+
+
