@@ -7,7 +7,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>3.3.3. propka.ligand &mdash; PROPKA 3 3.2.0 documentation</title>
+  <title>4.3.3. propka.ligand &mdash; PROPKA 3 3.2.0 documentation</title>
   
 
   
@@ -37,8 +37,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="3.4.1. propka.calculations" href="propka.calculations.html" />
-    <link rel="prev" title="3.3.2. propka.hydrogens" href="propka.hydrogens.html" /> 
+    <link rel="next" title="4.4.1. propka.calculations" href="propka.calculations.html" />
+    <link rel="prev" title="4.3.2. propka.hydrogens" href="propka.hydrogens.html" /> 
 </head>
 
 <body class="wy-body-for-nav">
@@ -86,22 +86,23 @@
               <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../installation.html">1. Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../quickstart.html">2. Quickstart Guide</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="../api.html">3. API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../api.html#data-structures">3.1. Data structures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#i-o">3.2. I/O</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../api.html#structure-processing">3.3. Structure processing</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="propka.protonate.html">3.3.1. propka.protonate</a></li>
-<li class="toctree-l3"><a class="reference internal" href="propka.hydrogens.html">3.3.2. propka.hydrogens</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">3.3.3. propka.ligand</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#ligand-atom-typing">3.3.3.1. Ligand atom typing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../command.html">3. The <strong class="program">propka3</strong> command</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../api.html">4. API Reference</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../api.html#data-structures">4.1. Data structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#i-o">4.2. I/O</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api.html#structure-processing">4.3. Structure processing</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="propka.protonate.html">4.3.1. propka.protonate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="propka.hydrogens.html">4.3.2. propka.hydrogens</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">4.3.3. propka.ligand</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#ligand-atom-typing">4.3.3.1. Ligand atom typing</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../api.html#calculations">3.4. Calculations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api.html#calculations">4.4. Calculations</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../references.html">4. References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">5. References</a></li>
 </ul>
 
             
@@ -148,9 +149,9 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="../api.html"><span class="section-number">3. </span>API Reference</a> &raquo;</li>
+          <li><a href="../api.html"><span class="section-number">4. </span>API Reference</a> &raquo;</li>
         
-      <li><span class="section-number">3.3.3. </span>propka.ligand</li>
+      <li><span class="section-number">4.3.3. </span>propka.ligand</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -170,9 +171,9 @@
            <div itemprop="articleBody">
             
   <div class="section" id="module-propka.ligand">
-<span id="propka-ligand"></span><h1><span class="section-number">3.3.3. </span>propka.ligand<a class="headerlink" href="#module-propka.ligand" title="Permalink to this headline">¶</a></h1>
+<span id="propka-ligand"></span><h1><span class="section-number">4.3.3. </span>propka.ligand<a class="headerlink" href="#module-propka.ligand" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="ligand-atom-typing">
-<h2><span class="section-number">3.3.3.1. </span>Ligand atom typing<a class="headerlink" href="#ligand-atom-typing" title="Permalink to this headline">¶</a></h2>
+<h2><span class="section-number">4.3.3.1. </span>Ligand atom typing<a class="headerlink" href="#ligand-atom-typing" title="Permalink to this headline">¶</a></h2>
 <p>This module contains the <a class="reference internal" href="#propka.ligand.assign_sybyl_type" title="propka.ligand.assign_sybyl_type"><code class="xref py py-func docutils literal notranslate"><span class="pre">assign_sybyl_type()</span></code></a> function to analyze
 all <a class="reference internal" href="propka.atom.html#propka.atom.Atom" title="propka.atom.Atom"><code class="xref py py-class docutils literal notranslate"><span class="pre">propka.atom.Atom</span></code></a> in terms of SYBYL atom types (see
 <a class="reference internal" href="#propka.ligand.ALL_SYBYL_TYPES" title="propka.ligand.ALL_SYBYL_TYPES"><code class="xref py py-data docutils literal notranslate"><span class="pre">ALL_SYBYL_TYPES</span></code></a>).</p>
@@ -344,10 +345,10 @@ all <a class="reference internal" href="propka.atom.html#propka.atom.Atom" title
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="propka.calculations.html" class="btn btn-neutral float-right" title="3.4.1. propka.calculations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="propka.calculations.html" class="btn btn-neutral float-right" title="4.4.1. propka.calculations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="propka.hydrogens.html" class="btn btn-neutral float-left" title="3.3.2. propka.hydrogens" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="propka.hydrogens.html" class="btn btn-neutral float-left" title="4.3.2. propka.hydrogens" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
