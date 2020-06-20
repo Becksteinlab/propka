@@ -37,7 +37,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="3. The propka3 command" href="command.html" />
+    <link rel="next" title="3. propka3 command" href="command.html" />
     <link rel="prev" title="1. Installation" href="installation.html" /> 
 </head>
 
@@ -90,7 +90,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#getting-help">2.2. Getting help</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="command.html">3. The <strong class="program">propka3</strong> command</a></li>
+<li class="toctree-l1"><a class="reference internal" href="command.html">3. <strong class="program">propka3</strong> command</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api.html">4. API Reference</a></li>
 <li class="toctree-l1"><a class="reference internal" href="references.html">5. References</a></li>
 </ul>
@@ -160,15 +160,17 @@
             
   <div class="section" id="quickstart-guide">
 <h1><span class="section-number">2. </span>Quickstart Guide<a class="headerlink" href="#quickstart-guide" title="Permalink to this headline">¶</a></h1>
-<p>PROPKA can be used either as a module or via the installed script <strong class="program">propka3</strong>; i.e., either</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>propka3
+<p>PROPKA can be used either via the installed script <strong class="program">propka3</strong>
+or as a Python module. When using the <a class="reference internal" href="command.html#propka3-command"><span class="std std-ref">propka3 command</span></a>, use</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>propka3  FILENAME
 </pre></div>
 </div>
-<p>or <a class="reference internal" href="api.html#module-propka" title="propka"><code class="xref py py-mod docutils literal notranslate"><span class="pre">propka</span></code></a></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m propka
+<p>As a module (<a class="reference internal" href="api.html#module-propka" title="propka"><code class="xref py py-mod docutils literal notranslate"><span class="pre">propka</span></code></a>), also provide the input filename</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python -m propka FILENAME
 </pre></div>
 </div>
-<p>works for invoking PROPKA.</p>
+<p>In both cases, additional options may be added, as described in more
+detail for the <a class="reference internal" href="command.html#propka3-command"><span class="std std-ref">propka3 command</span></a>.</p>
 <div class="section" id="predicting-protein-residue-pka-values">
 <h2><span class="section-number">2.1. </span>Predicting protein residue <span class="math notranslate nohighlight">\(\text{p}K_\text{a}\)</span> values<a class="headerlink" href="#predicting-protein-residue-pka-values" title="Permalink to this headline">¶</a></h2>
 <p>Most users run PROPKA by invoking the <strong class="program">propka3</strong> program with
@@ -328,7 +330,7 @@ available using the <a class="reference internal" href="command.html#cmdoption-p
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="command.html" class="btn btn-neutral float-right" title="3. The propka3 command" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="command.html" class="btn btn-neutral float-right" title="3. propka3 command" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
         <a href="installation.html" class="btn btn-neutral float-left" title="1. Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
